@@ -14,7 +14,7 @@
 > - [Features](#features)
 > - [Other items](#other-items)
 > - [Other extensions](#other-extensions)
-> - [Extending Advanced Shop System](#extending-advaned-shop-system)
+> - [Extending Advanced Shop System](#extending-advanced-shop-system)
 > - [You might also like](#you-might-also-like)
 > - [License](#license)
 
@@ -37,22 +37,24 @@
 ## Support
 - **Important: Only official release versions validated by the phpBB Extensions Team should be installed on a live forum. Pre-release (beta, RC) versions downloaded from this repository are only to be used for testing on offline/development forums and are not officially supported.**
 - Report bugs and other issues to our **[Issue Tracker](https://github.com/phpBB-Studio/AdvancedShopSystem/issues)**.
-- Support requests should be posted and discussed in the **[Advanced Shop System topic](https://www.phpbb.com/community/viewtopic.php?f=456&t=2500296&p=15186601)** over at [phpBB.com](https://www.phpbb.com).
+- Support requests should be posted and discussed in the **[Advanced Shop System topic](https://www.phpbb.com/community/viewtopic.php?f=456&t=2522331&p=15319521)** over at [phpBB.com](https://www.phpbb.com).
 
 ## Translations
-- Translations should be posted in the **[Advanced Shop System topic](https://www.phpbb.com/community/viewtopic.php?f=456&t=2500296&p=15186601)** over at [phpBB.com](https://www.phpbb.com).
+- Translations should be posted in the **[Advanced Shop System topic](https://www.phpbb.com/community/viewtopic.php?f=456&t=2522331&p=15319521)** over at [phpBB.com](https://www.phpbb.com).
 - Translation <u>***corrections***</u> are accepted as pull requests.
 - New translations are <u>***not***</u> accepted as pull requests.
 
 ## Features
 - Fully integrated Shop System for the [Advanced Points System](https://github.com/phpBB-Studio/AdvancedPointsSystem)
-- Enormous amount of settings and possibilities per item.
-- Several item types included by default<br />*(Ranks and Files included by default)*
+- Ease-of-use filesystem interface for item images and files.
+- High customisation options and possibilities per item.
+- Several item types included by default<br />*(Points and Files included by default)*
 - More item types are available for expanding.
 - Fully extendable by other extensions.<br />*(with detailed explanation and examples)*
 
 ## Other items
 - Rank
+- Avatar
 - Groups *(Create a group and Join a group)*
 - Permissions *(Global permissions and Local permissions)*
 
