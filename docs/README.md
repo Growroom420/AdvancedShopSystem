@@ -1,4 +1,4 @@
-<h1 align="center"><img src="./images/aps.png" alt="Advanced Shop System" /></h1>
+<h1 align="center"><img src="./images/ass.png" alt="Advanced Shop System" /></h1>
 <h4 align="center">An extension for the phpBB Forum Software.</h4>
 
 <p align="center">
