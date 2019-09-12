@@ -1,0 +1,45 @@
+services:
+    phpbbstudio.ass.controller:
+        class: phpbbstudio\ass\helper\controller
+        arguments:
+            - '@phpbbstudio.aps.functions'
+            - '@auth'
+            - '@config'
+            - '@config_text'
+            - '@controller.helper'
+            - '@language'
+            - '@phpbbstudio.ass.operator.category'
+            - '@phpbbstudio.ass.router'
+            - '@template'
+            - '@user'
+
+    phpbbstudio.ass.files:
+        class: phpbbstudio\ass\helper\files
+        arguments:
+            - '@cache'
+            - '@files.factory'
+            - '@filesystem'
+            - '%core.root_path%'
+
+    phpbbstudio.ass.log:
+        class: phpbbstudio\ass\helper\log
+        arguments:
+            - '@dbal.conn'
+            - '@user'
+            - '%phpbbstudio.ass.tables.categories%'
+            - '%phpbbstudio.ass.tables.items%'
+            - '%phpbbstudio.ass.tables.logs%'
+            - '%tables.users%'
+
+    phpbbstudio.ass.router:
+        class: phpbbstudio\ass\helper\router
+        arguments:
+            - '@controller.helper'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+
+    phpbbstudio.ass.time:
+        class: phpbbstudio\ass\helper\time
+        arguments:
+            - '@config'
+            - '@language'

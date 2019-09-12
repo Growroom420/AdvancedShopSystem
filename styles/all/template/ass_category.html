@@ -1,0 +1,235 @@
+{% extends '@phpbbstudio_aps/aps_main.html' %}
+
+{% block includes %}
+	{% INCLUDECSS '@phpbbstudio_ass/ass_common.css' %}
+	{% INCLUDEJS '@phpbbstudio_ass/js/ass_common.js' %}
+{% endblock %}
+
+{% block nav %}
+	{% for category in ass_shop_categories %}
+		<li>
+			<a class="aps-list-item{{ category.S_SELECTED ? ' aps-list-active' }}" href="{{ category.U_VIEW }}" title="{{ category.TITLE }}">
+				{% if category.ICON %}<i class="icon {{ category.ICON }} fa-fw" aria-hidden="true"></i>{% endif %}
+				<span class="sr-only">{{ category.TITLE }}</span>
+			</a>
+		</li>
+	{% endfor %}
+{% endblock %}
+
+{% block main %}
+	<div class="aps-row">
+		<div class="aps-col s12">
+			<div class="shop-title">
+				<h1 class="aps-no-mar shop-text-darkgray">{{ TITLE }}</h1>
+			</div>
+		</div>
+
+		{% if not S_ACTIVE %}
+			<div class="aps-col s12">
+				<div class="aps-button-red">
+					<strong>{{ lang('ASS_CATEGORY_INACTIVE') }}</strong>
+				</div>
+			</div>
+		{% endif %}
+
+		{% if DESC_HTML %}
+			{% if ICON %}
+				<div class="aps-col s2">
+					<div class="aps-panel aps-center">
+						<div class="aps-panel-content">
+							<i class="fa {{ ICON }} fa-fw fa-5x icon-aps-blue" aria-hidden="true"></i>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+
+			<div class="aps-col s{{ ICON ? 10 : 12 }}">
+				<div class="aps-panel">
+					<div class="aps-panel-content content">
+						{{ DESC_HTML }}
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+
+	<div class="aps-row">
+		{% for item in ass_items %}
+			<div class="aps-col s6 m{{ T_PANEL_SIZE }}">
+				{{ include('@phpbbstudio_ass/ass_item_panel.html') }}
+			</div>
+		{% else %}
+			<div class="aps-col s12">
+				<div class="aps-panel">
+					<div class="aps-panel-content aps-center">
+						<strong class="error">{{ lang('ASS_ITEMS_NONE') }}</strong>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+
+	<div class="aps-row">
+		<div class="aps-col s2">
+			<form class="aps-form" method="get" action="{{ U_VIEW }}">
+				<div class="shop-block dropdown-container dropdown-container-left dropdown-up dropdown-right dropdown-button-control">
+					<span class="shop-block aps-button-blue aps-center dropdown-trigger" title="{{ lang('SORT_OPTIONS') }}">
+						<i class="icon fa-sort-amount-asc fa-fw" aria-hidden="true"></i>
+					</span>
+
+					<div class="dropdown hidden shop-category-dropdown">
+						<div class="pointer"><div class="pointer-inner"></div></div>
+						<div class="dropdown-contents">
+							<fieldset>
+								<div class="aps-row">
+									<div class="aps-col s4">
+										<label for="title">
+											{{ lang('ASS_ITEM_TITLE') ~ lang('COLON') }}
+										</label>
+									</div>
+									<div class="aps-col s8">
+										<input class="full" id="title" name="title" type="text" value="{{ SORT_TITLE }}">
+									</div>
+
+									<div class="aps-col s4">
+										<label for="type">
+											{{ lang('ASS_ITEM_TYPE') ~ lang('COLON') }}
+										</label>
+									</div>
+									<div class="aps-col s8">
+										<select class="full" id="type" name="type">
+											{% for value, option in SORT_TYPE_ARRAY %}
+												<option value="{{ value }}"{{ value == SORT_TYPE ? ' selected' }}>{{ lang(option) }}</option>
+											{% endfor %}
+										</select>
+									</div>
+
+									<div class="aps-col s4">
+										<label for="above">
+											{{ lang('ASS_PRICE_ABOVE') ~ lang('COLON') }}
+										</label>
+									</div>
+									<div class="aps-col s8">
+										<input class="full" id="above" name="above" type="number" step="{{ aps_step() }}" value="{{ SORT_ABOVE }}">
+									</div>
+
+									<div class="aps-col s4">
+										<label for="below">
+											{{ lang('ASS_PRICE_BELOW') ~ lang('COLON') }}
+										</label>
+									</div>
+									<div class="aps-col s8">
+										<input class="full" id="below" name="below" type="number" step="{{ aps_step() }}" value="{{ SORT_BELOW }}">
+									</div>
+
+									<div class="aps-col s4">
+										<label for="sale">
+											{{ lang('ASS_ON_SALE') ~ lang('COLON') }}
+										</label>
+									</div>
+									<div class="aps-col s8 aps-center">
+										<div class="aps-row">
+											<label class="aps-col s4 aps-no-mar shop-no-pad-left">
+												<input class="aps-bool" id="sale" name="sale" type="radio" value="1"{{ SORT_SALE == 1 ? ' checked' }}>
+												<span class="aps-button-green shop-block"><i class="icon fa-check fa-fw shop-text-indent-3" aria-hidden="true"></i></span>
+											</label>
+											<label class="aps-col s4 aps-no-mar shop-no-pad-left">
+												<input class="aps-bool" name="sale" type="radio" value="-1"{{ SORT_SALE == -1 ? ' checked' }}>
+												<span class="aps-button-red shop-block"><i class="icon fa-times fa-fw shop-text-indent-3" aria-hidden="true"></i></span>
+											</label>
+											<label class="aps-col s4 aps-no-mar shop-no-pad-left">
+												<input class="aps-bool" name="sale" type="radio" value="0"{{ not SORT_SALE ? ' checked' }}>
+												<span class="aps-button-blue shop-block"><i class="icon fa-minus fa-fw shop-text-indent-3" aria-hidden="true"></i></span>
+											</label>
+										</div>
+									</div>
+
+									<div class="aps-col s4 aps-no-mar-bot">
+										<label for="gift">
+											{{ lang('ASS_GIFTABLE') ~ lang('COLON') }}
+										</label>
+									</div>
+									<div class="aps-col s8 aps-no-mar-bot aps-center">
+										<div class="aps-row">
+											<label class="aps-col s4 aps-no-mar shop-no-pad-left">
+												<input class="aps-bool" id="gift" name="gift" type="radio" value="1"{{ SORT_GIFT == 1 ? ' checked' }}>
+												<span class="aps-button-green shop-block"><i class="icon fa-check fa-fw shop-text-indent-3" aria-hidden="true"></i></span>
+											</label>
+											<label class="aps-col s4 aps-no-mar shop-no-pad-left">
+												<input class="aps-bool" name="gift" type="radio" value="-1"{{ SORT_GIFT == -1 ? ' checked' }}>
+												<span class="aps-button-red shop-block"><i class="icon fa-times fa-fw shop-text-indent-3" aria-hidden="true"></i></span>
+											</label>
+											<label class="aps-col s4 aps-no-mar shop-no-pad-left">
+												<input class="aps-bool" name="gift" type="radio" value="0"{{ not SORT_GIFT ? ' checked' }}>
+												<span class="aps-button-blue shop-block"><i class="icon fa-minus fa-fw shop-text-indent-3" aria-hidden="true"></i></span>
+											</label>
+										</div>
+									</div>
+
+									<div class="aps-col s12 aps-no-mar">
+										<hr class="dashed">
+									</div>
+
+									<div class="aps-col s4">
+										<label for="display">
+											{{ lang('DISPLAY') ~ lang('COLON') }}
+										</label>
+									</div>
+									<div class="aps-col s8">
+										<select class="full" id="display" name="display">
+											{% for value, option in SORT_DAYS_ARRAY %}
+												<option value="{{ value }}"{{ value == SORT_DAYS ? ' selected' }}>{{ lang(option) }}</option>
+											{% endfor %}
+										</select>
+									</div>
+
+									<div class="aps-col s4">
+										<label for="sort">
+											{{ lang('SORT_BY') ~ lang('COLON') }}
+										</label>
+									</div>
+									<div class="aps-col s8">
+										<select class="full" id="sort" name="sort">
+											{% for value, option in SORT_SORT_ARRAY %}
+												<option value="{{ value }}"{{ value == SORT_SORT ? ' selected' }}>{{ lang(option.title) }}</option>
+											{% endfor %}
+										</select>
+									</div>
+
+									<div class="aps-col s4 aps-no-mar-bot">
+										<label for="direction">
+											{{ lang('SORT_DIRECTION') ~ lang('COLON') }}
+										</label>
+									</div>
+									<div class="aps-col s8 aps-no-mar-bot">
+										<select class="full" id="direction" name="direction">
+											{% for value, option in SORT_DIR_ARRAY %}
+												<option value="{{ value }}"{{ value == SORT_DIR ? ' selected' }}>{{ lang(option.title) }}</option>
+											{% endfor %}
+										</select>
+									</div>
+
+									<div class="aps-col s12 aps-center aps-no-mar-bot">
+										<hr class="dashed">
+
+										<input class="aps-button-green" type="submit" value="{{ lang('GO') }}">
+									</div>
+								</div>
+							</fieldset>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="aps-col s8">
+			{% if shop_pagination|length %}
+				{{ include('@phpbbstudio_ass/ass_pagination.html') }}
+			{% endif %}
+		</div>
+		<div class="aps-col s2">
+			<div class="aps-center shop-pagination-text">
+				{{ ITEMS_COUNT }}
+			</div>
+		</div>
+	</div>
+{% endblock %}

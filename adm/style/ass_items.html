@@ -1,0 +1,193 @@
+{% include 'overall_header.html' %}
+
+{% INCLUDECSS '@phpbbstudio_aps/css/aps_form.css' %}
+{% INCLUDECSS '@phpbbstudio_aps/css/aps_common.css' %}
+{% INCLUDECSS '@phpbbstudio_ass/css/ass_common.css' %}
+{% INCLUDEJS '@phpbbstudio_aps/js/jquery-ui-sortable.min.js' %}
+{% INCLUDEJS '@phpbbstudio_ass/js/ass_common.js' %}
+
+{% set mode = S_ITEMS ? 'ITEMS' : 'CATEGORIES' %}
+{% set type = S_ITEMS ? 'ITEM' : 'CATEGORY' %}
+
+<a class="pull-right" href="{{ U_BACK }}">
+	<i class="icon fa-angle-double-left fa-fw" aria-hidden="true"></i>
+	<span>{{ lang('BACK') }}</span>
+</a>
+
+<h1>{{ lang('ACP_ASS_SYSTEM') }} &bull; {{ lang('ACP_ASS_' ~ mode) }}</h1>
+<p>{{ lang('ACP_ASS_' ~ mode ~ '_EXPLAIN') }}</p>
+
+{% if S_ASS_ADD or S_ASS_EDIT %}
+	<form class="aps-form" id="add_edit_{{ mode|lower }}" name="add_edit_{{ mode|lower }}" method="post" action="{{ U_ACTION }}">
+		{% INCLUDECSS '@phpbbstudio_aps/css/aps_iconpicker.css' %}
+		{% INCLUDECSS '@phpbbstudio_aps/css/fontawesome-iconpicker.min.css' %}
+		{% INCLUDECSS '@phpbbstudio_ass/css/daterangepicker.css' %}
+		{% INCLUDEJS '@phpbbstudio_aps/js/fontawesome-iconpicker.min.js' %}
+		{% INCLUDEJS '@phpbbstudio_ass/js/moment.min.js' %}
+		{% INCLUDEJS '@phpbbstudio_ass/js/daterangepicker.js' %}
+
+		<script>
+			{# Used by editor.js #}
+			let form_name = 'add_edit_{{ mode|lower }}',
+				text_name = 'desc';
+		</script>
+
+		{{ include('@phpbbstudio_ass/ass_errors.html', {ERRORS: ASS_ERRORS}) }}
+
+		{% if ITEM_CONFLICT %}
+			<fieldset>
+				<div class="warningbox">
+					<h3 class="ass-mar">{{ lang('ACP_ASS_CONFLICT') }}</h3>
+					<p class="ass-no-mar">{{ lang('ACP_ASS_CONFLICT_DESC', U_ITEM_ERROR_LOG, lang('ACP_ASS_SETTINGS_TYPE')) }}</p>
+				</div>
+				<div class="centered-text ass-actions">
+					<a class="aps-button-green" href="{{ U_ITEM_RESOLVE }}" data-ajax="shop_resolve">
+						<i class="icon fa-check fa-fw" aria-hidden="true"></i>
+						<strong>{{ lang('ACP_ASS_ITEM_RESOLVE') }}</strong>
+					</a>
+				</div>
+			</fieldset>
+		{% endif %}
+
+		<fieldset>
+			<legend>{{ lang('GENERAL_SETTINGS') }}</legend>
+
+			{% if S_ITEMS %}
+				<button class="aps-button-green ass-help-start aps-ajax{{ S_ASS_ADD ? ' ass-button-pulse' }}" type="button">
+					<i class="icon fa-map-signs fa-fw" aria-hidden="true"></i>
+					<span>{{ lang('ACP_ASS_HELP_TOUR') }}</span>
+				</button>
+			{% endif %}
+
+			<dl>
+				<dt><label for="active">{{ lang('ACP_ASS_' ~ type ~ '_ACTIVE') ~ lang('COLON') }}</label></dt>
+				<dd>
+					<label>
+						<input class="radio aps-bool" id="active" name="active" type="radio" value="1"{{ attribute(_context, type ~ '_ACTIVE') ? ' checked' }}>
+						<span class="aps-button-green">{{ lang('YES') }}</span>
+					</label>
+					<label>
+						<input class="radio aps-bool" name="active" type="radio" value="0"{{ not attribute(_context, type ~ '_ACTIVE') ? ' checked' }}>
+						<span class="aps-button-red">{{ lang('NO') }}</span>
+					</label>
+				</dd>
+			</dl>
+			<dl>
+				<dt><label for="title">{{ lang('ACP_ASS_' ~ type ~ '_TITLE') ~ lang('COLON') }}</label></dt>
+				<dd><input class="medium" id="title" name="title" type="text" value="{{ attribute(_context, type ~ '_TITLE') }}" maxlength="255" required></dd>
+			</dl>
+			<dl>
+				<dt><label for="slug">{{ lang('ACP_ASS_' ~ type ~ '_SLUG') ~ lang('COLON') }}</label></dt>
+				<dd><input class="medium" id="slug" name="slug" type="text" value="{{ attribute(_context, type ~ '_SLUG') }}" maxlength="255" required></dd>
+			</dl>
+			<dl>
+				<dt><label for="icon">{{ lang('ACP_ASS_' ~ type ~ '_ICON') ~ lang('COLON') }}</label></dt>
+				<dd><input class="medium aps-icon-picker" id="icon" name="icon" type="text" value="{{ attribute(_context, type ~ '_ICON') }}"><i class="icon fa-fw"></i></dd>
+			</dl>
+			<dl>
+				<dt><label for="desc">{{ lang('ACP_ASS_' ~ type ~ '_DESC') ~ lang('COLON') }}</label></dt>
+				<dd>
+					{% include 'acp_posting_buttons.html' %}
+
+					<div class="ass-color-palette" id="color_palette_placeholder" data-orientation="h" data-height="12" data-width="24" data-bbcode="true"></div>
+
+					<textarea class="inputbox" id="desc" name="desc" rows="5">{{ attribute(_context, type ~ '_DESC') }}</textarea>
+				</dd>
+			</dl>
+		</fieldset>
+
+		{% if S_ITEMS %}
+			{{ include('@phpbbstudio_ass/ass_item_form.html') }}
+		{% endif %}
+
+		<fieldset>
+			<legend>{{ lang('ACP_SUBMIT_CHANGES') }}</legend>
+
+			<p class="submit-buttons">
+				<input class="button1" id="submit" name="submit" type="submit" value="{{ lang('SUBMIT') }}">&nbsp;
+				<input class="button2" id="reset" name="reset" type="reset" value="{{ lang('RESET') }}">
+				{{ S_FORM_TOKEN }}
+			</p>
+		</fieldset>
+	</form>
+{% else %}
+
+	<form class="aps-form" action="{{ U_ACTION }}">
+		<fieldset class="panel">
+			{% set rowset = S_ITEMS ? ass_items : ass_categories %}
+
+			<table class="table1 forums zebra-table responsive">
+				<thead>
+					<tr>
+						<th class="centered-text">{{ lang('ENABLED') }}</th>
+						<th class="centered-text">{{ lang('ACP_ASS_CONFLICT' ~ (not S_ITEMS ? 'S')) }}</th>
+						<th class="centered-text">{{ lang('ACP_ASS_' ~ type ~ '_ICON') }}</th>
+						<th class="name">{{ lang('ACP_ASS_' ~ type ~ '_TITLE') }}</th>
+						<th class="centered-text">{{ lang('ACP_ASS_' ~ type ~ '_SLUG') }}</th>
+						<th class="centered-text">{{ lang('ACTIONS') }}</th>
+					</tr>
+				</thead>
+				<tbody data-studio-sortable="true">
+					{% for row in rowset %}
+						<tr data-id="{{ row.ID }}">
+							<td class="actions {{ row.S_ACTIVE ? 'yes' : 'never' }}" title="{{ lang(row.S_ACTIVE ? 'ENABLED' : 'DISABLED') }}">
+								<i class="icon fa-fw {{ row.S_ACTIVE ? 'fa-check icon-green' : 'fa-times icon-red' }}" aria-hidden="true"></i>
+							</td>
+							<td class="actions {{ row.CONFLICT ? 'never' : 'yes' }}">
+								<i class="icon fa-fw {{ row.CONFLICT ? 'fa-exclamation icon-red' : 'fa-check icon-green' }}" aria-hidden="true"></i>
+							</td>
+							<td class="actions"{% if row.ICON %} title="{{ row.ICON }}"{% endif %}>
+								{% if row.ICON %}
+									<i class="icon {{ row.ICON }} fa-fw" aria-hidden="true"></i>
+								{% else %}
+									-
+								{% endif %}
+							</td>
+							<td>
+								<a href="{{ S_ITEMS ? row.U_EDIT : row.U_VIEW }}">
+									<strong>{{ row.TITLE }}</strong>
+								</a>
+							</td>
+							<td>
+								{{ row.SLUG }}
+							</td>
+							<td class="actions{{ row.S_AUTH ? ' ass-actions' }}">
+								{% spaceless %}
+									{% if row.S_AUTH %}
+										<a class="aps-button-green" href="{{ row.U_EDIT }}" title="{{ lang('EDIT') }}">
+											<i class="icon fa-pencil fa-fw" aria-hidden="true"></i>
+											<span class="sr-only">{{ lang('EDIT') }}</span>
+										</a>
+										&nbsp;
+										<a class="aps-button-red" href="{{ row.U_DELETE }}" title="{{ lang('DELETE') }}" data-ajax="row_delete">
+											<i class="icon fa-trash fa-fw" aria-hidden="true"></i>
+											<span class="sr-only">{{ lang('DELETE') }}</span>
+										</a>
+										&nbsp;
+									{% endif %}
+									<span class="aps-button-blue{{ not row.S_AUTH ? ' ass-mar-right-half pull-right' }}" title="{{ lang('MOVE') }}">
+										<i class="icon fa-arrows-v fa-fw" aria-hidden="true"></i>
+										<span class="sr-only">{{ lang('MOVE') }}</span>
+									</span>
+								{% endspaceless %}
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td class="centered-text" colspan="5">{{ lang('ASS_' ~ mode ~ '_NONE') }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
+			<hr />
+
+			<fieldset class="quick">
+				<a class="aps-button-green" href="{{ U_ASS_ADD }}">{{ lang('ADD') }}</a>
+			</fieldset>
+		</fieldset>
+	</form>
+
+{% endif %}
+
+{% include 'overall_footer.html' %}

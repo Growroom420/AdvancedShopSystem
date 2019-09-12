@@ -1,0 +1,49 @@
+services:
+    phpbbstudio.ass.items:
+        class: phpbb\di\service_collection
+        arguments:
+            - '@service_container'
+        tags:
+            - { name: service_collection, tag: phpbbstudio.ass.item }
+
+    phpbbstudio.ass.items.manager:
+        class: phpbbstudio\ass\items\manager
+        arguments:
+            - '@language'
+            - '@template'
+            - '@phpbbstudio.ass.items'
+
+    phpbbstudio.ass.items.base:
+        class: phpbbstudio\ass\items\type\base
+        shared: false
+        abstract: true
+        arguments:
+            - '@auth'
+            - '@config'
+            - '@dbal.conn'
+            - '@controller.helper'
+            - '@language'
+            - '@log'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '%core.table_prefix%'
+
+# --- Items --- #
+    phpbbstudio.ass.items.points:
+        class: phpbbstudio\ass\items\type\points
+        parent: phpbbstudio.ass.items.base
+        shared: false
+        calls:
+            - [set_aps_functions, [@phpbbstudio.aps.functions]]
+        tags:
+            - { name: phpbbstudio.ass.item }
+
+    phpbbstudio.ass.items.file:
+        class: phpbbstudio\ass\items\type\file
+        parent: phpbbstudio.ass.items.base
+        shared: false
+        calls:
+            - [set_files, [@phpbbstudio.ass.files]]
+        tags:
+            - { name: phpbbstudio.ass.item }

@@ -1,0 +1,314 @@
+/**
+ *
+ * phpBB Studio - Advanced Shop System. An extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2019, phpBB Studio, https://www.phpbbstudio.com
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
+.shop-item-help-label {
+	display: none;
+}
+
+@media all and (min-width: 800px) {
+	.aps-body {
+		margin: 0;
+		padding: 0;
+	}
+
+	.shop-item-help {
+		padding: 21px;
+	}
+
+	.shop-item-help-label {
+		display: block;
+	}
+
+	.shop-item-help-input {
+		display: none;
+	}
+
+	.shop-item-help,
+	.shop-item-help > .aps-row,
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper {
+		-webkit-transition: all 0.3s ease-in-out;
+		-moz-transition: all 0.3s ease-in-out;
+		-o-transition: all 0.3s ease-in-out;
+		transition: all 0.3s ease-in-out;
+	}
+
+	.shop-item-help-input:checked {
+		opacity: 0;
+		position: fixed;
+		z-index: 15;
+		top: 0;
+		left: 0;
+		display: block;
+		width: 100vw;
+		height: 100vh;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help {
+		background: #d6d6d6;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help > .aps-row {
+		-webkit-transform: scale(0.8);
+		-moz-transform: scale(0.8);
+		-o-transform: scale(0.8);
+		-ms-transform: scale(0.8);
+		transform: scale(0.8);
+	}
+
+	.shop-item-help-input:checked + .shop-item-help > .aps-row .shop-title {
+		background-color: #f9f9f9;
+		border-color: #bcbcbc;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help > .aps-row .aps-panel,
+	.shop-item-help-input:checked + .shop-item-help > .aps-row .aps-panel-header,
+	.shop-item-help-input:checked + .shop-item-help > .aps-row .aps-panel-footer {
+		background-color: #f9f9f9;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help > .aps-row .shop-panel-background {
+		-webkit-filter: grayscale(50%);
+		filter: grayscale(50%);
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper {
+		opacity: 1;
+		z-index: 11;
+		height: auto;
+	}
+
+	.shop-item-helper {
+		font-size: 16px;
+		font-weight: normal;
+		font-style: italic;
+		text-align: center;
+		background: #ffffff;
+		border: 1px solid #12a3eb;
+		border-radius: 4px;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+		text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.9);
+		color: #313131;
+		opacity: 0;
+		position: absolute;
+		display: inline-block;
+		min-width: 200px;
+		height: 0;
+		padding: 4px 8px;
+		-webkit-transform: scale(1.5);
+		-moz-transform: scale(1.5);
+		-o-transform: scale(1.5);
+		-ms-transform: scale(1.5);
+		transform: scale(1.5);
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.top-left,
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.top-right {
+		top: 100%;
+		left: 50%;
+		-webkit-transform: scale(1.2) translateY(100%);
+		-moz-transform: scale(1.2) translateY(100%);
+		-o-transform: scale(1.2) translateY(100%);
+		-ms-transform: scale(1.2) translateY(100%);
+		transform: scale(1.2) translateY(100%);
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.top-right {
+		right: 50%;
+		left: unset;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.bottom-left,
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.bottom-right {
+		bottom: 100%;
+		left: 50%;
+		-webkit-transform: scale(1.2) translateY(-100%);
+		-moz-transform: scale(1.2) translateY(-100%);
+		-o-transform: scale(1.2) translateY(-100%);
+		-ms-transform: scale(1.2) translateY(-100%);
+		transform: scale(1.2) translateY(-100%);
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.bottom-right {
+		right: 50%;
+		left: unset;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.left {
+		top: 50%;
+		left: 100%;
+		-webkit-transform: scale(1.2) translate(48px, calc(-50% + 4px));
+		-moz-transform: scale(1.2) translate(48px, calc(-50% + 4px));
+		-o-transform: scale(1.2) translate(48px, calc(-50% + 4px));
+		-ms-transform: scale(1.2) translate(48px, calc(-50% + 4px));
+		transform: scale(1.2) translate(48px, calc(-50% + 4px));
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.right {
+		top: 50%;
+		right: 100%;
+		-webkit-transform: scale(1.2) translate(-48px, calc(-50% + 4px));
+		-moz-transform: scale(1.2) translate(-48px, calc(-50% + 4px));
+		-o-transform: scale(1.2) translate(-48px, calc(-50% + 4px));
+		-ms-transform: scale(1.2) translate(-48px, calc(-50% + 4px));
+		transform: scale(1.2) translate(-48px, calc(-50% + 4px));
+	}
+
+	.shop-item-helper:after {
+		font-family: FontAwesome, sans-serif;
+		font-weight: bold;
+		font-style: normal;
+		line-height: 21px;
+		text-align: center;
+		text-indent: 1px;
+		background: linear-gradient(#59bef1, #1092d3);
+		border: 1px solid #12a3eb;
+		border-radius: 50%;
+		text-shadow: none;
+		color: #ffffff;
+		position: absolute;
+		width: 24px;
+		height: 24px;
+	}
+
+	.shop-item-helper.top-left:after {
+		top: 0;
+		left: 0;
+		content: "\f106";
+		transform: translate(50%, -50%);
+	}
+
+	.shop-item-helper.top-right:after {
+		top: 0;
+		right: 0;
+		content: "\f106";
+		transform: translate(-50%, -50%);
+	}
+
+	.shop-item-helper.bottom-left:after {
+		bottom: 0;
+		left: 0;
+		content: "\f107";
+		transform: translate(50%, 50%);
+	}
+
+	.shop-item-helper.bottom-right:after {
+		text-indent: 1px;
+		right: 0;
+		bottom: 0;
+		content: "\f107";
+		transform: translate(-50%, 50%);
+	}
+
+	.shop-item-helper.right:after {
+		text-indent: 3px;
+		top: 50%;
+		right: 0;
+		content: "\f105";
+		transform: translate(50%, -50%);
+	}
+
+	.shop-item-helper.left:after {
+		text-indent: -1px;
+		top: 50%;
+		left: 0;
+		content: "\f104";
+		transform: translate(-50%, -50%);
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper,
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.delay-3 {
+		-webkit-transition-delay: 0.3s;
+		-moz-transition-delay: 0.3s;
+		-o-transition-delay: 0.3s;
+		transition-delay: 0.3s;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.delay-4 {
+		-webkit-transition-delay: 0.4s;
+		-moz-transition-delay: 0.4s;
+		-o-transition-delay: 0.4s;
+		transition-delay: 0.4s;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.delay-5 {
+		-webkit-transition-delay: 0.5s;
+		-moz-transition-delay: 0.5s;
+		-o-transition-delay: 0.5s;
+		transition-delay: 0.5s;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.delay-6 {
+		-webkit-transition-delay: 0.6s;
+		-moz-transition-delay: 0.6s;
+		-o-transition-delay: 0.6s;
+		transition-delay: 0.6s;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.delay-7 {
+		-webkit-transition-delay: 0.7s;
+		-moz-transition-delay: 0.7s;
+		-o-transition-delay: 0.7s;
+		transition-delay: 0.7s;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.delay-8 {
+		-webkit-transition-delay: 0.8s;
+		-moz-transition-delay: 0.8s;
+		-o-transition-delay: 0.8s;
+		transition-delay: 0.8s;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.delay-9 {
+		-webkit-transition-delay: 0.9s;
+		-moz-transition-delay: 0.9s;
+		-o-transition-delay: 0.9s;
+		transition-delay: 0.9s;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.delay-10 {
+		-webkit-transition-delay: 1s;
+		-moz-transition-delay: 1s;
+		-o-transition-delay: 1s;
+		transition-delay: 1s;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.delay-11 {
+		-webkit-transition-delay: 1.1s;
+		-moz-transition-delay: 1.1s;
+		-o-transition-delay: 1.1s;
+		transition-delay: 1.1s;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.delay-12 {
+		-webkit-transition-delay: 1.2s;
+		-moz-transition-delay: 1.2s;
+		-o-transition-delay: 1.2s;
+		transition-delay: 1.2s;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.delay-13 {
+		-webkit-transition-delay: 1.3s;
+		-moz-transition-delay: 1.3s;
+		-o-transition-delay: 1.3s;
+		transition-delay: 1.3s;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.delay-14 {
+		-webkit-transition-delay: 1.4s;
+		-moz-transition-delay: 1.4s;
+		-o-transition-delay: 1.4s;
+		transition-delay: 1.4s;
+	}
+
+	.shop-item-help-input:checked + .shop-item-help .shop-item-helper.delay-15 {
+		-webkit-transition-delay: 1.5s;
+		-moz-transition-delay: 1.5s;
+		-o-transition-delay: 1.5s;
+		transition-delay: 1.5s;
+	}
+}

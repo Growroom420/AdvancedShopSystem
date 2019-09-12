@@ -1,0 +1,290 @@
+{% include 'overall_header.html' %}
+
+{% INCLUDECSS '@phpbbstudio_aps/css/aps_form.css' %}
+{% INCLUDECSS '@phpbbstudio_aps/css/aps_common.css' %}
+{% INCLUDECSS '@phpbbstudio_ass/css/ass_common.css' %}
+{% INCLUDECSS '@phpbbstudio_aps/css/aps_iconpicker.css' %}
+{% INCLUDECSS '@phpbbstudio_aps/css/fontawesome-iconpicker.min.css' %}
+{% INCLUDEJS '@phpbbstudio_aps/js/fontawesome-iconpicker.min.js' %}
+{% INCLUDEJS '@phpbbstudio_ass/js/ass_common.js' %}
+
+<h1>{{ PAGE_TITLE }}</h1>
+<p>{{ lang('ACP_ASS_SETTINGS_EXPLAIN') }}</p>
+
+<form class="aps-form" id="shop_settings" name="shop_settings" method="post" action="{{ U_ACTION }}">
+	{{ include('@phpbbstudio_ass/ass_errors.html') }}
+
+	<fieldset>
+		<legend>{{ lang('GENERAL_SETTINGS') }}</legend>
+
+		<dl>
+			<dt>
+				<label for="enabled">{{ lang('ACP_ASS_SHOP_ENABLED') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('ACP_ASS_SHOP_ENABLED_DESC') }}</span>
+			</dt>
+			<dd>
+				<label>
+					<input class="radio aps-bool" id="enabled" name="enabled" type="radio" value="1"{{ ENABLED ? ' checked' }}>
+					<span class="aps-button-green">{{ lang('YES') }}</span>
+				</label>
+				<label>
+					<input class="radio aps-bool" name="enabled" type="radio" value="0"{{ not ENABLED ? ' checked' }}>
+					<span class="aps-button-red">{{ lang('NO') }}</span>
+				</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label for="active">{{ lang('ACP_ASS_SHOP_ACTIVE') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('ACP_ASS_SHOP_ACTIVE_DESC') }}</span>
+			</dt>
+			<dd>
+				<label>
+					<input class="radio aps-bool" id="active" name="active" type="radio" value="1"{{ ACTIVE ? ' checked' }}>
+					<span class="aps-button-green">{{ lang('YES') }}</span>
+				</label>
+				<label>
+					<input class="radio aps-bool" name="active" type="radio" value="0"{{ not ACTIVE ? ' checked' }}>
+					<span class="aps-button-red">{{ lang('NO') }}</span>
+				</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label for="inactive_desc">{{ lang('ACP_ASS_SHOP_INACTIVE_DESC') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('ACP_ASS_SHOP_INACTIVE_DESC_DESC') }}</span>
+			</dt>
+			<dd>
+				<script>
+					{# Used by editor.js #}
+					let form_name = 'shop_settings',
+						text_name = 'inactive_desc';
+				</script>
+				{% include 'acp_posting_buttons.html' %}
+				<textarea class="inputbox" id="inactive_desc" name="inactive_desc" rows="5">{{ INACTIVE_DESC }}</textarea></dd>
+		</dl>
+		<dl>
+			<dt><label for="shop_icon">{{ lang('ACP_ASS_SHOP_ICON') ~ lang('COLON') }}</label></dt>
+			<dd>
+				<input class="aps-icon-picker" id="shop_icon" name="shop_icon" type="text" value="{{ SHOP_ICON }}" required><i class="icon fa-fw"></i>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="inventory_icon">{{ lang('ACP_ASS_INVENTORY_ICON') ~ lang('COLON') }}</label></dt>
+			<dd>
+				<input class="aps-icon-picker" id="inventory_icon" name="inventory_icon" type="text" value="{{ INVENTORY_ICON }}" required><i class="icon fa-fw"></i>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="no_image_icon">{{ lang('ACP_ASS_NO_IMAGE_ICON') ~ lang('COLON') }}</label></dt>
+			<dd>
+				<input class="aps-icon-picker" id="no_image_icon" name="no_image_icon" type="text" value="{{ NO_IMAGE_ICON }}" required><i class="icon fa-fw"></i>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="gift_icon">{{ lang('ACP_ASS_GIFT_ICON') ~ lang('COLON') }}</label></dt>
+			<dd>
+				<input class="aps-icon-picker" id="gift_icon" name="gift_icon" type="text" value="{{ GIFT_ICON }}" required><i class="icon fa-fw"></i>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="gift_enabled">{{ lang('ACP_ASS_GIFT_ITEMS') ~ lang('COLON') }}</label></dt>
+			<dd>
+				<label>
+					<input class="radio aps-bool" id="gift_enabled" name="gift_enabled" type="radio" value="1"{{ GIFT_ENABLED ? ' checked' }}>
+					<span class="aps-button-green">{{ lang('ENABLED') }}</span>
+				</label>
+				<label>
+					<input class="radio aps-bool" name="gift_enabled" type="radio" value="0"{{ not GIFT_ENABLED ? ' checked' }}>
+					<span class="aps-button-red">{{ lang('DISABLED') }}</span>
+				</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="deactivate_conflicts">{{ lang('ACP_ASS_CONFLICTS_DEACTIVATE') ~ lang('COLON') }}</label></dt>
+			<dd>
+				<label>
+					<input class="radio aps-bool" id="deactivate_conflicts" name="deactivate_conflicts" type="radio" value="1"{{ DEACTIVATE_CONFLICTS ? ' checked' }}>
+					<span class="aps-button-green">{{ lang('ENABLED') }}</span>
+				</label>
+				<label>
+					<input class="radio aps-bool" name="deactivate_conflicts" type="radio" value="0"{{ not DEACTIVATE_CONFLICTS ? ' checked' }}>
+					<span class="aps-button-red">{{ lang('DISABLED') }}</span>
+				</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="items_per_page">{{ lang('ACP_ASS_ITEMS_PER_PAGE') ~ lang('COLON') }}</label></dt>
+			<dd>
+				<input class="shop-slider" id="items_per_page" name="items_per_page" type="range" value="{{ ITEMS_PER_PAGE }}" min="2" max="60" step="2" required>
+				<output>{{ ITEMS_PER_PAGE }}</output>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="logs_per_page">{{ lang('ACP_ASS_LOGS_PER_PAGE') ~ lang('COLON') }}</label></dt>
+			<dd>
+				<input class="shop-slider" id="logs_per_page" name="logs_per_page" type="range" value="{{ LOGS_PER_PAGE }}" min="2" max="60" step="1" required>
+				<output>{{ LOGS_PER_PAGE }}</output>
+			</dd>
+		</dl>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_SETTINGS_SHOP') }}</legend>
+
+		{% for row in SHOP_BLOCKS|batch(2) %}
+			{% for type, data in row %}
+				<fieldset class="column{{ loop.index }}" data-studio-panel="true">
+					<h5>{{ lang('ACP_ASS_PANEL_' ~ type|upper) }}</h5>
+					<hr />
+					<i class="icon {{ ICON[type] }} icon-{{ ICON_COLOUR[type] }} shop-panel-icon shop-panel-icon-{{ BANNER_COLOUR[type] }}{{ BANNER_SIZE[type] ? ' shop-panel-icon-' ~ BANNER_SIZE[type] }}{{ not ICON[type] ? ' hidden' }}"></i>
+
+					<dl>
+						<dt><label for="{{ type }}_banner_size">{{ lang('ACP_ASS_PANEL_BANNER_SIZE') ~ lang('COLON') }}</label></dt>
+						<dd>
+							<select id="{{ type }}_banner_size" name="{{ type }}_banner_size">
+								<option value=""{{ not BANNER_SIZE[type] ? ' selected' }}>{{ lang('ACP_ASS_PANEL_BANNER_SIZE_NORMAL') }}</option>
+								{% for size in SHOP_BANNER_SIZES %}
+									<option value="{{ size }}"{{ size == BANNER_SIZE[type] ? ' selected' }}>{{ lang('ACP_ASS_PANEL_BANNER_SIZE_' ~ size|upper) }}</option>
+								{% endfor %}
+							</select>
+						</dd>
+					</dl>
+					<dl>
+						<dt><label for="{{ type }}_banner_colour">{{ lang('ACP_ASS_PANEL_BANNER_COLOUR') ~ lang('COLON') }}</label></dt>
+						<dd>
+							<select id="{{ type }}_banner_colour" name="{{ type }}_banner_colour">
+								{% for colour in SHOP_BANNER_COLOURS %}
+									<option value="{{ colour }}"{{ colour == BANNER_COLOUR[type] ? ' selected' }}>{{ colour|capitalize }}</option>
+								{% endfor %}
+							</select>
+						</dd>
+					</dl>
+					<dl>
+						<dt><label for="{{ type }}_icon_colour">{{ lang('ACP_ASS_PANEL_ICON_COLOUR') ~ lang('COLON') }}</label></dt>
+						<dd>
+							<select id="{{ type }}_icon_colour" name="{{ type }}_icon_colour">
+								{% for colour in SHOP_ICON_COLOURS %}
+									<option value="{{ colour }}"{{ colour == ICON_COLOUR[type] ? ' selected' }}>{{ colour|capitalize }}</option>
+								{% endfor %}
+							</select>
+						</dd>
+					</dl>
+					<dl>
+						<dt><label for="{{ type }}_icon">{{ lang('ACP_ASS_PANEL_ICON') ~ lang('COLON') }}</label></dt>
+						<dd>
+							<input class="aps-icon-picker" id="{{ type }}_icon" name="{{ type }}_icon" type="text" value="{{ ICON[type] }}"><i class="icon fa-fw"></i>
+						</dd>
+					</dl>
+					<dl>
+						<dt><label for="{{ type }}_limit">{{ lang('ACP_ASS_PANEL_LIMIT') ~ lang('COLON') }}</label></dt>
+						<dd>
+							<input class="shop-slider" id="{{ type }}_limit" name="{{ type }}_limit" type="range" value="{{ LIMIT[type] }}" min="{{ data.min }}" max="{{ data.max }}" step="1" required>
+							<output>{{ LIMIT[type] }}</output>
+						</dd>
+					</dl>
+				</fieldset>
+			{% endfor %}
+		{% endfor %}
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_SETTINGS_CAROUSEL') }}</legend>
+
+		<dl>
+			<dt>
+				<label for="carousel_arrows">{{ lang('ACP_ASS_CAROUSEL_ARROWS') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('ACP_ASS_CAROUSEL_ARROWS_DESC') }}</span>
+			</dt>
+			<dd>
+				<label>
+					<input class="radio aps-bool" id="carousel_arrows" name="carousel_arrows" type="radio" value="1"{{ CAROUSEL_ARROWS ? ' checked' }}>
+					<span class="aps-button-green">{{ lang('YES') }}</span>
+				</label>
+				<label>
+					<input class="radio aps-bool" name="carousel_arrows" type="radio" value="0"{{ not CAROUSEL_ARROWS ? ' checked' }}>
+					<span class="aps-button-red">{{ lang('NO') }}</span>
+				</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label for="carousel_dots">{{ lang('ACP_ASS_CAROUSEL_DOTS') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('ACP_ASS_CAROUSEL_DOTS_DESC') }}</span>
+			</dt>
+			<dd>
+				<label>
+					<input class="radio aps-bool" id="carousel_dots" name="carousel_dots" type="radio" value="1"{{ CAROUSEL_DOTS ? ' checked' }}>
+					<span class="aps-button-green">{{ lang('YES') }}</span>
+				</label>
+				<label>
+					<input class="radio aps-bool" name="carousel_dots" type="radio" value="0"{{ not CAROUSEL_DOTS ? ' checked' }}>
+					<span class="aps-button-red">{{ lang('NO') }}</span>
+				</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label for="carousel_fade">{{ lang('ACP_ASS_CAROUSEL_FADE') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('ACP_ASS_CAROUSEL_FADE_DESC') }}</span>
+			</dt>
+			<dd>
+				<label>
+					<input class="radio aps-bool" id="carousel_fade" name="carousel_fade" type="radio" value="1"{{ CAROUSEL_FADE ? ' checked' }}>
+					<span class="aps-button-green">{{ lang('YES') }}</span>
+				</label>
+				<label>
+					<input class="radio aps-bool" name="carousel_fade" type="radio" value="0"{{ not CAROUSEL_FADE ? ' checked' }}>
+					<span class="aps-button-red">{{ lang('NO') }}</span>
+				</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label for="carousel_play">{{ lang('ACP_ASS_CAROUSEL_PLAY') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('ACP_ASS_CAROUSEL_PLAY_DESC') }}</span>
+			</dt>
+			<dd>
+				<label>
+					<input class="radio aps-bool" id="carousel_play" name="carousel_play" type="radio" value="1"{{ CAROUSEL_PLAY ? ' checked' }}>
+					<span class="aps-button-green">{{ lang('YES') }}</span>
+				</label>
+				<label>
+					<input class="radio aps-bool" name="carousel_play" type="radio" value="0"{{ not CAROUSEL_PLAY ? ' checked' }}>
+					<span class="aps-button-red">{{ lang('NO') }}</span>
+				</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="carousel_play_speed">{{ lang('ACP_ASS_CAROUSEL_PLAY_SPEED') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('ACP_ASS_CAROUSEL_PLAY_SPEED_DESC') }}</span>
+			</dt>
+			<dd>
+				<input class="shop-slider" id="carousel_play_speed" name="carousel_play_speed" type="range" min="1000" max="5000" step="1000" value="{{ CAROUSEL_PLAY_SPEED }}" required>
+				<output>{{ CAROUSEL_PLAY_SPEED }}</output>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label for="carousel_speed">{{ lang('ACP_ASS_CAROUSEL_SPEED') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('ACP_ASS_CAROUSEL_SPEED_DESC') }}</span>
+			</dt>
+			<dd>
+				<input class="shop-slider" id="carousel_speed" name="carousel_speed" type="range" min="100" max="2000" step="100" value="{{ CAROUSEL_SPEED }}" required>
+				<output>{{ CAROUSEL_SPEED }}</output>
+			</dd>
+		</dl>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_SUBMIT_CHANGES') }}</legend>
+
+		<p class="submit-buttons">
+			<input class="button1" id="submit" name="submit" type="submit" value="{{ lang('SUBMIT') }}">&nbsp;
+			<input class="button2" id="reset" name="reset" type="reset" value="{{ lang('RESET') }}">
+			{{ S_FORM_TOKEN }}
+		</p>
+	</fieldset>
+</form>
+
+{% include 'overall_footer.html' %}

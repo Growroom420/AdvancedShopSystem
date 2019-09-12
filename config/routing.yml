@@ -1,0 +1,51 @@
+phpbbstudio_ass_shop:
+    path: /aps/shop
+    defaults:
+        _controller: phpbbstudio.ass.controller.shop:shop
+
+phpbbstudio_ass_category:
+    path: /aps/shop/{category_slug}
+    defaults:
+        _controller: phpbbstudio.ass.controller.shop:category
+        page: 1
+
+phpbbstudio_ass_category_pagination:
+    path: /aps/shop/{category_slug}/page-{page}
+    defaults:
+        _controller: phpbbstudio.ass.controller.shop:category
+
+phpbbstudio_ass_item:
+    path: /aps/shop/{category_slug}/{item_slug}
+    defaults:
+        _controller: phpbbstudio.ass.controller.shop:item
+
+phpbbstudio_ass_purchase:
+    path: /aps/shop/purchase/{category_slug}/{item_slug}
+    defaults:
+        _controller: phpbbstudio.ass.controller.inventory:purchase
+        purchase: true
+
+phpbbstudio_ass_gift:
+    path: /aps/shop/gift/{category_slug}/{item_slug}
+    defaults:
+        _controller: phpbbstudio.ass.controller.inventory:purchase
+        purchase: false
+
+phpbbstudio_ass_history:
+    path: /aps/inventory/history
+    defaults:
+        _controller: phpbbstudio.ass.controller.inventory:history
+        page: 1
+
+phpbbstudio_ass_history_pagination:
+    path: /aps/inventory/history/page-{page}
+    defaults:
+        _controller: phpbbstudio.ass.controller.inventory:history
+
+phpbbstudio_ass_inventory:
+    path: /aps/inventory/{category_slug}/{item_slug}/{action}
+    defaults:
+        _controller: phpbbstudio.ass.controller.inventory:inventory
+        category_slug: ''
+        item_slug: ''
+        action: ''

@@ -1,0 +1,16 @@
+{% if aps_config('ass_enabled') %}
+	<li>
+		<a class="aps-list-item{{ S_ASS_SHOP ? ' aps-list-active' }}" href="{{ path('phpbbstudio_ass_shop') }}" title="{{ lang('ASS_SHOP') }}">
+			<i class="icon {{ aps_config('ass_shop_icon') }} fa-fw"></i>
+			<span>{{ lang('ASS_SHOP') }}</span>
+		</a>
+	</li>
+	{% if S_REGISTERED_USER %}
+		<li>
+			<a class="aps-list-item{{ S_ASS_INVENTORY ? ' aps-list-active' }}" href="{{ path('phpbbstudio_ass_inventory') }}" title="{{ lang('ASS_INVENTORY') }}">
+				<i class="icon {{ aps_config('ass_inventory_icon') }} fa-fw"></i>
+				<span>{{ lang('ASS_INVENTORY') }}</span>
+			</a>
+		</li>
+	{% endif %}
+{% endif %}

@@ -1,0 +1,347 @@
+/**
+ *
+ * phpBB Studio - Advanced Shop System. An extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2019, phpBB Studio, https://www.phpbbstudio.com
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
+.aps-body {
+	margin: 0;
+	padding: 0;
+}
+
+.shop-exception {
+	position: relative;
+	overflow: hidden;
+	min-height: 600px;
+}
+
+.shop-exception-title {
+	position: relative;
+	margin: 32px;
+}
+
+.shop-exception-title .aps-panel-content {
+	padding: 16px;
+}
+
+.shop-exception-title h1 {
+	color: #313131;
+	margin: 0;
+	padding: 0;
+}
+
+.shop-exception-text {
+	z-index: 2;
+	width: 60%;
+	margin: 32px 32px 150px;
+}
+
+.shop-exception-text .aps-panel-content {
+	color: #3d4851;
+	padding: 16px;
+}
+
+.shop-exception-code {
+	border-radius: 4px;
+	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+	position: absolute;
+	z-index: 3;
+	top: 100%;
+	right: -20px;
+	transform-origin: center -20px;
+	animation: swing ease-in-out 1s infinite alternate;
+}
+
+.shop-exception-code span {
+	font-size: 32px;
+	background: #3d4851;
+	border: 4px solid #f9f9f9;
+	border-radius: 4px;
+	color: #ffffff;
+	display: block;
+	margin: 0;
+	padding: 4px 12px;
+}
+
+.shop-exception-code:after {
+	border: 1px solid #999999;
+	border-right: none;
+	border-bottom: none;
+	position: absolute;
+	z-index: 0;
+	top: -10px;
+	left: calc(50% - 5px);
+	width: 20px;
+	height: 20px;
+	content: "";
+	transform: rotate(45deg);
+}
+
+.shop-exception-code:before {
+	background: #000000;
+	border-radius: 50%;
+	position: absolute;
+	z-index: 5;
+	top: -14px;
+	left: 54%;
+	width: 5px;
+	height: 5px;
+	content: "";
+}
+
+@keyframes swing {
+	0% { transform: rotate(3deg); }
+	100% { transform: rotate(-3deg); }
+}
+
+.shop-exception .fa-male,
+.shop-exception .fa-comment,
+.shop-exception .fa-map-signs,
+.shop-exception .shop-icons {
+	color: #3d4851;
+	position: absolute;
+}
+
+.shop-exception .fa-male {
+	font-size: 36px;
+	bottom: 0;
+	left: 400px;
+}
+
+.shop-exception .fa-comment {
+	font-size: 24px;
+	bottom: 36px;
+	left: 380px;
+}
+
+.shop-exception .fa-map-signs {
+	font-size: 18px;
+	bottom: 27px;
+	left: 262px;
+}
+
+.shop-exception .shop-icons {
+	font-size: 12px;
+	color: #ffffff;
+	z-index: 1;
+	bottom: 41px;
+	left: 390px;
+}
+
+.shop-exception .shop-icons:before {
+	content: "";
+	animation: icons 30s ease-in-out infinite;
+}
+
+.shop-exception .fa-trees {
+	position: absolute;
+	bottom: 0;
+	left: 185px;
+	display: inline-block;
+	width: 100px;
+	height: 20px;
+}
+
+.shop-exception .fa-trees.left {
+	left: 85px;
+}
+
+.shop-exception .fa-trees.right {
+	right: 0;
+	left: unset;
+}
+
+.shop-exception .fa-trees .fa-tree {
+	font-size: 18px;
+	background: #3d4851;
+	-webkit-background-clip: text;
+	text-shadow: -2px 0 0 #ffffff;
+	color: transparent;
+	position: absolute;
+	z-index: 1;
+	bottom: 0;
+	-webkit-text-fill-color: transparent;
+}
+
+.shop-exception .fa-trees .fa-tree:nth-child(1) { left: 12px; }
+.shop-exception .fa-trees .fa-tree:nth-child(2) { left: 0; }
+
+.shop-exception .fa-trees .fa-tree:nth-child(3) {
+	text-shadow: 2px 0 0 #f9f9f9;
+	left: 19px;
+}
+
+.shop-exception-mountain,
+.shop-exception-mountain-left,
+.shop-exception-mountain-right {
+	color: #3d4851;
+	position: absolute;
+	bottom: -50px;
+	left: -10px;
+	width: 200px;
+	height: 200px;
+	fill: #3d4851;
+}
+
+.shop-exception-mountain {
+	bottom: -60px;
+	left: 100px;
+}
+
+.shop-exception-mountain-right {
+	right: 0;
+	bottom: -20px;
+	left: unset;
+}
+
+.shop-exception-tree,
+.shop-exception-trees {
+	position: absolute;
+	bottom: 0;
+	left: 500px;
+	width: 60px;
+	height: 60px;
+	fill: #3d4851;
+}
+
+.shop-exception-tree {
+	left: 550px;
+}
+
+.shop-exception-pot svg {
+	position: absolute;
+	z-index: 1;
+	right: 20%;
+	bottom: 0;
+	width: 200px;
+	height: 200px;
+}
+
+.shop-exception-rainbow {
+	position: absolute;
+	z-index: 1;
+	right: 0;
+	bottom: 190px;
+	overflow: hidden;
+	width: calc(20% + 154px);
+	height: calc(100% - 200px - 128px - 39px - 20px);
+}
+
+.shop-exception-rainbow span {
+	border-top: 5px solid transparent;
+	border-left: 21.5px solid transparent;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.shop-exception-rainbow span:nth-of-type(1) {
+	border-color: #5bd6fd;
+	border-top-left-radius: 50%;
+}
+
+.shop-exception-rainbow span:nth-of-type(2) {
+	border-color: #1fd7c3;
+	border-top-left-radius: 45%;
+	bottom: -5px;
+	left: 21.5px;
+}
+
+.shop-exception-rainbow span:nth-of-type(3) {
+	border-color: #ffe76c;
+	border-top-left-radius: 40%;
+	bottom: -10px;
+	left: 43px;
+}
+
+.shop-exception-rainbow span:nth-of-type(4) {
+	border-color: #ffb44d;
+	border-top-left-radius: 35%;
+	bottom: -15px;
+	left: 65px;
+}
+
+.shop-exception-rainbow span:nth-of-type(5) {
+	border-color: #ff7f5a;
+	border-top-left-radius: 30%;
+	bottom: -20px;
+	left: 86px;
+}
+
+@keyframes icons {
+	0% { content: "\f128"; }
+
+	2% { opacity: 1; }
+
+	15% {
+		opacity: 1;
+		content: "\f128";
+	}
+
+	18% { opacity: 0; }
+
+	20% { content: "\f05e"; }
+
+	22% { opacity: 1; }
+
+	35% {
+		opacity: 1;
+		content: "\f05e";
+	}
+
+	38% { opacity: 0; }
+
+	40% {
+		content: "\f12a";
+	}
+
+	42% { opacity: 1; }
+
+	55% {
+		opacity: 1;
+		content: "\f12a";
+	}
+
+	58% { opacity: 0; }
+
+	60% { content: "\f129"; }
+
+	62% { opacity: 1; }
+
+	75% {
+		opacity: 1;
+		content: "\f129";
+	}
+
+	78% { opacity: 0; }
+
+	80% { content: "\f00d"; }
+
+	82% { opacity: 1; }
+
+	95% {
+		opacity: 1;
+		content: "\f00d";
+	}
+
+	98% { opacity: 0; }
+
+	100% { content: "\f128"; }
+}
+
+@media all and (max-width: 800px) {
+	.shop-exception-text {
+		width: initial;
+	}
+
+	.shop-exception-tree,
+	.shop-exception-trees,
+	.shop-exception .fa-male,
+	.shop-exception .fa-comment,
+	.shop-exception .fa-map-signs,
+	.shop-exception .shop-icons {
+		display: none;
+	}
+}

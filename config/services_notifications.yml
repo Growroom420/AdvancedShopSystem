@@ -1,0 +1,29 @@
+services:
+    phpbbstudio.ass.notification:
+        class: phpbbstudio\ass\notification\notification
+        arguments:
+            - '@config'
+            - '@notification_manager'
+            - '@phpbbstudio.ass.operator.item'
+            - '@user'
+
+    phpbbstudio.ass.notification.type.gift:
+        class: phpbbstudio\ass\notification\type\gift
+        shared: false # service MUST not be shared for this to work!
+        parent: notification.type.base
+        calls:
+            - [set_auth, ['@auth']]
+            - [set_router, ['@phpbbstudio.ass.router']]
+            - [set_user_loader, ['@user_loader']]
+        tags:
+            - { name: notification.type }
+
+    phpbbstudio.ass.notification.type.stock:
+        class: phpbbstudio\ass\notification\type\stock
+        shared: false # service MUST not be shared for this to work!
+        parent: notification.type.base
+        calls:
+            - [set_auth, ['@auth']]
+            - [set_router, ['@phpbbstudio.ass.router']]
+        tags:
+            - { name: notification.type }

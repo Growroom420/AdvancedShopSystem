@@ -1,0 +1,5 @@
+parameters:
+    phpbbstudio.ass.tables.categories: '%core.table_prefix%ass_categories'
+    phpbbstudio.ass.tables.inventory: '%core.table_prefix%ass_inventory'
+    phpbbstudio.ass.tables.items: '%core.table_prefix%ass_items'
+    phpbbstudio.ass.tables.logs: '%core.table_prefix%ass_logs'

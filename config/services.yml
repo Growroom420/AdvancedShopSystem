@@ -1,0 +1,11 @@
+parameters:
+    phpbbstudio.aps.extended: "phpBB Studio - Advanced Shop System"
+
+imports:
+    - { resource: services_controllers.yml }
+    - { resource: services_helpers.yml }
+    - { resource: services_items.yml }
+    - { resource: services_listeners.yml }
+    - { resource: services_notifications.yml }
+    - { resource: services_objects.yml }
+    - { resource: tables.yml }

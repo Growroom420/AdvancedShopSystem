@@ -1,0 +1,440 @@
+{% include 'overall_header.html' %}
+
+{% INCLUDECSS '@phpbbstudio_aps/css/aps_form.css' %}
+{% INCLUDECSS '@phpbbstudio_aps/css/aps_common.css' %}
+{% INCLUDECSS '@phpbbstudio_ass/css/ass_common.css' %}
+
+<h1>{{ PAGE_TITLE }}</h1>
+<p>{{ lang('ACP_ASS_OVERVIEW_EXPLAIN') }}</p>
+
+<div class="ass-overview">
+		<table class="table1 two-columns no-header responsive show-header ass-overview-50" data-no-responsive-header="true">
+			<colgroup><col class="col1"><col class="col2"><col class="col1"><col class="col2">
+			</colgroup>
+			<thead>
+				<tr>
+					<th>{{ lang('STATISTIC') }}</th>
+					<th>{{ lang('VALUE') }}</th>
+					<th>{{ lang('STATISTIC') }}</th>
+					<th>{{ lang('VALUE') }}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="col1">{{ lang('ACP_ASS_NUMBER_ITEMS') ~ lang('COLON') }}</td>
+					<td class="col2"><strong>{{ COUNTS['items'] }}</strong></td>
+					<td class="col1">{{ lang('ACP_ASS_NUMBER_CONFLICTS') ~ lang('COLON') }}</td>
+					<td class="col2{{ COUNTS['errors'] ? ' never' }}"><strong>{{ COUNTS['errors'] }}</strong></td>
+				</tr>
+				<tr>
+					<td class="col1">{{ lang('ACP_ASS_NUMBER_SALE') ~ lang('COLON') }}</td>
+					<td class="col2"><strong>{{ COUNTS['sale'] }}</strong></td>
+					<td class="col1">{{ lang('ACP_ASS_NUMBER_SPENT', aps_name()) ~ lang('COLON') }}</td>
+					<td class="col2"><strong>{{ aps_display(COUNTS['spent'], false) }}</strong></td>
+				</tr>
+				<tr>
+					<td class="col1">{{ lang('ACP_ASS_NUMBER_FEATURED') ~ lang('COLON') }}</td>
+					<td class="col2"><strong>{{ COUNTS['featured'] }}</strong></td>
+					<td class="col1">{{ lang('ACP_ASS_SHOP_ENABLED') ~ lang('COLON') }}</td>
+					<td class="col2"><i class="icon {{ SHOP_ENABLED ? 'fa-check icon-green' : 'fa-times icon-red' }} fa-fw" aria-hidden="true"></i></td>
+				</tr>
+				<tr>
+					<td class="col1">{{ lang('ACP_ASS_NUMBER_CATEGORIES') ~ lang('COLON') }}</td>
+					<td class="col2"><strong>{{ COUNTS['categories'] }}</strong></td>
+					<td class="col1">{{ lang('ACP_ASS_SHOP_ACTIVE') ~ lang('COLON') }}</td>
+					<td class="col2"><i class="icon {{ SHOP_ACTIVE ? 'fa-check icon-green' : 'fa-times icon-red' }} fa-fw" aria-hidden="true"></i></td>
+				</tr>
+				<tr>
+					<td class="col1">{{ lang('ACP_ASS_NUMBER_PURCHASES') ~ lang('COLON') }}</td>
+					<td class="col2"><strong>{{ COUNTS['purchases'] }}</strong></td>
+					<td class="col1">{{ lang('ACP_ASS_GIFTING_ENABLED') ~ lang('COLON') }}</td>
+					<td class="col2"><i class="icon {{ GIFTING_ENABLED ? 'fa-check icon-green' : 'fa-times icon-red' }} fa-fw" aria-hidden="true"></i></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<fieldset class="ass-no-mar ass-overview-50">
+			<legend>{{ lang('ACP_ASS_NOTES') }}</legend>
+
+			<form class="aps-form" method="post" action="{{ U_ACTION }}">
+				{% if S_NOTES %}
+					<textarea class="full" name="notes" placeholder="{{ lang('EDIT') }}">{{ NOTES_EDIT }}</textarea>
+				{% else %}
+					<div class="pull-right ass-mar">
+						<a class="aps-button-green" href="{{ U_NOTES }}" title="{{ lang('EDIT') }}">{{ lang('EDIT') }}</a>
+					</div>
+					<div>
+						{% if NOTES %}
+							{{ NOTES }}
+						{% else %}
+							<em>{{ lang('ACP_ASS_NOTES_NO') ~ lang('ELLIPSIS') }}</em>
+						{% endif %}
+					</div>
+				{% endif %}
+
+				{% if S_NOTES %}
+					<fieldset class="submit-buttons">
+						<input name="action" type="hidden" value="notes">
+						<input name="submit" type="submit" value="{{ lang('SUBMIT') }}">
+						<a class="aps-button-red" href="{{ U_ACTION }}" title="{{ lang('CANCEL') }}">{{ lang('CANCEL') }}</a>
+					</fieldset>
+				{% endif %}
+			</form>
+		</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_PANEL_FEATURED') }}</legend>
+
+		<ul class="ass-overview-list ass-no-mar">
+			{% for item in featured %}
+				<li class="ass-overview-flex">
+					<div class="ass-overview-flex-small">
+						{% if item.BACKGROUND_SRC %}
+							<img src="{{ item.BACKGROUND_SRC }}" alt="{{ item.TITLE }}" />
+						{% else %}
+							<i class="icon {{ item.ICON ?: NO_IMAGE_ICON }} fa-3x icon-gray" aria-hidden="true"></i>
+						{% endif %}
+					</div>
+					<div class="ass-overview-flex-auto">
+						<div>
+							<strong class="icon-black">{{ item.TITLE }}</strong><br />
+							<em>
+								<i class="icon fa-calendar-times-o fa-fw" aria-hidden="true"></i>
+								{{ user.format_date(item.FEATURED_UNTIL_UNIX) }}
+							</em>
+						</div>
+					</div>
+				</li>
+			{% else %}
+				<li class="overview-flex">
+					<div class="ass-overview-flex-auto centered-text ass-overview-flex-full-height">
+						<strong class="error">{{ lang('ACP_ASS_OVERVIEW_FEATURED_NO') }}</strong>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_OVERVIEW_FEATURED_UPCOMING') }}</legend>
+
+		<ul class="ass-overview-list ass-no-mar">
+			{% for item in featured_coming %}
+				<li class="ass-overview-flex">
+					<div class="ass-overview-flex-small">
+						{% if item.BACKGROUND_SRC %}
+							<img src="{{ item.BACKGROUND_SRC }}" alt="{{ item.TITLE }}" />
+						{% else %}
+							<i class="icon {{ item.ICON ?: NO_IMAGE_ICON }} fa-3x icon-gray" aria-hidden="true"></i>
+						{% endif %}
+					</div>
+					<div class="ass-overview-flex-auto">
+						<div>
+							<strong class="icon-black">{{ item.TITLE }}</strong><br />
+							<em>
+								<i class="icon fa-calendar-check-o fa-fw" aria-hidden="true"></i>
+								{{ user.format_date(item.FEATURED_START_UNIX) }}
+							</em>
+						</div>
+					</div>
+				</li>
+			{% else %}
+				<li class="overview-flex">
+					<div class="ass-overview-flex-auto centered-text ass-overview-flex-full-height">
+						<strong class="error">{{ lang('ACP_ASS_OVERVIEW_FEATURED_UPCOMING_NO') }}</strong>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_PANEL_SALE') }}</legend>
+
+		<ul class="ass-overview-list ass-no-mar">
+			{% for item in sale %}
+				<li class="ass-overview-flex">
+					<div class="ass-overview-flex-small">
+						{% if item.BACKGROUND_SRC %}
+							<img src="{{ item.BACKGROUND_SRC }}" alt="{{ item.TITLE }}" />
+						{% else %}
+							<i class="icon {{ item.ICON ?: NO_IMAGE_ICON }} fa-3x icon-gray" aria-hidden="true"></i>
+						{% endif %}
+					</div>
+					<div class="ass-overview-flex-auto">
+						<div>
+							<strong class="icon-black">{{ item.TITLE }}</strong><br />
+							<em>
+								<i class="icon fa-calendar-times-o fa-fw" aria-hidden="true"></i>
+								{{ user.format_date(item.SALE_UNTIL_UNIX) }}
+							</em>
+						</div>
+					</div>
+				</li>
+			{% else %}
+				<li class="overview-flex">
+					<div class="ass-overview-flex-auto centered-text ass-overview-flex-full-height">
+						<strong class="error">{{ lang('ACP_ASS_OVERVIEW_SALE_NO') }}</strong>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_OVERVIEW_SALE_UPCOMING') }}</legend>
+
+		<ul class="ass-overview-list ass-no-mar">
+			{% for item in sale_coming %}
+				<li class="ass-overview-flex">
+					<div class="ass-overview-flex-small">
+						{% if item.BACKGROUND_SRC %}
+							<img src="{{ item.BACKGROUND_SRC }}" alt="{{ item.TITLE }}" />
+						{% else %}
+							<i class="icon {{ item.ICON ?: NO_IMAGE_ICON }} fa-3x icon-gray" aria-hidden="true"></i>
+						{% endif %}
+					</div>
+					<div class="ass-overview-flex-auto">
+						<div>
+							<strong class="icon-black">{{ item.TITLE }}</strong><br />
+							<em>
+								<i class="icon fa-calendar-check-o fa-fw" aria-hidden="true"></i>
+								{{ user.format_date(item.SALE_START_UNIX) }}
+							</em>
+						</div>
+					</div>
+				</li>
+			{% else %}
+				<li class="overview-flex">
+					<div class="ass-overview-flex-auto centered-text ass-overview-flex-full-height">
+						<strong class="error">{{ lang('ACP_ASS_OVERVIEW_SALE_UPCOMING_NO') }}</strong>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_OVERVIEW_LOW_STOCK') }}</legend>
+
+		<ul class="ass-overview-list ass-no-mar">
+			{% for item in low_stock %}
+				<li class="ass-overview-flex">
+					<div class="ass-overview-flex-small">
+						{% if item.BACKGROUND_SRC %}
+							<img src="{{ item.BACKGROUND_SRC }}" alt="{{ item.TITLE }}" />
+						{% else %}
+							<i class="icon {{ item.ICON ?: NO_IMAGE_ICON }} fa-3x icon-gray" aria-hidden="true"></i>
+						{% endif %}
+					</div>
+					<div class="ass-overview-flex-auto"><strong class="icon-black">{{ item.TITLE }}</strong></div>
+					<div class="ass-overview-flex-small"><span>{{ item.STOCK }}</span></div>
+				</li>
+			{% else %}
+				<li class="overview-flex">
+					<div class="ass-overview-flex-auto centered-text ass-overview-flex-full-height">
+						<strong class="error">{{ lang('ACP_ASS_OVERVIEW_LOW_STOCK_NO') }}</strong>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_OVERVIEW_BIGGEST_GIFTERS') }}</legend>
+
+		<ul class="ass-overview-list ass-no-mar">
+			{% for user in gifters %}
+				<li class="ass-overview-flex">
+					<div class="ass-overview-flex-small">
+						{% if user.AVATAR %}
+							{{ user.AVATAR }}
+						{% else %}
+							<i class="icon fa-user-circle-o fa-4x icon-gray" aria-hidden="true"></i>
+						{% endif %}
+					</div>
+					<div class="ass-overview-flex-auto">{{ user.NAME }}</div>
+					<div class="ass-overview-flex-small"><span>{{ user.COUNT }}</span></div>
+				</li>
+			{% else %}
+				<li class="overview-flex">
+					<div class="ass-overview-flex-auto centered-text ass-overview-flex-full-height">
+						<strong class="error">{{ lang('ACP_ASS_OVERVIEW_BIGGEST_GIFTERS_NO') }}</strong>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_OVERVIEW_BIGGEST_BUYERS') }}</legend>
+
+		<ul class="ass-overview-list ass-no-mar">
+			{% for user in buyers %}
+				<li class="ass-overview-flex">
+					<div class="ass-overview-flex-small">
+						{% if user.AVATAR %}
+							{{ user.AVATAR }}
+						{% else %}
+							<i class="icon fa-user-circle-o fa-4x icon-gray" aria-hidden="true"></i>
+						{% endif %}
+					</div>
+					<div class="ass-overview-flex-auto">{{ user.NAME }}</div>
+					<div class="ass-overview-flex-small"><span>{{ user.COUNT }}</span></div>
+				</li>
+			{% else %}
+				<li class="overview-flex">
+					<div class="ass-overview-flex-auto centered-text ass-overview-flex-full-height">
+						<strong class="error">{{ lang('ACP_ASS_OVERVIEW_BIGGEST_BUYERS_NO') }}</strong>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_OVERVIEW_BIGGEST_SPENDERS') }}</legend>
+
+		<ul class="ass-overview-list ass-no-mar">
+			{% for user in spenders %}
+				<li class="ass-overview-flex">
+					<div class="ass-overview-flex-small">
+						{% if user.AVATAR %}
+							{{ user.AVATAR }}
+						{% else %}
+							<i class="icon fa-user-circle-o fa-4x icon-gray" aria-hidden="true"></i>
+						{% endif %}
+					</div>
+					<div class="ass-overview-flex-auto">{{ user.NAME }}</div>
+					<div class="ass-overview-flex-small"><span>{{ aps_display(user.COUNT, false) }}</span></div>
+				</li>
+			{% else %}
+				<li class="overview-flex">
+					<div class="ass-overview-flex-auto centered-text ass-overview-flex-full-height">
+						<strong class="error">{{ lang('ACP_ASS_OVERVIEW_BIGGEST_SPENDERS_NO') }}</strong>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_OVERVIEW_SELLERS_LOW') }}</legend>
+
+		<ul class="ass-overview-list ass-no-mar">
+			{% for item in low_sellers %}
+				<li class="ass-overview-flex">
+					<div class="ass-overview-flex-small">
+						{% if item.BACKGROUND_SRC %}
+							<img src="{{ item.BACKGROUND_SRC }}" alt="{{ item.TITLE }}" />
+						{% else %}
+							<i class="icon {{ item.ICON ?: NO_IMAGE_ICON }} fa-3x icon-gray" aria-hidden="true"></i>
+						{% endif %}
+					</div>
+					<div class="ass-overview-flex-auto"><strong class="icon-black">{{ item.TITLE }}</strong></div>
+					<div class="ass-overview-flex-small"><span>{{ item.PURCHASES }}</span></div>
+				</li>
+			{% else %}
+				<li class="overview-flex">
+					<div class="ass-overview-flex-auto centered-text ass-overview-flex-full-height">
+						<strong class="error">{{ lang('ACP_ASS_OVERVIEW_SELLERS_LOW_NO') }}</strong>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_OVERVIEW_SELLERS_TOP') }}</legend>
+
+		<ul class="ass-overview-list ass-no-mar">
+			{% for item in top_sellers %}
+				<li class="ass-overview-flex">
+					<div class="ass-overview-flex-small">
+						{% if item.BACKGROUND_SRC %}
+							<img src="{{ item.BACKGROUND_SRC }}" alt="{{ item.TITLE }}" />
+						{% else %}
+							<i class="icon {{ item.ICON ?: NO_IMAGE_ICON }} fa-3x icon-gray" aria-hidden="true"></i>
+						{% endif %}
+					</div>
+					<div class="ass-overview-flex-auto"><strong class="icon-black">{{ item.TITLE }}</strong></div>
+					<div class="ass-overview-flex-small"><span>{{ item.PURCHASES }}</span></div>
+				</li>
+			{% else %}
+				<li class="overview-flex">
+					<div class="ass-overview-flex-auto centered-text ass-overview-flex-full-height">
+						<strong class="error">{{ lang('ACP_ASS_OVERVIEW_SELLERS_TOP_NO') }}</strong>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_OVERVIEW_RECENT_ITEMS') }}</legend>
+
+		<ul class="ass-overview-list ass-no-mar">
+			{% for item in recent %}
+				<li class="ass-overview-flex">
+					<div class="ass-overview-flex-small">
+						{% if item.BACKGROUND_SRC %}
+							<img src="{{ item.BACKGROUND_SRC }}" alt="{{ item.TITLE }}" />
+						{% else %}
+							<i class="icon {{ item.ICON ?: NO_IMAGE_ICON }} fa-3x icon-gray" aria-hidden="true"></i>
+						{% endif %}
+					</div>
+					<div class="ass-overview-flex-auto">
+						<div>
+							<strong class="icon-black">{{ item.TITLE }}</strong><br />
+							<em>
+								<i class="icon fa-pencil-square-o fa-fw" aria-hidden="true"></i>
+								{{ user.format_date(item.CREATE_TIME) }}
+							</em>
+						</div>
+					</div>
+				</li>
+			{% else %}
+				<li class="overview-flex">
+					<div class="ass-overview-flex-auto centered-text ass-overview-flex-full-height">
+						<strong class="error">{{ lang('ACP_ASS_OVERVIEW_RECENT_ITEMS_NO') }}</strong>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_OVERVIEW_RECENT_PURCHASES') }}</legend>
+
+		<ul class="ass-overview-list ass-no-mar">
+			{% for item in purchases %}
+				<li class="ass-overview-flex">
+					<div class="ass-overview-flex-small">
+						{% if item.BACKGROUND_SRC %}
+							<img src="{{ item.BACKGROUND_SRC }}" alt="{{ item.TITLE }}" />
+						{% else %}
+							<i class="icon {{ item.ICON ?: NO_IMAGE_ICON }} fa-3x icon-gray" aria-hidden="true"></i>
+						{% endif %}
+					</div>
+					<div class="ass-overview-flex-auto">
+						<div>
+							<strong class="icon-black">{{ item.TITLE }}</strong><br />
+							<em>
+								<i class="icon {{ aps_config('ass_shop_icon') }} fa-fw" aria-hidden="true"></i>
+								{{ user.format_date(item.PURCHASE_TIME) }}
+							</em>
+						</div>
+					</div>
+				</li>
+			{% else %}
+				<li class="overview-flex">
+					<div class="ass-overview-flex-auto centered-text ass-overview-flex-full-height">
+						<strong class="error">{{ lang('ACP_ASS_OVERVIEW_RECENT_PURCHASES_NO') }}</strong>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</fieldset>
+</div>
+
+{% include 'overall_footer.html' %}

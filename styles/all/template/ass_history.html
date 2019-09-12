@@ -1,0 +1,156 @@
+{% extends '@phpbbstudio_aps/aps_main.html' %}
+
+{% block includes %}
+	{% INCLUDECSS '@phpbbstudio_ass/ass_common.css' %}
+{% endblock %}
+
+{% block main %}
+	<div class="shop-title shop-mar-bot">
+		<h1 class="aps-no-mar shop-text-darkgray">{{ lang('ASS_HISTORY') }}</h1>
+	</div>
+
+	{% for log in ass_logs %}
+		<div class="aps-panel shop-mar-bot">
+			<div class="aps-panel-header">
+				<div class="aps-row">
+					<div class="aps-col s8 aps-no-mar">
+						{% if log.U_CATEGORY %}
+							<a class="shop-text-darkgray shop-panel-header-link" href="{{ log.U_CATEGORY }}" data-item-title="{{ log.CATEGORY_TITLE }}">
+								{{ log.CATEGORY_TITLE }}
+							</a>
+						{% else %}
+							<span class="shop-text-darkgray shop-panel-header-link">{{ log.CATEGORY_TITLE }}</span>
+						{% endif %}
+						<i class="icon fa-angle-right fa-fw icon-aps-blue" aria-hidden="true"></i>
+						{% if log.U_ITEM %}
+							<a class="shop-text-darkgray shop-panel-header-link shop-bold" href="{{ log.U_ITEM }}" data-item-title="{{ log.ITEM_TITLE }}">
+								{{ log.ITEM_TITLE }}
+							</a>
+						{% else %}
+							<span class="shop-text-darkgray shop-panel-header-link shop-bold">
+								{{ log.ITEM_TITLE }}
+							</span>
+						{% endif %}
+					</div>
+					<div class="aps-col s4 aps-no-mar shop-text-right shop-text-lightgray">
+						{{ log.LOG_TIME }}
+					</div>
+				</div>
+			</div>
+
+			<div class="aps-panel-content">
+				<div class="aps-row">
+					<div class="aps-col s12 m6 aps-no-mar shop-darken-span">
+						{% if log.S_PURCHASE %}
+							{% if log.RECIPIENT %}
+								{% if log.S_GIFT_RECEIVED %}
+									<span>{{ lang('ASS_LOG_ITEM_RECEIVED', log.USER) }}</span>
+								{% else %}
+									<span>{{ lang('ASS_LOG_ITEM_GIFTED', log.RECIPIENT) }}</span>
+								{% endif %}
+							{% else %}
+								<span>{{ lang('ASS_LOG_ITEM_PURCHASED') }}</span>
+							{% endif %}
+						{% else %}
+							<span>{{ lang('ASS_LOG_ITEM_USED') ~ lang('COLON') }}</span> {{ log.LOG_ACTION }}
+						{% endif %}
+					</div>
+					<div class="aps-col s4 m2 aps-no-mar aps-center">{{ aps_display(log.POINTS_OLD, false) }}</div>
+					<div class="aps-col s4 m2 aps-no-mar aps-center{{ log.POINTS_SUM ? ' aps-negative' }}">{{ aps_display(log.POINTS_SUM, false) }}</div>
+					<div class="aps-col s4 m2 aps-no-mar aps-center">{{ aps_display(log.POINTS_NEW, false) }}</div>
+				</div>
+			</div>
+		</div>
+	{% else %}
+		<div class="aps-panel aps-center">
+			<div class="aps-panel-content">
+				<p class="aps-no-mar shop-padding error">{{ lang('ASS_HISTORY_EMPTY') ~ lang('ELLIPSIS') }}</p>
+			</div>
+			<div class="aps-panel-footer">
+				<a class="aps-button-green shop-button-active" href="{{ path('phpbbstudio_ass_shop') }}" title="{{ lang('ASS_SHOP_INDEX') }}">
+					<i class="icon {{ aps_config('ass_shop_icon') }} fa-fw" aria-hidden="true"></i>
+					<span>{{ lang('ASS_SHOP_INDEX') }}</span>
+				</a>
+			</div>
+		</div>
+	{% endfor %}
+
+	{% if ass_logs|length %}
+		<div class="aps-row">
+			<div class="aps-col s2">
+				<form class="aps-form" method="get" action="{{ U_VIEW }}">
+					<div class="shop-block dropdown-container dropdown-container-left dropdown-up dropdown-right dropdown-button-control">
+					<span class="shop-block aps-button-blue aps-center dropdown-trigger" title="{{ lang('SORT_OPTIONS') }}">
+						<i class="icon fa-sort-amount-asc fa-fw" aria-hidden="true"></i>
+					</span>
+
+						<div class="dropdown hidden shop-category-dropdown">
+							<div class="pointer"><div class="pointer-inner"></div></div>
+							<div class="dropdown-contents">
+								<fieldset>
+									<div class="aps-row">
+										<div class="aps-col s4">
+											<label for="display">
+												{{ lang('DISPLAY') ~ lang('COLON') }}
+											</label>
+										</div>
+										<div class="aps-col s8">
+											<select id="display" name="display">
+												{% for value, option in SORT_DISPLAY_ARRAY %}
+													<option value="{{ value }}"{{ value == SORT_DISPLAY ? ' selected' }}>{{ lang(option.title) }}</option>
+												{% endfor %}
+											</select>
+										</div>
+										<div class="aps-col s4">
+											<label for="sort">
+												{{ lang('SORT_BY') ~ lang('COLON') }}
+											</label>
+										</div>
+										<div class="aps-col s8">
+											<select class="full" id="sort" name="sort">
+												{% for value, option in SORT_SORT_ARRAY %}
+													<option value="{{ value }}"{{ value == SORT_SORT ? ' selected' }}>{{ lang(option.title) }}</option>
+												{% endfor %}
+											</select>
+										</div>
+
+										<div class="aps-col s4 aps-no-mar-bot">
+											<label for="direction">
+												{{ lang('SORT_DIRECTION') ~ lang('COLON') }}
+											</label>
+										</div>
+										<div class="aps-col s8 aps-no-mar-bot">
+											<select class="full" id="direction" name="direction">
+												{% for value, option in SORT_DIR_ARRAY %}
+													<option value="{{ value }}"{{ value == SORT_DIR ? ' selected' }}>{{ lang(option.title) }}</option>
+												{% endfor %}
+											</select>
+										</div>
+
+										<div class="aps-col s12 aps-center aps-no-mar-bot">
+											<hr class="dashed">
+
+											<input class="aps-button-green" type="submit" value="{{ lang('GO') }}">
+										</div>
+									</div>
+								</fieldset>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<div class="aps-col s8">
+				{% if shop_pagination|length %}
+					{{ include('@phpbbstudio_ass/ass_pagination.html') }}
+				{% endif %}
+			</div>
+
+			<div class="aps-col s2">
+				<div class="aps-center shop-pagination-text">
+					{{ TOTAL_LOGS }}
+				</div>
+			</div>
+		</div>
+	{% endif %}
+{% endblock %}

@@ -1,0 +1,18 @@
+services:
+    phpbbstudio.ass.listener.setup:
+        class: phpbbstudio\ass\event\setup_listener
+        arguments:
+            - '@language'
+        tags:
+            - { name: event.listener }
+
+    phpbbstudio.ass.listener.exception:
+        class: phpbbstudio\ass\event\exception_listener
+        arguments:
+            - '@config_text'
+            - '@phpbbstudio.ass.controller'
+            - '@language'
+            - '@text_formatter.renderer'
+            - '@template'
+        tags:
+            - { name: event.listener }

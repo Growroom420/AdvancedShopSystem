@@ -1,0 +1,59 @@
+services:
+    phpbbstudio.ass.entity.category:
+        class: phpbbstudio\ass\entity\category
+        shared: false
+        arguments:
+            - '@dbal.conn'
+            - '@text_formatter.parser'
+            - '@text_formatter.renderer'
+            - '@text_formatter.utils'
+            - '%phpbbstudio.ass.tables.categories%'
+
+    phpbbstudio.ass.entity.item:
+        class: phpbbstudio\ass\entity\item
+        shared: false
+        arguments:
+            - '@config'
+            - '@dbal.conn'
+            - '@text_formatter.parser'
+            - '@text_formatter.renderer'
+            - '@phpbbstudio.ass.time'
+            - '@text_formatter.utils'
+            - '%phpbbstudio.ass.tables.items%'
+
+    phpbbstudio.ass.operator.category:
+        class: phpbbstudio\ass\operator\category
+        arguments:
+            - '@auth'
+            - '@service_container'
+            - '@dbal.conn'
+            - '@phpbbstudio.ass.router'
+            - '%phpbbstudio.ass.tables.categories%'
+
+    phpbbstudio.ass.operator.inventory:
+        class: phpbbstudio\ass\operator\inventory
+        arguments:
+            - '@phpbbstudio.aps.functions'
+            - '@config'
+            - '@dbal.conn'
+            - '@phpbbstudio.ass.operator.item'
+            - '@user'
+            - '%phpbbstudio.ass.tables.inventory%'
+            - '%phpbbstudio.ass.tables.items%'
+            - '%tables.users%'
+
+    phpbbstudio.ass.operator.item:
+        class: phpbbstudio\ass\operator\item
+        arguments:
+            - '@phpbbstudio.aps.dbal'
+            - '@auth'
+            - '@service_container'
+            - '@dbal.conn'
+            - '@phpbbstudio.ass.files'
+            - '@path_helper'
+            - '@phpbbstudio.ass.router'
+            - '@template'
+            - '@phpbbstudio.ass.time'
+            - '@user'
+            - '%phpbbstudio.ass.tables.categories%'
+            - '%phpbbstudio.ass.tables.items%'

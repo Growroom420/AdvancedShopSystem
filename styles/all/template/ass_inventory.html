@@ -1,0 +1,132 @@
+{% extends '@phpbbstudio_aps/aps_main.html' %}
+
+{% block includes %}
+	{% INCLUDECSS '@phpbbstudio_ass/jquery-ui.min.css' %}
+	{% INCLUDEJS '@phpbbstudio_ass/js/jquery-ui.min.js' %}
+
+	{% INCLUDEJS '@phpbbstudio_ass/js/sketch.js' %}
+
+	{% INCLUDECSS '@phpbbstudio_ass/ass_common.css' %}
+	{% INCLUDEJS '@phpbbstudio_ass/js/ass_common.js' %}
+{% endblock %}
+
+{% block nav %}
+	{% for category in ass_shop_categories %}
+		<li>
+			<a class="aps-list-item{{ category.S_SELECTED ? ' aps-list-active' }}" href="{{ category.U_VIEW }}" title="{{ category.TITLE }}">
+				{% if category.ICON %}<i class="icon {{ category.ICON }} fa-fw" aria-hidden="true"></i>{% endif %}
+				<span class="sr-only">{{ category.TITLE }}</span>
+			</a>
+		</li>
+	{% endfor %}
+{% endblock %}
+
+{% block nav_right %}
+	<li>
+		<a class="aps-list-item" href="{{ path('phpbbstudio_ass_history') }}" title="{{ lang('ASS_HISTORY') }}">
+			<i class="icon fa-history fa-fw" aria-hidden="true"></i>
+			<span class="sr-only">{{ lang('ASS_HISTORY') }}</span>
+		</a>
+	</li>
+{% endblock %}
+
+{% block main %}
+	{% if ass_categories|length %}
+		<div class="shop-inventory-overlay"></div>
+
+		<div class="aps-row">
+			<div class="aps-col m5 shop-inventory-list{{ ITEM_INFO ? ' shop-inventory-with-item' }} aps-no-mar-bot">
+				<div class="aps-panel-content">
+					{% for category in ass_categories %}
+						<div class="shop-title shop-mar-bot">
+							<h1 class="aps-no-mar shop-text-large shop-text-darkgray">{{ category.TITLE }}</h1>
+						</div>
+						{% for batch in category.items|batch(3) %}
+							<div class="aps-row shop-inventory-row">
+								{% for item in batch %}
+									<div class="aps-col s12 m4 shop-fake-min-width">
+										<section class="shop-inventory-panel">
+											<a class="aps-panel shop-inventory-link" href="{{ item.U_INVENTORY }}">
+												{% if item.S_TYPE_ERROR %}
+													<i class="icon fa-exclamation-triangle icon-white shop-panel-icon shop-panel-icon-tiny shop-panel-icon-red"></i>
+												{% elseif item.S_HAS_EXPIRED %}
+													<i class="icon fa-hourglass-end icon-white shop-panel-icon shop-panel-icon-tiny shop-panel-icon-red"></i>
+												{% elseif item.S_WILL_EXPIRE %}
+													<i class="icon fa-hourglass-half icon-white shop-panel-icon shop-panel-icon-tiny shop-panel-icon-orange"></i>
+												{% elseif item.S_GIFTED %}
+													<i class="icon {{ aps_config('ass_gift_icon') }} icon-white shop-panel-icon shop-panel-icon-tiny shop-panel-icon-blue"></i>
+												{% endif %}
+
+												<div class="aps-panel-content {{ item.BACKGROUND_SRC ? 'shop-panel-background' : 'shop-vertical' }}"{% if item.BACKGROUND_SRC %} style="background-image: url({{ item.BACKGROUND_SRC }})"{% endif %}>
+													{% if not item.BACKGROUND_SRC %}
+														<i class="icon {{ item.ICON ?: aps_config('ass_no_image_icon') }} fa-fw shop-text-indent-10 icon-xl icon-lightgray"></i>
+													{% endif %}
+												</div>
+
+												<div class="aps-panel-footer shop-bold shop-text-small shop-text-darkgray shop-text-ellipsis" title="{{ item.TITLE }}">
+													{{ item.TITLE }}
+												</div>
+											</a>
+
+											{{ include('@phpbbstudio_ass/ass_item_inventory.html') }}
+										</section>
+									</div>
+								{% endfor %}
+							</div>
+						{% endfor %}
+					{% endfor %}
+				</div>
+				<div class="aps-panel-footer aps-row aps-center">
+					<div class="aps-col s3 aps-no-mar shop-no-pad">
+						<a class="aps-button-blue shop-block" href="{{ U_VIEW_SHOP }}" title="{{ L_VIEW_SHOP }}">
+							<i class="fa {{ aps_config('ass_shop_icon') }} fa-fw" aria-hidden="true"></i>
+							<span class="sr-only">{{ lang('ASS_SHOP_INDEX') }}</span>
+						</a>
+					</div>
+					<div class="aps-col s1"></div>
+					<div class="aps-col s2 aps-no-mar shop-no-pad" title="{{ aps_name() }}">
+						{{ aps_icon() }}
+						<strong class="shop-block">{{ aps_display(user.data.user_points, false) }}</strong>
+					</div>
+					<div class="aps-col s2 aps-no-mar shop-no-pad">
+						<i class="icon {{ T_SHOP_ICON }} fa-fw"></i>
+						<strong class="shop-block">{{ COUNT_TOTAL }}</strong>
+					</div>
+					<div class="aps-col s2 aps-no-mar shop-no-pad">
+						<i class="icon fa-hourglass-start fa-fw"></i>
+						<strong class="shop-block">{{ COUNT_EXPIRE }}</strong>
+					</div>
+					<div class="aps-col s2 aps-no-mar shop-no-pad">
+						<i class="icon {{ aps_config('ass_gift_icon') }} fa-fw"></i>
+						<strong class="shop-block">{{ COUNT_GIFTS }}</strong>
+					</div>
+				</div>
+			</div>
+			<div class="aps-col m7 aps-no-mar-bot">
+				<div class="shop-inventory-info">
+					<div class="shop-inventory-proxy">
+						<div class="shop-inventory-card">
+							{{ aps_icon() }}
+						</div>
+					</div>
+
+					{% if ITEM_INFO %}
+						{{ include('@phpbbstudio_ass/ass_item_inventory.html', {item: ITEM_INFO, S_GIFT_ANIMATION: S_IS_GIFT, S_LOADED_ITEM: true}) }}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	{% else %}
+		<div class="aps-panel aps-center">
+			<div class="aps-panel-content">
+				<p class="aps-no-mar shop-padding error">{{ lang('ASS_ITEMS_NONE_INVENTORY') ~ lang('ELLIPSIS') }}</p>
+			</div>
+			<div class="aps-panel-footer">
+				<a class="aps-button-green shop-button-active" href="{{ U_VIEW_SHOP }}" title="{{ L_VIEW_SHOP }}">
+					<i class="icon {{ T_SHOP_ICON }} fa-fw" aria-hidden="true"></i>
+					<span>{{ L_VIEW_SHOP }}</span>
+				</a>
+			</div>
+		</div>
+	{% endif %}
+{% endblock %}

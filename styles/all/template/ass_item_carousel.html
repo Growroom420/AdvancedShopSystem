@@ -1,0 +1,37 @@
+<div class="shop-relative shop-panel-height shop-padding {{ item.BACKGROUND_SRC ? 'shop-panel-background' : 'shop-vertical' }}" data-shop-item="{{ item.ID }}"{% if item.BACKGROUND_SRC %} style="background-image: url({{ item.BACKGROUND_SRC }})"{% endif %}>
+	{% if not item.BACKGROUND_SRC %}
+		<i class="icon {{ item.ICON ?: aps_config('ass_no_image_icon') }} fa-fw shop-text-indent-10 icon-xl icon-lightgray"></i>
+	{% endif %}
+
+	<div class="shop-panel-bottom aps-center">
+		{% if S_CAN_PURCHASE %}
+			{% if item.S_OUT_OF_STOCK %}
+				<span class="aps-button-red shop-button-active pull-left" title="{{ lang('ASS_STOCK_OUT') }}">
+					<i class="icon {{ aps_config('ass_shop_icon') }} fa-fw" aria-hidden="true"></i>
+					<span class="sr-only">{{ lang('ASS_PURCHASE') }}</span>
+				</span>
+			{% else %}
+				<a class="aps-button-green pull-left" href="{{ item.U_PURCHASE }}" title="{{ lang('ASS_PURCHASE') }}" data-shop-link="ass_purchase">
+					<i class="icon {{ aps_config('ass_shop_icon') }} fa-fw" aria-hidden="true"></i>
+					<span class="sr-only">{{ lang('ASS_PURCHASE') }}</span>
+				</a>
+			{% endif %}
+		{% endif %}
+		{% if S_CAN_GIFT and item.S_GIFT %}
+			<a class="aps-button-blue pull-right" href="{{ item.U_GIFT }}" title="{{ lang('ASS_GIFT') }}" data-shop-link="ass_gift">
+				<i class="icon {{ aps_config('ass_gift_icon') }} fa-fw" aria-hidden="true"></i>
+				<span class="sr-only">{{ lang('ASS_GIFT') }}</span>
+			</a>
+		{% endif %}
+		<a class="shop-text-large shop-panel-header-link" href="{{ item.U_VIEW }}" data-item-title="{{ item.TITLE }}">
+			{{ item.TITLE }}
+		</a>
+		{% if item.S_OUT_OF_STOCK %}
+			<span class="shop-block shop-text-med aps-negative" title="{{ lang('ASS_STOCK_OUT') }}">{{ aps_display(item.PRICE) }}</span>
+		{% elseif item.S_SALE %}
+			<span class="shop-block shop-text-med aps-positive" title="{{ lang('ASS_ON_SALE') }}">{{ aps_display(item.SALE_PRICE) }}</span>
+		{% else %}
+			<span class="shop-block shop-text-med shop-text-blue">{{ aps_display(item.PRICE) }}</span>
+		{% endif %}
+	</div>
+</div>

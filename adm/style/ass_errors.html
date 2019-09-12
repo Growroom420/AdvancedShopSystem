@@ -1,0 +1,14 @@
+{% if ERRORS %}
+	<div class="errorbox">
+		<h3>{{ lang('ERROR') }}</h3>
+		<p class="error">
+			{% if ERRORS is iterable %}
+				{% for error in ERRORS %}
+					{{ lang(error) }}{% if not loop.last %}<br />{% endif %}
+				{% endfor %}
+			{% else %}
+				{{ lang(ERRORS) }}
+			{% endif %}
+		</p>
+	</div>
+{% endif %}

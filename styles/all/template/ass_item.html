@@ -1,0 +1,278 @@
+{% extends '@phpbbstudio_aps/aps_main.html' %}
+
+{% block includes %}
+	{% INCLUDEJS '@phpbbstudio_ass/js/slick.min.js' %}
+	{% INCLUDECSS '@phpbbstudio_ass/slick.css' %}
+
+	{% INCLUDECSS '@phpbbstudio_ass/ass_item.css' %}
+	{% INCLUDECSS '@phpbbstudio_ass/ass_common.css' %}
+	{% INCLUDEJS '@phpbbstudio_ass/js/ass_common.js' %}
+{% endblock %}
+
+{% block nav %}
+	{% for category in ass_shop_categories %}
+		<li>
+			<a class="aps-list-item{{ category.S_SELECTED ? ' aps-list-active' }}" href="{{ category.U_VIEW }}" title="{{ category.TITLE }}">
+				{% if category.ICON %}<i class="icon {{ category.ICON }} fa-fw" aria-hidden="true"></i>{% endif %}
+				<span class="sr-only">{{ category.TITLE }}</span>
+			</a>
+		</li>
+	{% endfor %}
+{% endblock %}
+
+{% block nav_right %}
+	<li class="shop-item-help-label">
+		<label class="aps-list-item shop-cursor-pointer" for="shop-item-help-input" title="{{ lang('ASS_ITEM_HELP') }}">
+			<i class="icon fa-question fa-fw icon-white" aria-hidden="true"></i>
+			<span class="sr-only">{{ lang('ASS_ITEM_HELP') }}</span>
+		</label>
+	</li>
+{% endblock %}
+
+{% block main %}
+	{{ include('@phpbbstudio_ass/ass_carousel.html') }}
+
+	<input class="shop-item-help-input" id="shop-item-help-input" type="checkbox" />
+
+	{% set delay = 3 %}
+
+	<div class="shop-item-help">
+		<div class="aps-row" data-shop-item="{{ ID }}">
+			{% if ICON %}
+				<div class="aps-col s2">
+					<div class="aps-panel aps-center shop-relative">
+						<span class="shop-item-helper bottom-right delay-{{ delay }}">{{ lang('ASS_ITEM_ICON') }}</span>
+						{% set delay = delay + 1 %}
+
+						<div class="aps-panel-content">
+							<i class="fa {{ ICON }} fa-3x icon-aps-blue shop-text-indent-10" aria-hidden="true"></i>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+
+			<div class="aps-col s{{ ICON ? 10 : 12 }}">
+				<div class="shop-title shop-relative">
+					<span class="shop-item-helper bottom-left delay-{{ delay }}">{{ lang('ASS_ITEM_TITLE') }}</span>
+					{% set delay = delay + 1 %}
+
+					<h1 class="aps-no-mar shop-text-darkgray">{{ TITLE }}</h1>
+				</div>
+			</div>
+
+			{% if not S_ACTIVE %}
+				<div class="aps-col s12">
+					<div class="aps-button-red">
+						<strong>{{ lang('ASS_ITEM_INACTIVE') }}</strong>
+					</div>
+				</div>
+			{% endif %}
+
+			<div class="aps-col s12 m6">
+				<div class="aps-panel shop-relative">
+					<span class="shop-item-helper right delay-{{ delay }}">{{ lang('ASS_ITEM_IMAGE') }}</span>
+					{% set delay = delay + 1 %}
+
+					<div class="aps-panel-content aps-center shop-panel-height {{ BACKGROUND_SRC ? 'shop-panel-background' : 'shop-vertical shop-center' }}"{% if BACKGROUND_SRC %} style="background-image: url({{ BACKGROUND_SRC }})"{% endif %}>
+						{% if S_FEATURED and S_SALE and SHOP_PANEL_FEATURED_SALE_ICON %}
+							<i class="icon shop-panel-icon{{ SHOP_PANEL_FEATURED_SALE_ICON }}"></i>
+						{% elseif S_FEATURED and SHOP_PANEL_FEATURED_ICON %}
+							<i class="icon shop-panel-icon{{ SHOP_PANEL_FEATURED_ICON }}" title="{{ lang('ASS_FEATURED') }}"></i>
+						{% elseif S_SALE and SHOP_PANEL_SALE_ICON %}
+							<i class="icon shop-panel-icon{{ SHOP_PANEL_SALE_ICON }}" title="{{ lang('ASS_ON_SALE') }}"></i>
+						{% endif %}
+
+						{% if not BACKGROUND_SRC %}
+							<i class="icon {{ aps_config('ass_no_image_icon') }} shop-text-indent-10 icon-xl icon-lightgray"></i>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+
+			<div class="aps-col s12 m6 aps-row">
+				<div class="aps-col s6">
+					<div class="aps-panel">
+						<span class="shop-item-helper right delay-{{ delay }}">{{ lang('ASS_ITEM_PRICE') }}</span>
+						{% set delay = delay + 1 %}
+
+						<div class="aps-panel-content aps-center">
+							{% if S_SALE %}
+								<span class="aps-positive" title="{{ lang('ASS_ON_SALE') }}">{{ aps_display(SALE_PRICE) }}</span>
+							{% else %}
+								{{ aps_display(PRICE) }}
+							{% endif %}
+						</div>
+					</div>
+				</div>
+				<div class="aps-col s6">
+					<div class="aps-panel">
+						<span class="shop-item-helper left delay-{{ delay }}">{{ lang('ASS_ITEM_STOCK') }}</span>
+						{% set delay = delay + 1 %}
+
+						<div class="aps-panel-content aps-center" title="{{ lang(S_STOCK_UNLIMITED ? 'ASS_UNLIMITED_STOCK' : (STOCK ? 'ASS_STOCK' : 'ASS_STOCK_OUT')) }}">
+							{% if S_STOCK_UNLIMITED %}
+								<strong>&infin;</strong>
+							{% elseif STOCK %}
+								<strong class="shop-item-stock {{ STOCK ? 'icon-gold' : 'error' }}">{{ STOCK }}</strong>&thinsp;/{{ STOCK_INITIAL }}
+							{% endif %}
+						</div>
+					</div>
+				</div>
+
+				<div class="aps-col s8">
+					<a class="aps-button-{{ not S_OUT_OF_STOCK ? 'green shop-relative' : 'red shop-cursor-ban' }} aps-center shop-block shop-bold shop-button-active"{% if not S_OUT_OF_STOCK %} href="{{ U_PURCHASE }}" data-shop-link="shop_purchase"{% endif %}>
+						{% if not S_OUT_OF_STOCK %}
+							<span class="shop-item-helper right delay-{{ delay }}">{{ lang('ASS_ITEM_PURCHASE') }}</span>
+							{% set delay = delay + 1 %}
+						{% endif %}
+
+						{{ lang(S_OUT_OF_STOCK ? 'ASS_STOCK_OUT' : 'ASS_PURCHASE') }}
+					</a>
+				</div>
+
+				{% if S_GIFT and S_CAN_GIFT %}
+					<div class="aps-col s4">
+						<a class="aps-button-blue aps-center shop-block shop-relative{{ S_OUT_OF_STOCK ? ' shop-button-disabled' }}"{% if not S_OUT_OF_STOCK %} href="{{ U_GIFT }}" title="{{ lang('ASS_GIFT') }}" data-shop-link="shop_purchase"{% endif %}>
+							{% if not S_OUT_OF_STOCK %}
+								<span class="shop-item-helper left delay-{{ delay }}">{{ lang('ASS_ITEM_GIFT') }}</span>
+								{% set delay = delay + 1 %}
+							{% endif %}
+							<i class="icon {{ aps_config('ass_gift_icon') }} fa-fw" aria-hidden="true"></i>
+							<span class="sr-only">{{ lang('ASS_GIFT') }}</span>
+						</a>
+					</div>
+				{% endif %}
+
+				<div class="aps-col s12">
+					<div class="aps-panel shop-relative">
+						<span class="shop-item-helper left delay-{{ delay }}">{{ lang('ASS_ITEM_INFORMATION') }}</span>
+						{% set delay = delay + 1 %}
+
+						<div class="aps-panel-content">
+							<ul class="fa-ul shop-darken-span">
+								<li>
+									<i class="icon fa-hashtag fa-li"></i>
+									{% if COUNT %}
+										{{ lang('ASS_ITEM_USE_COUNT', COUNT) }}
+									{% else %}
+										{{ lang('ASS_ITEM_USE_UNLIMITED') }}
+									{% endif %}
+								</li>
+								<li>
+									<i class="icon fa-hourglass-start fa-li"></i>
+									{% if EXPIRE_WITHIN %}
+										{{ lang('ASS_ITEM_EXPIRE_WITHIN', EXPIRE_WITHIN) }}
+									{% else %}
+										{{ lang('ASS_ITEM_EXPIRE_NEVER') }}
+									{% endif %}
+								</li>
+								<li>
+									<i class="icon fa-undo fa-li"></i>
+									{% if REFUND_WITHIN %}
+										{{ lang('ASS_ITEM_REFUND_WITHIN', REFUND_WITHIN) }}
+									{% else %}
+										{{ lang('ASS_ITEM_REFUND_NEVER') }}
+									{% endif %}
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="aps-col s12">
+					<div class="aps-row aps-panel">
+						<div class="aps-col s{{ EDIT_TIME ? 6 : 12 }} aps-no-mar-bot shop-relative" title="{{ lang('ASS_TIME_CREATED') }}">
+							<span class="shop-item-helper top-right delay-{{ delay }}">{{ lang('ASS_ITEM_CREATE_TIME') }}</span>
+							{% set delay = delay + 1 %}
+
+							<div class="aps-panel-content shop-padding">
+								<i class="icon fa-check-square-o fa-fw"></i>
+								{{ user.format_date(CREATE_TIME) }}
+							</div>
+						</div>
+						{% if EDIT_TIME %}
+							<div class="aps-col s6 aps-no-mar-bot shop-relative" title="{{ lang('ASS_TIME_EDITED') }}">
+								<span class="shop-item-helper top-left delay-{{ delay }}">{{ lang('ASS_ITEM_EDIT_TIME') }}</span>
+								{% set delay = delay + 1 %}
+
+								<div class="aps-panel-content shop-padding">
+									<i class="icon fa-pencil-square-o fa-fw"></i>
+									{{ user.format_date(EDIT_TIME) }}
+								</div>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+
+				{% if S_SALE %}
+					<div class="aps-col s12 aps-center">
+						<em>{{ lang('ASS_SALE_END_ON', user.format_date(SALE_UNTIL_UNIX)) }}</em>
+					</div>
+				{% endif %}
+			</div>
+
+			{% if DESC_HTML %}
+				<div class="aps-col s12">
+					<div class="aps-panel shop-relative">
+						<span class="shop-item-helper right delay-{{ delay }}">{{ lang('ASS_ITEM_DESCRIPTION') }}</span>
+						{% set delay = delay + 1 %}
+
+						<div class="aps-panel-content content">
+							{{ DESC_HTML }}
+						</div>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+
+		{% if IMAGES_SRC %}
+			<div class="aps-row">
+				<div class="aps-col s12 shop-fake-width">
+					<span class="shop-item-helper right delay-{{ delay }}">{{ lang('ASS_ITEM_IMAGES') }}</span>
+					{% set delay = delay + 1 %}
+
+					<div class="aps-panel">
+						<div class="aps-panel-content">
+							<div data-shop-carousel="images">
+								{% for image in IMAGES_SRC %}
+									<div>
+										<img class="shop-carousel-images" src="{{ image }}" alt="{{ TITLE }}" />
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+						<div class="aps-panel-footer">
+							{% for image in IMAGES_SRC %}
+								<img class="shop-carousel-nav-img" src="{{ image }}" alt="{{ TITLE }}" />
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
+		{% if ass_related|length %}
+			<div class="aps-row">
+				<div class="aps-col s12">
+					<div class="aps-panel shop-relative">
+						<span class="shop-item-helper left delay-{{ delay }}">{{ lang('ASS_RELATED_ITEMS') }}</span>
+						{% set delay = delay + 1 %}
+
+						<div class="aps-panel-header">
+							<h3>{{ lang('ASS_RELATED_ITEMS') }}</h3>
+						</div>
+						<div class="aps-panel-content">
+							<div class="aps-row">
+								{% for item in ass_related %}
+									<div class="aps-col s6 m3">
+										{{ include('@phpbbstudio_ass/ass_item_panel.html') }}
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}

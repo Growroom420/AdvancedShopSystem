@@ -1,0 +1,45 @@
+<nav>
+	{# Pagination's aria-labels should NOT be translated! #}
+	<ul class="shop-pagination aps-center" aria-label="pagination">
+		{% for item in shop_pagination %}
+			{% if item.S_IS_PREV or (not item.S_IS_PREV and loop.first) %}
+				<li>
+					<a class="aps-button-blue shop-block{{ not item.S_IS_PREV ? ' shop-button-disabled' }}"{% if item.S_IS_PREV %} href="{{ U_SHOP_PAGINATION_PREVIOUS_PAGE }}"{% endif %} aria-label="Previous page" role="button">
+						<i class="icon fa-chevron-left fa-fw" aria-hidden="true"></i>
+						<span class="sr-only">{{ lang('PREVIOUS') }}</span>
+					</a>
+				</li>
+			{% endif %}
+
+			{% if item.S_IS_ELLIPSIS %}
+				<li>
+					<span class="aps-button-blue shop-block shop-button-disabled" role="separator">
+						<i class="icon fa-ellipsis-h fa-fw" aria-hidden="true"></i>
+						<span class="sr-only">{{ lang('ELLIPSIS') }}</span>
+					</span>
+				</li>
+			{% elseif item.S_IS_CURRENT %}
+				<li>
+					<a class="aps-button-blue shop-block shop-button-active" href="{{ item.PAGE_URL }}" aria-label="Page {{ item.PAGE_NUMBER }}, Current page" aria-current="true" role="button">
+						{{ item.PAGE_NUMBER }}
+					</a>
+				</li>
+			{% elseif not item.S_IS_PREV and not item.S_IS_NEXT %}
+				<li>
+					<a class="aps-button-blue shop-block" href="{{ item.PAGE_URL }}" aria-label="Page {{ item.PAGE_NUMBER }}" aria-current="true" role="button">
+						{{ item.PAGE_NUMBER }}
+					</a>
+				</li>
+			{% endif %}
+
+			{% if item.S_IS_NEXT or (not item.S_IS_NEXT and loop.last) %}
+				<li>
+					<a class="aps-button-blue shop-block{{ not item.S_IS_NEXT ? ' shop-button-disabled' }}"{% if item.S_IS_NEXT %} href="{{ U_SHOP_PAGINATION_NEXT_PAGE }}"{% endif %} aria-label="Next page" role="button">
+						<i class="icon fa-chevron-right fa-fw" aria-hidden="true"></i>
+						<span class="sr-only">{{ lang('NEXT') }}</span>
+					</a>
+				</li>
+			{% endif %}
+		{% endfor %}
+	</ul>
+</nav>

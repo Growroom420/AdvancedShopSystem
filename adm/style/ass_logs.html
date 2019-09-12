@@ -1,0 +1,113 @@
+{% include 'overall_header.html' %}
+
+{% INCLUDECSS '@phpbbstudio_aps/css/aps_form.css' %}
+{% INCLUDECSS '@phpbbstudio_aps/css/aps_common.css' %}
+{% INCLUDECSS '@phpbbstudio_ass/css/ass_common.css' %}
+
+<h1>{{ PAGE_TITLE }}</h1>
+<p>{{ lang('ACP_ASS_LOGS_EXPLAIN') }}</p>
+
+<form id="ass_logs" name="ass_logs" method="post" action="{{ U_ACTION }}">
+	<div class="pagination top-pagination">
+		{% if pagination %}
+			{% include 'pagination.html' %}
+			&bull;
+		{% endif %}
+		{{ TOTAL_LOGS }}
+	</div>
+
+	<table class="table1 zebra-table fixed-width-table">
+		<thead>
+			<tr>
+				<th class="aps-logs-user">{{ lang('USERNAME') }}</th>
+				<th class="aps-logs-time">{{ lang('TIME') }}</th>
+				<th>{{ lang('ACTION') }}</th>
+				<th>{{ lang('ASS_ITEM_TITLE') }}</th>
+				<th class="aps-logs-points centered-text">{{ lang('ASS_ITEM_PRICE') }}</th>
+				<th class="aps-logs-mark actions centered-text">{{ lang('MARK') }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for log in ass_logs %}
+				<tr>
+					<td>{{ log.USER }}{% if not log.S_SELF and log.REPORTEE %}<br>&raquo; {{ lang('FROM') ~ ' ' ~ log.REPORTEE }}{% endif %}</td>
+					<td>{{ log.LOG_TIME }}</td>
+					<td>
+						{% if log.S_PURCHASE %}
+							{% if log.RECIPIENT %}
+								<span>{{ lang('ASS_LOG_ITEM_GIFTED', log.RECIPIENT) }}</span>
+							{% else %}
+								<span>{{ lang('ASS_LOG_ITEM_PURCHASED') }}</span>
+							{% endif %}
+						{% else %}
+							<span>{{ lang('ASS_LOG_ITEM_USED') ~ lang('COLON') }}</span> {{ log.LOG_ACTION }}
+						{% endif %}
+					</td>
+					<td>
+						<span>{{ log.CATEGORY_TITLE }}</span>
+						<i class="icon fa-angle-right fa-fw icon-aps-blue" aria-hidden="true"></i>
+						<strong>{{ log.ITEM_TITLE }}</strong>
+					</td>
+					<td class="aps-logs-points centered-text">{{ aps_display(log.POINTS_SUM, false) }}</td>
+					<td class="aps-logs-mark actions"><label for="mark_{{ log.LOG_ID }}"><input class="checkbox" id="mark_{{ log.LOG_ID }}" name="mark[]" type="checkbox" title="{{ lang('MARK') }}" value="{{ log.LOG_ID }}" /></label></td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="7">
+						<div class="errorbox">
+							<p>{{ lang('NO_ENTRIES') }}</p>
+						</div>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<div class="pagination">
+		{% if pagination %}
+			{% include 'pagination.html' %}
+			&bull;
+		{% endif %}
+		{{ TOTAL_LOGS }}
+	</div>
+
+
+	<fieldset class="display-options">
+		<label>
+			{{ lang('DISPLAY') ~ lang('COLON') }}
+			<select name="display">
+				{% for value, option in SORT_DISPLAY_ARRAY %}
+					<option value="{{ value }}"{{ value == SORT_DISPLAY ? ' selected' }}>{{ lang(option.title) }}</option>
+				{% endfor %}
+			</select>
+		</label>
+		<label>
+			{{ lang('SORT_BY') ~ lang('COLON') }}
+			<select name="sort">
+				{% for value, option in SORT_SORT_ARRAY %}
+					<option value="{{ value }}"{{ value == SORT_SORT ? ' selected' }}>{{ lang(option.title) }}</option>
+				{% endfor %}
+			</select>
+		</label>
+		<label>
+			{{ lang('SORT_DIRECTION') ~ lang('COLON') }}
+			<select name="direction">
+				{% for value, option in SORT_DIR_ARRAY %}
+					<option value="{{ value }}"{{ value == SORT_DIR ? ' selected' }}>{{ lang(option.title) }}</option>
+				{% endfor %}
+			</select>
+		</label>
+
+		<input class="button2" type="submit" value="{{ lang('GO') }}">
+	</fieldset>
+
+	<hr>
+
+	<fieldset class="quick">
+		<input class="button2" type="submit" name="del_all" value="{{ lang('DELETE_ALL') }}" />&nbsp;
+		<input class="button2" type="submit" name="del_marked" value="{{ lang('DELETE_MARKED') }}" /><br />
+		<p class="small"><a href="#" onclick="marklist('ass_logs', 'mark', true); return false;">{{ lang('MARK_ALL') }}</a> &bull; <a href="#" onclick="marklist('ass_logs', 'mark', false); return false;">{{ lang('UNMARK_ALL') }}</a></p>
+	</fieldset>
+</form>
+
+{% include 'overall_footer.html' %}

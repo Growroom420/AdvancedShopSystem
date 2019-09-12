@@ -1,0 +1,114 @@
+services:
+    phpbbstudio.ass.controller.acp.files:
+        class: phpbbstudio\ass\controller\acp_files_controller
+        arguments:
+            - '@phpbbstudio.ass.files'
+            - '@language'
+            - '@request'
+            - '@template'
+            - '@user'
+
+    phpbbstudio.ass.controller.acp.items:
+        class: phpbbstudio\ass\controller\acp_items_controller
+        arguments:
+            - '@cache.driver'
+            - '@phpbbstudio.ass.items.manager'
+            - '@language'
+            - '@log'
+            - '@phpbbstudio.ass.operator.category'
+            - '@phpbbstudio.ass.operator.inventory'
+            - '@phpbbstudio.ass.operator.item'
+            - '@request'
+            - '@template'
+            - '@phpbbstudio.ass.time'
+            - '@user'
+            - '%core.adm_relative_path%'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+
+    phpbbstudio.ass.controller.acp.logs:
+        class: phpbbstudio\ass\controller\acp_logs_controller
+        arguments:
+            - '@config'
+            - '@phpbbstudio.ass.items.manager'
+            - '@language'
+            - '@phpbbstudio.ass.log'
+            - '@log'
+            - '@phpbbstudio.ass.operator.category'
+            - '@phpbbstudio.ass.operator.item'
+            - '@pagination'
+            - '@request'
+            - '@template'
+            - '@user'
+
+    phpbbstudio.ass.controller.acp.overview:
+        class: phpbbstudio\ass\controller\acp_overview_controller
+        arguments:
+            - '@config'
+            - '@config_text'
+            - '@dbal.conn'
+            - '@language'
+            - '@phpbbstudio.ass.operator.item'
+            - '@text_formatter.parser'
+            - '@text_formatter.renderer'
+            - '@request'
+            - '@template'
+            - '@user_loader'
+            - '@text_formatter.utils'
+            - '%phpbbstudio.ass.tables.categories%'
+            - '%phpbbstudio.ass.tables.items%'
+            - '%phpbbstudio.ass.tables.logs%'
+
+    phpbbstudio.ass.controller.acp.settings:
+        class: phpbbstudio\ass\controller\acp_settings_controller
+        arguments:
+            - '@config'
+            - '@config_text'
+            - '@language'
+            - '@log'
+            - '@text_formatter.parser'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '@text_formatter.utils'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+
+    phpbbstudio.ass.controller.inventory:
+        class: phpbbstudio\ass\controller\inventory_controller
+        arguments:
+            - '@phpbbstudio.aps.functions'
+            - '@auth'
+            - '@config'
+            - '@phpbbstudio.ass.controller'
+            - '@controller.helper'
+            - '@phpbbstudio.ass.items.manager'
+            - '@language'
+            - '@phpbbstudio.ass.log'
+            - '@log'
+            - '@phpbbstudio.ass.operator.category'
+            - '@phpbbstudio.ass.operator.inventory'
+            - '@phpbbstudio.ass.operator.item'
+            - '@phpbbstudio.ass.notification'
+            - '@pagination'
+            - '@request'
+            - '@phpbbstudio.ass.router'
+            - '@template'
+            - '@phpbbstudio.ass.time'
+            - '@user'
+            - '@user_loader'
+
+    phpbbstudio.ass.controller.shop:
+        class: phpbbstudio\ass\controller\shop_controller
+        arguments:
+            - '@config'
+            - '@phpbbstudio.ass.controller'
+            - '@dbal.conn'
+            - '@controller.helper'
+            - '@phpbbstudio.ass.items.manager'
+            - '@language'
+            - '@phpbbstudio.ass.operator.category'
+            - '@phpbbstudio.ass.operator.item'
+            - '@pagination'
+            - '@request'
+            - '@template'

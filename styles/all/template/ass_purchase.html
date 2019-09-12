@@ -1,0 +1,191 @@
+{% extends '@phpbbstudio_aps/aps_main.html' %}
+
+{% block includes %}
+	{% INCLUDECSS '@phpbbstudio_ass/ass_common.css' %}
+{% endblock %}
+
+{% block nav %}
+	{% for category in ass_shop_categories %}
+		<li>
+			<a class="aps-list-item{{ category.S_SELECTED ? ' aps-list-active' }}" href="{{ category.U_VIEW }}" title="{{ category.TITLE }}">
+				{% if category.ICON %}<i class="icon {{ category.ICON }} fa-fw" aria-hidden="true"></i>{% endif %}
+				<span class="sr-only">{{ category.TITLE }}</span>
+			</a>
+		</li>
+	{% endfor %}
+{% endblock %}
+
+{% block main %}
+	<div class="aps-row">
+		{% if ICON %}
+			<div class="aps-col s2">
+				<div class="aps-panel aps-center">
+					<div class="aps-panel-content">
+						<i class="fa {{ ICON }} fa-fw fa-3x icon-aps-blue" aria-hidden="true"></i>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
+		<div class="aps-col s{{ ICON ? 10 : 12 }}">
+			<div class="shop-title">
+				<h1 class="aps-no-mar shop-text-darkgray">{{ TITLE }}</h1>
+			</div>
+		</div>
+
+		<div class="aps-col s12 m6">
+			<div class="aps-panel">
+				<div class="aps-panel-content aps-center shop-panel-height {{ BACKGROUND_SRC ? 'shop-panel-background' : 'shop-vertical' }}"{% if BACKGROUND_SRC %} style="background-image: url({{ BACKGROUND_SRC }})"{% endif %}>
+					{% if S_FEATURED and S_SALE and SHOP_PANEL_FEATURED_SALE_ICON %}
+						<i class="icon shop-panel-icon{{ SHOP_PANEL_FEATURED_SALE_ICON }}"></i>
+					{% elseif S_FEATURED and SHOP_PANEL_FEATURED_ICON %}
+						<i class="icon shop-panel-icon{{ SHOP_PANEL_FEATURED_ICON }}" title="{{ lang('ASS_FEATURED') }}"></i>
+					{% elseif S_SALE and SHOP_PANEL_SALE_ICON %}
+						<i class="icon shop-panel-icon{{ SHOP_PANEL_SALE_ICON }}" title="{{ lang('ASS_ON_SALE') }}"></i>
+					{% endif %}
+
+					{% if not BACKGROUND_SRC %}
+						<i class="icon {{ aps_config('ass_no_image_icon') }} fa-fw shop-text-indent-10 icon-xl icon-lightgray"></i>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+
+		<div class="aps-col s12 m6 aps-row">
+			{% if S_CONFIRM_ACTION %}
+				<div class="aps-col s6">
+					<div class="aps-panel">
+						<div class="aps-panel-content aps-center">
+							{% if S_SALE %}
+								<span class="aps-positive" title="{{ lang('ASS_ON_SALE') }}">{{ aps_display(ASS_PURCHASE_PRICE) }}</span>
+							{% else %}
+								{{ aps_display(ASS_PURCHASE_PRICE) }}
+							{% endif %}
+						</div>
+					</div>
+				</div>
+				<div class="aps-col s6">
+					<div class="aps-panel">
+						<div class="aps-panel-content aps-center" title="{{ lang(S_STOCK_UNLIMITED ? 'ASS_UNLIMITED_STOCK' : (STOCK ? 'ASS_STOCK' : 'ASS_STOCK_OUT')) }}">
+							{% if S_STOCK_UNLIMITED %}
+								<strong>&infin;</strong>
+							{% elseif STOCK %}
+								<strong class="{{ STOCK ? 'icon-gold' : 'error' }}">{{ STOCK }}</strong>&thinsp;/{{ STOCK_INITIAL }}
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			{% endif %}
+
+			<div class="aps-col s12">
+				<div class="aps-panel">
+					<div class="aps-panel-content">
+						<ul class="fa-ul shop-darken-span">
+							<li>
+								<i class="icon fa-hashtag fa-li"></i>
+								{% if COUNT %}
+									{{ lang('ASS_ITEM_USE_COUNT', COUNT) }}
+								{% else %}
+									{{ lang('ASS_ITEM_USE_UNLIMITED') }}
+								{% endif %}
+							</li>
+							<li>
+								<i class="icon fa-hourglass-start fa-li"></i>
+								{% if EXPIRE_WITHIN %}
+									{{ lang('ASS_ITEM_EXPIRE_WITHIN', EXPIRE_WITHIN) }}
+								{% else %}
+									{{ lang('ASS_ITEM_EXPIRE_NEVER') }}
+								{% endif %}
+							</li>
+							<li>
+								<i class="icon fa-undo fa-li"></i>
+								{% if REFUND_WITHIN %}
+									{{ lang('ASS_ITEM_REFUND_WITHIN', REFUND_WITHIN) }}
+								{% else %}
+									{{ lang('ASS_ITEM_REFUND_NEVER') }}
+								{% endif %}
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			{% if S_CONFIRM_ACTION %}
+				<div class="aps-col s12">
+					<form class="aps-form" id="confirm" action="{{ S_CONFIRM_ACTION }}" method="post">
+						<div class="aps-panel">
+							<div class="aps-panel-header">
+								<h3>{{ MESSAGE_TITLE }}</h3>
+							</div>
+
+							{% if not S_ASS_PURCHASE %}
+								<div class="aps-panel-content">
+									<label class="shop-block shop-mar-bot" for="username">{{ lang('ASS_GIFT_USER') }}</label>
+									<input id="username" name="username" type="text" placeholder="{{ lang('USERNAME') }}">
+								</div>
+							{% endif %}
+
+							<div class="aps-panel-content">
+								{{ MESSAGE_TEXT }}
+							</div>
+
+							<div class="aps-panel-footer aps-center">
+								{{ S_HIDDEN_FIELDS }}
+								<input class="aps-button-green" type="submit" name="confirm" value="{{ lang('YES') }}" />&nbsp;
+								<a class="aps-button-red" href="{{ path('phpbbstudio_ass_shop') }}">{{ lang('NO') }}</a>
+							</div>
+						</div>
+					</form>
+				</div>
+			{% else %}
+				<div class="aps-col s12">
+					<div class="aps-panel">
+						<div class="aps-panel-header">
+							<h3>{{ lang(S_ASS_PURCHASE ? 'ASS_PURCHASE' : 'ASS_GIFT') }}</h3>
+						</div>
+						<div class="aps-panel-content">
+							<p>
+								{% if S_ASS_PURCHASE %}
+									<span class="shop-text-darkgray shop-block">{{ lang('ASS_PURCHASE_SUCCESS') }}</span>
+									{{ lang('ASS_INVENTORY_ADDED') }}
+								{% else %}
+									<span class="shop-text-darkgray shop-block">{{ lang('ASS_GIFT_SUCCESS') }}</span>
+									{{ lang('ASS_INVENTORY_ADDED_USER', RECIPIENT_NAME) }}
+								{% endif %}
+							</p>
+
+							<p>
+								<span class="shop-block">
+									{{ lang('ASS_POINTS_DEDUCTED') ~ lang('COLON') }}
+									{{ aps_display(ASS_PURCHASE_PRICE) }}
+								</span>
+								<span class="shop-block">
+									{{ lang('ASS_POINTS_BALANCE', aps_name()) ~ lang('COLON') }}
+									{{ aps_display(NEW_USER_POINTS) }}
+								</span>
+							</p>
+
+							{% if EXPIRE_UNIX %}
+								<p>
+									<span class="shop-block">{{ lang('ASS_ITEM_USE_BEFORE') }}</span>
+									{{ user.format_date(EXPIRE_UNIX) }}
+								</p>
+							{% endif %}
+
+							<p>
+								{% if S_ASS_PURCHASE %}
+									<a class="aps-button-blue" href="{{ U_INVENTORY }}">{{ lang('ASS_INVENTORY_GO') }}</a>
+								{% else %}
+									<a class="aps-button-blue" href="{{ path('phpbbstudio_ass_shop') }}">{{ lang('ASS_SHOP_INDEX') }}</a>
+									{% if U_SEND_PM %}
+										<a class="aps-button-green" href="{{ U_SEND_PM }}">{{ lang('SEND_PRIVATE_MESSAGE') }}</a>
+									{% endif %}
+								{% endif %}
+							</p>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}

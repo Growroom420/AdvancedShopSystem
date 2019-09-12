@@ -1,0 +1,47 @@
+<div class="aps-panel" data-shop-item="{{ item.ID }}">
+	<div class="aps-panel-header">
+		{% if ITEM_PANEL_ICON %}
+			<i class="=icon shop-panel-icon{{ ITEM_PANEL_ICON }}"></i>
+		{% elseif item.S_FEATURED and item.S_SALE and SHOP_PANEL_FEATURED_SALE_ICON %}
+			<i class="icon shop-panel-icon{{ SHOP_PANEL_FEATURED_SALE_ICON }}"></i>
+		{% elseif item.S_FEATURED and SHOP_PANEL_FEATURED_ICON %}
+			<i class="icon shop-panel-icon{{ SHOP_PANEL_FEATURED_ICON }}" title="{{ lang('ASS_FEATURED') }}"></i>
+		{% elseif item.S_SALE and SHOP_PANEL_SALE_ICON %}
+			<i class="icon shop-panel-icon{{ SHOP_PANEL_SALE_ICON }}" title="{{ lang('ASS_ON_SALE') }}"></i>
+		{% endif %}
+
+		<h3 class="shop-block"><a class="shop-text-darkgray shop-block shop-panel-header-link" href="{{ item.U_VIEW }}" data-item-title="{{ item.TITLE }}">{{ item.TITLE }}</a></h3>
+	</div>
+	<div class="aps-panel-content shop-panel-height {{ item.BACKGROUND_SRC ? 'shop-panel-background' : 'shop-vertical' }}"{% if item.BACKGROUND_SRC %} style="background-image: url({{ item.BACKGROUND_SRC }})"{% endif %}>
+		{% if not item.BACKGROUND_SRC %}
+			<i class="icon {{ item.ICON ?: aps_config('ass_no_image_icon') }} fa-fw shop-text-indent-10 icon-xl icon-lightgray"></i>
+		{% endif %}
+	</div>
+	<div class="aps-row aps-panel-footer">
+		<div class="aps-col s6 aps-no-mar-bot shop-no-pad">
+			{% if S_CAN_PURCHASE and not item.S_OUT_OF_STOCK %}
+				<a class="aps-button-green shop-panel-footer-button" href="{{ item.U_PURCHASE }}" title="{{ lang('ASS_PURCHASE') }}" data-shop-link="ass_purchase">
+					<i class="icon {{ aps_config('ass_shop_icon') }} fa-fw" aria-hidden="true"></i>
+					<span class="sr-only">{{ lang('ASS_PURCHASE') }}</span>
+				</a>
+			{% elseif item.S_GIFT and S_CAN_GIFT %}
+				<a class="aps-button-blue shop-panel-footer-button" href="{{ item.U_GIFT }}" title="{{ lang('ASS_GIFT') }}" data-shop-link="ass_gift">
+					<i class="icon {{ aps_config('ass_gift_icon') }} fa-fw" aria-hidden="true"></i>
+					<span class="sr-only">{{ lang('ASS_GIFT') }}</span>
+				</a>
+			{% elseif not item.S_STOCK_UNLIMITED %}
+				<strong class="shop-item-stock {{ item.STOCK ? 'icon-gold' : 'error' }}" title="{{ lang(item.STOCK ? 'ASS_STOCK' : 'ASS_STOCK_OUT') }}">{{ item.STOCK }}</strong>&thinsp;/{{ item.STOCK_INITIAL }}
+			{% elseif item.ICON %}
+				<i class="icon {{ item.ICON }} fa-fw" aria-hidden="true"></i>
+				<span class="sr-only">{{ item.TITLE }}</span>
+			{% endif %}
+		</div>
+		<div class="aps-col s6 aps-no-mar-bot shop-no-pad shop-text-right">
+			{% if item.S_SALE %}
+				<span class="aps-positive" title="{{ lang('ASS_ON_SALE') }}">{{ aps_display(item.SALE_PRICE) }}</span>
+			{% else %}
+				{{ aps_display(item.PRICE) }}
+			{% endif %}
+		</div>
+	</div>
+</div>

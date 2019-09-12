@@ -1,0 +1,199 @@
+{% if S_FILE_SELECT %}
+	{{ include('simple_header.html') }}
+
+	<link href="{T_FONT_AWESOME_LINK}" rel="stylesheet">
+
+	<script>
+		function shop_select_file() {
+			let image = document.querySelector('input[name="select_image"]:checked');
+
+			opener.document.getElementById('{{ S_FILE_SELECT }}').value = (image instanceof HTMLElement ? image.value : '');
+
+			window.close();
+		}
+	</script>
+{% else %}
+	{{ include('overall_header.html') }}
+
+	<h1>{{ PAGE_TITLE }}</h1>
+	<p>{{ lang('ACP_ASS_FILES_' ~ (S_FILE_MODE ? S_FILE_MODE|upper ~ '_') ~ 'EXPLAIN') }}</p>
+{% endif %}
+
+{% INCLUDECSS '@phpbbstudio_aps/css/aps_form.css' %}
+{% INCLUDECSS '@phpbbstudio_ass/css/ass_common.css' %}
+
+{% if S_FILE_INDEX %}
+	<fieldset>
+		<a class="column1 centered-text" href="{{ U_FILE_FILES }}">
+			<fieldset>
+				<h2 class="centered-text ass-mar">Files</h2>
+				<i class="fa fa-files-o fa-5x ass-mar"></i>
+			</fieldset>
+		</a>
+		<a class="column2 centered-text" href="{{ U_FILE_IMAGES }}">
+			<fieldset>
+				<h2 class="centered-text ass-mar">Images</h2>
+				<i class="fa fa-file-image-o fa-5x ass-mar"></i>
+			</fieldset>
+		</a>
+	</fieldset>
+{% else %}
+	<fieldset>
+		<legend>{{ lang('ACP_ASS_FILES') }}</legend>
+
+		<fieldset>
+			{% if not S_FILE_SELECT %}
+				<div class="pull-right">
+					<a class="aps-button-red" href="{{ U_BACK }}" title="{{ lang('BACK') }}"><i class="icon fa-arrow-left fa-fw"></i></a>
+				</div>
+			{% endif %}
+
+			<a class="aps-button-blue" href="{{ U_ACTION }}"><i class="icon fa-home fa-fw"></i></a>
+			{%- for crumb in DIRECTORIES -%}
+				<i class="icon fa-angle-right fa-fw ass-mar-side"></i>
+				<a href="{{ U_ACTION ~ '&dir=' ~ DIRECTORIES|slice(0, loop.index)|join('/')|url_encode }}">
+					{% if loop.last %}
+						<strong>{{ crumb }}</strong>
+					{% else %}
+						{{ crumb }}
+					{%- endif -%}
+				</a>
+			{% endfor %}
+		</fieldset>
+
+		<fieldset class="ass-no-mar ass-no-radius-bottom">
+			{% spaceless %}
+				{% if DIRECTORIES|length %}
+					<a class="aps-button-blue ass-mar-right" href="{{ U_ACTION ~ '&dir=' ~ DIRECTORIES|slice(0, -1)|join('/')|url_encode }}" title="{{ lang('LEVEL_UP') }}">
+						<i class="fa fa-level-up fa-fw fa-flip-horizontal"></i>
+					</a>
+				{% else %}
+					<span class="aps-button-red ass-mar-right">
+						<i class="fa fa-level-up fa-fw fa-flip-horizontal"></i>
+					</span>
+				{% endif %}
+				{% if not S_FILE_SELECT %}
+					<form class="aps-form ass-inline ass-mar-side" name="ass_files" method="post" action="{{ U_ACTION_FORM }}" data-ajax="true" data-refresh="true">
+						<label class="ass-label-fix">
+							<input class="autowidth ass-no-radius-right" id="folder" name="folder" type="text">
+						</label>
+						<button class="aps-button-green ass-no-radius-left" type="submit">
+							<i class="fa fa-plus fa-fw"></i>
+						</button>
+						<input type="hidden" name="action" value="add_dir">
+						{{ S_FORM_TOKEN }}
+					</form>
+					<form class="aps-form ass-inline ass-mar-side" name="ass_files" method="post" action="{{ U_ACTION_FORM }}" enctype='multipart/form-data'>
+						<label class="ass-label-fix">
+							<input class="autowidth ass-no-radius-right" id="file" name="file" type="file"{% if ALLOWED_EXTS %} accept="{{ ALLOWED_EXSTS }}"{% endif %}>
+						</label>
+						<button class="aps-button-green ass-no-radius-left" type="submit">
+							<i class="fa fa-upload fa-fw"></i>
+						</button>
+						<input type="hidden" name="action" value="add_file">
+						{{ S_FORM_TOKEN }}
+					</form>
+				{% endif %}
+			{% endspaceless %}
+		</fieldset>
+
+		<fieldset class="ass-no-mar ass-no-radius-top">
+			<table class="table1 responsive">
+				<thead>
+					<tr>
+						{% if not S_FILE_SELECT %}<th class="centered-text">{{ lang('ACTIONS') }}</th>{% endif %}
+						<th>{{ lang('ASS_FILENAME') }}</th>
+						<th class="centered-text">{{ lang('ASS_FILETIME') }}</th>
+						<th class="centered-text">{{ lang('ASS_FILESIZE') }}</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for folder in ass_folders %}
+						{% if loop.first %}
+						<tr>
+							<td class="row3" colspan="{{ S_FILE_SELECT ? 3 : 4 }}"><strong>{{ lang('ASS_FOLDERS') }}</strong></td>
+						</tr>
+						{% endif %}
+						<tr>
+							{% if not S_FILE_SELECT %}
+								<td class="actions ass-actions">
+									<a class="aps-button-red" href="{{ folder.U_DELETE }}" data-ajax="row_delete">
+										<i class="icon fa-trash fa-fw"></i>
+									</a>
+								</td>
+							{% endif %}
+							<td class="name">
+								<i class="icon fa-folder fa-fw ass-mar-side"></i>
+								<a href="{{ folder.U_VIEW }}">{{ folder.NAME }}</a>
+							</td>
+							<td class="row2 centered-text ass-width-200">{{ folder.TIME }}</td>
+							<td class="row2 centered-text ass-width-200"></td>
+						</tr>
+					{% endfor %}
+
+					{% for file in ass_files %}
+						{% if loop.first %}
+							<tr>
+								<td class="row3" colspan="{{ S_FILE_SELECT ? 3 : 4 }}"><strong>{{ lang('ASS_FILES') }}</strong></td>
+							</tr>
+						{% endif %}
+
+						{% if S_FILE_SELECT %}
+							{% if loop.first %}
+								<tr>
+									<td colspan="3">
+										<div class="ass-file-select-container">
+							{% endif %}
+
+							<div class="ass-file-select centered-text">
+								<label>
+									<input name="select_image" type="radio" value="{{ file.VALUE }}"{{ file.S_SELECTED ? ' checked' }}>
+									{% if S_FILE_SELECT != 'file' %}
+										<img src="{{ file.IMG }}" alt="{{ file.NAME }}">
+									{% else %}
+										<div class="ass-actions">
+											<i class="fa fa-{{ file.ICON }} fa-3x" aria-hidden="true"></i>
+											<div class="ass-actions">{{ file.NAME }}</div>
+										</div>
+									{% endif %}
+								</label>
+							</div>
+
+							{% if loop.last %}
+										</div>
+									</td>
+								</tr>
+							{% endif %}
+						{% else %}
+							<tr class="row-highlight">
+								<td class="actions ass-actions">
+									<a class="aps-button-red" href="{{ file.U_DELETE }}" data-ajax="row_delete">
+										<i class="icon fa-trash fa-fw"></i>
+									</a>
+								</td>
+								<td class="name">
+									<i class="icon fa-{{ file.ICON }} fa-fw ass-mar-side"></i>
+									<span>{{ file.NAME }}</span>
+								</td>
+								<td class="row2 centered-text ass-width-200">{{ file.TIME }}</td>
+								<td class="row2 centered-text ass-width-200">{{ file.SIZE }}</td>
+							</tr>
+						{% endif %}
+					{% endfor %}
+				</tbody>
+			</table>
+
+			{% if S_FILE_SELECT %}
+				<p class="submit-buttons">
+					<button class="aps-button-green" onclick="shop_select_file(); return false">{{ lang('SELECT') }}</button>
+				</p>
+			{% endif %}
+		</fieldset>
+	</fieldset>
+{% endif %}
+
+{% if S_FILE_SELECT %}
+	{{ include('simple_footer.html') }}
+{% else %}
+	{{ include('overall_footer.html') }}
+{% endif %}

@@ -1,0 +1,70 @@
+{% extends '@phpbbstudio_aps/aps_main.html' %}
+
+{% block includes %}
+	{% INCLUDECSS '@phpbbstudio_ass/ass_exception.css' %}
+{% endblock %}
+
+{% block nav %}
+	{% for category in ass_shop_categories %}
+		<li>
+			<a class="aps-list-item{{ category.S_SELECTED ? ' aps-list-active' }}" href="{{ category.U_VIEW }}" title="{{ category.TITLE }}">
+				{% if category.ICON %}<i class="icon {{ category.ICON }} fa-fw" aria-hidden="true"></i>{% endif %}
+				<span class="sr-only">{{ category.TITLE }}</span>
+			</a>
+		</li>
+	{% endfor %}
+{% endblock %}
+
+{% block main %}
+	<div class="shop-exception">
+		<div class="aps-panel shop-exception-title">
+			<div class="aps-panel-content">
+				<h1>{{ lang('ASS_ERROR_TITLE', aps_name()) ~ lang('ELLIPSIS') }}</h1>
+			</div>
+			<div class="shop-exception-code">
+				<span>{{ EXCEPTION_CODE }}</span>
+			</div>
+		</div>
+
+		<div class="aps-panel shop-exception-text">
+			<div class="aps-panel-content">
+				<p class="aps-no-mar">{{ EXCEPTION_TEXT }}</p>
+			</div>
+			{% if EXCEPTION_DESC %}
+				<div class="aps-panel-content">
+					<p class="aps-no-mar">{{ EXCEPTION_DESC }}</p>
+				</div>
+			{% endif %}
+			<div class="aps-panel-content aps-center">
+				<a class="aps-button-blue" href="{{ U_INDEX }}">{{ lang('FORUM_INDEX') }}</a>
+				<a class="aps-button-blue" href="{{ path('phpbbstudio_ass_shop') }}">{{ lang('ASS_SHOP_INDEX') }}</a>
+			</div>
+		</div>
+
+		<div class="shop-exception-pot">{{ include('@phpbbstudio_ass/images/gold-pot.svg') }}</div>
+		<div class="shop-exception-rainbow">{% for i in 1..5 %}<span></span>{% endfor %}</div>
+		<div class="shop-exception-tree">{{ include('@phpbbstudio_ass/images/tree.svg') }}</div>
+		<div class="shop-exception-trees">{{ include('@phpbbstudio_ass/images/trees.svg') }}</div>
+		<div class="shop-exception-mountain">{{ include('@phpbbstudio_ass/images/mountain-summit.svg') }}</div>
+		<div class="shop-exception-mountain-left">{{ include('@phpbbstudio_ass/images/mountain-summit.svg') }}</div>
+		<div class="shop-exception-mountain-right">{{ include('@phpbbstudio_ass/images/rising-graph.svg') }}</div>
+		<i class="icon fa-male fa-fw"></i>
+		<i class="icon fa-fw shop-icons"></i>
+		<i class="icon fa-comment fa-fw fa-flip-horizontal"></i>
+		<i class="icon fa-map-signs fa-fw"></i>
+		<span class="fa-trees left">
+			<i class="icon fa-tree fa-fw"></i>
+			<i class="icon fa-tree fa-fw"></i>
+			<i class="icon fa-tree fa-fw"></i>
+		</span>
+		<span class="fa-trees">
+			<i class="icon fa-tree fa-fw"></i>
+			<i class="icon fa-tree fa-fw"></i>
+		</span>
+		<span class="fa-trees right">
+			<i class="icon fa-tree fa-fw"></i>
+			<i class="icon fa-tree fa-fw"></i>
+			<i class="icon fa-tree fa-fw"></i>
+		</span>
+	</div>
+{% endblock %}

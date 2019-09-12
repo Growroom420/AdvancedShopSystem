@@ -1,0 +1,171 @@
+<div class="shop-inventory-item" data-shop-item="{{ item.ID }}">
+	{% if S_GIFT_ANIMATION %}
+		<div class="shop-inventory-gift shop-zoom-hide">
+			<div class="shop-inventory-gift-icon">
+				<i class="fa fa-gift"></i>
+			</div>
+
+			<span class="shop-stars shop-stars-top shop-zoom-out">
+				{% for i in 1..5 %}
+					<i class="fa fa-star"></i>
+				{% endfor %}
+			</span>
+			<span class="shop-stars shop-stars-bottom shop-zoom-out">
+				{% for i in 1..5 %}
+					<i class="fa fa-star"></i>
+				{% endfor %}
+			</span>
+
+			<svg class="shop-zoom-out" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -1 400 402">
+				<path d="M 400 200 A 200 200 0 0 1 200 400 A 200 200 0 0 1 0 200 A 200 200 0 0 1 200 0 A 200 200 0 0 1 400 200 Z"></path>
+				<path d="M 219.566 206.068 M 200 395 C 92.303 395 5 307.697 5 200 C 5 92.303 92.303 5 200 5 C 307.697 5 395 92.303 395 200"></path>
+				<path d="M 250.689 383.163 C 234.552 387.619 217.554 390 200 390 C 95.066 390 10 304.934 10 200 C 10 95.066 95.066 10 200 10 C 304.934 10 390 95.066 390 200 C 390 210.848 389.091 221.483 387.345 231.834"></path>
+				<path d="M 385 200 C 385 302.173 302.173 385 200 385 C 97.827 385 15 302.173 15 200 C 15 97.827 97.827 15 200 15 C 302.173 15 385 97.827 385 200 Z"></path>
+				<path d="M 200 380 M 181.098 379.019 C 90.57 369.572 20 293.028 20 200 C 20 100.588 100.588 20 200 20 C 292.203 20 368.213 89.323 378.752 178.693"></path>
+				<path d="M 200 375 C 103.35 375 25 296.65 25 200 C 25 103.35 103.35 25 200 25 C 296.65 25 375 103.35 375 200"></path>
+				<path d="M 219.433 31.099 C 304.17 40.741 370 112.682 370 200 C 370 287.453 303.966 359.482 219.038 368.946 M 200 370 M 175.05 368.182 C 92.99 356.113 30 285.413 30 200 C 30 114.408 93.254 43.59 175.567 31.743"></path>
+				<path d="M 365 200 C 365 291.127 291.127 365 200 365 C 108.873 365 35 291.127 35 200 C 35 108.873 108.873 35 200 35 C 291.127 35 365 108.873 365 200 Z"></path>
+			</svg>
+		</div>
+	{% endif %}
+
+	<div class="aps-row{{ S_GIFT_ANIMATION ? ' shop-zoom-in' }}">
+		<div class="aps-col s12 shop-no-pad">
+			<h2 class="aps-no-mar shop-padding shop-no-pad-bot shop-text-darkgray">{{ item.TITLE }}</h2>
+		</div>
+
+		{% if U_DOWNLOAD_FILE and S_LOADED_ITEM %}
+			<div class="aps-col s12 shop-no-pad">
+				<div class="aps-panel">
+					<div class="aps-panel-content shop-text-darkgray">
+						<script>
+							setTimeout(function() {
+								window.location = '{{ U_DOWNLOAD_FILE }}';
+							}, 1500);
+						</script>
+						{{ lang('ASS_TYPE_FILE_START') }}
+					</div>
+					<div class="aps-panel-content">
+						{{ lang('ASS_TYPE_FILE_START_NOT') }}
+					</div>
+					<div class="aps-panel-footer aps-center">
+						<a class="aps-button-green shop-button-active" href="{{ U_DOWNLOAD_FILE }}">
+							<i class="icon fa-download fa-fw" aria-hidden="true"></i>
+							<span>{{ item.ACTIVATE }}</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
+		{% if item.S_TYPE_ERROR %}
+			<div class="aps-col s12 shop-no-pad">
+				<div class="aps-panel">
+					<div class="aps-panel-header error">
+						<i class="icon fa-exclamation-triangle icon-white shop-panel-icon shop-panel-icon-red"></i>
+						{{ lang('ERROR') }}
+					</div>
+					<div class="aps-panel-content shop-text-darkgray">
+						{{ lang('ASS_ITEM_TYPE_NOT_EXIST') }}
+					</div>
+					<div class="aps-panel-content">
+						{{ lang('ASS_ERROR_LOGGED') }}
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
+		{% if item.S_LIMIT or item.S_HAS_EXPIRED or item.S_WILL_EXPIRE %}
+			<div class="aps-col s12 shop-no-pad">
+				<div class="aps-button-{{ item.S_LIMIT or item.S_HAS_EXPIRED ? 'red' : 'blue' }} shop-button-active shop-cursor-normal">
+					{{ lang(item.S_LIMIT ? 'ASS_ITEM_USE_REACHED' : (item.S_HAS_EXPIRED ? 'ASS_ITEM_EXPIRED' : 'ASS_ITEM_EXPIRE_SOON')) }}
+				</div>
+			</div>
+		{% endif %}
+
+		{% if item.S_GIFTED %}
+			<div class="aps-col s12 shop-no-pad">
+				<div class="aps-panel">
+					<i class="icon {{ aps_config('ass_gift_icon') }} icon-white shop-panel-icon shop-panel-icon-small shop-panel-icon-blue"></i>
+
+					<div class="aps-panel-content">
+						{{ lang('ASS_GIFTED_BY', item.GIFTER_NAME) }}
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
+		<div class="aps-col s3 shop-no-pad-left shop-inventory-item-img">
+			<div class="aps-panel">
+				<div class="aps-panel-content shop-no-pad {{ item.BACKGROUND_SRC ? 'shop-panel-background' : 'shop-vertical' }}"{% if item.BACKGROUND_SRC %} style="background-image: url({{ item.BACKGROUND_SRC }})"{% endif %}>
+					{% if not item.BACKGROUND_SRC %}
+						<i class="icon {{ item.ICON ?: aps_config('ass_no_image_icon') }} fa-fw shop-text-indent-10 icon-xl icon-lightgray"></i>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+
+		<div class="aps-col s9 shop-no-pad-left shop-no-pad-right">
+			<div class="aps-panel">
+				<div class="aps-panel-content">
+					<ul class="fa-ul">
+						<li title="{{ lang('ASS_USAGES') }}">
+							<i class="icon fa-li fa-hashtag" aria-hidden="true"></i>
+							<span><strong class="shop-text-darkgray shop-inventory-item-count">{{ item.USE_COUNT }}</strong>&thinsp;/{{ item.COUNT ?: '&infin;'  }}</span>
+						</li>
+						<li{% if not item.USE_UNIX %} class="hidden"{% endif %} title="{{ lang('ASS_USED_LAST') }}">
+							<i class="icon fa-li fa-clock-o" aria-hidden="true"></i>
+							<span class="shop-inventory-item-time">{{ user.format_date(item.USE_UNIX) }}</span>
+						</li>
+						<li title="{{ lang('ASS_EXPIRATION_DATE') }}">
+							<i class="icon fa-li fa-hourglass-end" aria-hidden="true"></i>
+							<span>{{ item.EXPIRE_SECONDS ? user.format_date(item.PURCHASE_UNIX + item.EXPIRE_SECONDS) : lang('NEVER') }}</span>
+						</li>
+						<li title="{{ lang('ASS_REFUND_DATE') }}">
+							<i class="icon fa-li fa-undo" aria-hidden="true"></i>
+							<span>{{ item.REFUND_SECONDS ? user.format_date(item.PURCHASE_UNIX + item.REFUND_SECONDS) : lang('NEVER') }}</span>
+						</li>
+						<li title="{{ lang(item.S_GIFTED ? 'ASS_GIFT_TIME' : 'ASS_PURCHASE_TIME') }}">
+							<i class="icon fa-li {{ aps_config(item.S_GIFTED ? 'ass_gift_icon' : 'ass_shop_icon') }}" aria-hidden="true"></i>
+							<span>{{ user.format_date(item.PURCHASE_UNIX) }}</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="aps-col s8 shop-no-pad-left">
+			{% if not item.S_HAS_EXPIRED and not item.S_LIMIT and not item.S_TYPE_ERROR %}
+				<a class="aps-button-green aps-center shop-block{{ not S_LOADED_ITEM or not U_DOWNLOAD_FILE ? ' shop-button-active' }}" href="{{ item.U_ACTIVATE }}" title="{{ item.ACTIVATE }}"{% if item.S_AJAX %} data-shop-link="{{ item.S_AJAX }}"{% endif %}>
+					{{ item.ACTIVATE }}
+				</a>
+			{% endif %}
+		</div>
+
+		{% if item.S_REFUND %}
+			<div class="aps-col s2 shop-no-pad shop-inventory-refund">
+				<a class="aps-button-blue aps-center shop-block" href="{{ item.U_REFUND }}" title="{{ lang('ASS_REFUND') }}" data-shop-link="shop_inventory_delete">
+					<i class="icon fa-undo fa-fw" aria-hidden="true"></i>
+					<span class="sr-only">{{ lang('ASS_REFUND') }}</span>
+				</a>
+			</div>
+		{% endif %}
+
+		<div class="aps-col s{{ item.S_REFUND ? 2 : 4 }} shop-no-pad-right">
+			<a class="aps-button-red aps-center shop-block" href="{{ item.U_DELETE }}" title="{{ lang('ASS_DELETE') }}" data-shop-link="shop_inventory_delete">
+				<i class="icon fa-trash fa-fw" aria-hidden="true"></i>
+				<span class="sr-only">{{ lang('ASS_DELETE') }}</span>
+			</a>
+		</div>
+
+		{% if item.DESC_HTML %}
+			<div class="aps-col s12 shop-no-pad">
+				<div class="aps-panel">
+					<div class="aps-panel-content content">
+						{{ item.DESC_HTML }}
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+</div>
