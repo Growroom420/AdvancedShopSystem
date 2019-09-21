@@ -46,6 +46,11 @@ class main_info
 					'auth'	=> 'ext_phpbbstudio/ass && acl_a_ass_logs',
 					'cat'	=> ['ACP_ASS_SYSTEM'],
 				],
+				'inventory'		=> [
+					'title'	=> 'ACP_ASS_INVENTORY',
+					'auth'	=> 'ext_phpbbstudio/ass && acl_a_ass_inventory',
+					'cat'	=> ['ACP_ASS_SYSTEM'],
+				],
 			],
 		];
 	}

@@ -26,13 +26,19 @@ $lang = array_merge($lang, [
 	'ACP_ASS_FILES_EXPLAIN'			=> 'Here you can manage the files used throughout the shop. The “files” category hold all the files used for actual items, while the “images” category holds all the images for displaying an item.',
 	'ACP_ASS_FILES_FILES_EXPLAIN'	=> 'Here you can upload files that can later be used as the actual item being purchased. Therefore accessing these file paths directly through a browser has been restricted.',
 	'ACP_ASS_FILES_IMAGES_EXPLAIN'	=> 'Here you can upload images that can later be used for displaying an item in the shop. Most images used through the shop work best with a 3:2 ratio (width:height).',
+	'ACP_ASS_INVENTORY_EXPLAIN'		=> 'Here you can manage users’ inventories. You can either add or delete multiple items at once for multiple users and/or groups, or you can manage an individual user’s inventory.',
 	'ACP_ASS_ITEMS_EXPLAIN'			=> 'Here you can manage the items within a shop category. You can add, edit, delete and order items.',
 	'ACP_ASS_LOGS_EXPLAIN'			=> 'Here you can manage and view a list of all Advanced Shop System actions carried out by users. There are various display and sorting options for your convenience.',
 	'ACP_ASS_OVERVIEW_EXPLAIN'		=> 'Some of these statistics are based on the currently available categories, items and logs, not taking any deleted rows into account.',
 	'ACP_ASS_SETTINGS_EXPLAIN'		=> 'Here you can adjust the basic shop settings of your board, enable the shop, give it fitting icons and among other settings adjust the default carousel and panel settings.',
 
+	'ACP_ASS_AMOUNT_ITEMS'			=> 'Amount of items',
+	'ACP_ASS_AMOUNT_USERS'			=> 'Amount of users',
+	'ACP_ASS_AVAILABLE'				=> 'Available',
+
 	'ACP_ASS_APPLY'					=> 'Apply',
 	'ACP_ASS_CLEAR'					=> 'Clear',
+	'ACP_ASS_COPY'					=> 'Copy',
 
 	'ACP_ASS_CAROUSEL_ARROWS'			=> 'Display arrows',
 	'ACP_ASS_CAROUSEL_ARROWS_DESC'		=> 'Whether or not the “previous” and “next” arrows should be displayed.',
@@ -63,6 +69,15 @@ $lang = array_merge($lang, [
 	'ACP_ASS_CONFLICTS'					=> 'Conflicts',
 	'ACP_ASS_CONFLICTS_DEACTIVATE'		=> 'Deactivate items with conflicts',
 
+	'ACP_ASS_INVENTORY_ADD_SUCCESS'		=> [
+		1 => 'You have successfully added this item to their inventory.',
+		2 => 'You have successfully added these items to their inventory.',
+	],
+	'ACP_ASS_INVENTORY_DELETE_SUCCESS'	=> [
+		1 => 'You have successfully deleted this item to their inventory.',
+		2 => 'You have successfully deleted these items to their inventory.',
+	],
+
 	'ACP_ASS_ITEM_ADD_SUCCESS'			=> 'You have successfully added the item.',
 	'ACP_ASS_ITEM_EDIT_SUCCESS'			=> 'You have successfully edited the item.',
 	'ACP_ASS_ITEM_DELETE'				=> 'Delete item',
@@ -91,6 +106,8 @@ $lang = array_merge($lang, [
 	'ACP_ASS_INVENTORY_ICON'			=> 'Inventory icon',
 
 	'ACP_ASS_ITEM_ACTIVE'				=> 'Item active',
+	'ACP_ASS_ITEM_AVAILABLE'			=> 'Item available',
+	'ACP_ASS_ITEM_AVAILABLE_DESC'		=> 'The period this item will be available in the shop.',
 	'ACP_ASS_ITEM_BACKGROUND'			=> 'Item background image',
 	'ACP_ASS_ITEM_BACKGROUND_DESC'		=> 'The image that is used throughout the shop to display the item.',
 	'ACP_ASS_ITEM_COUNT'				=> 'Item use count',
@@ -105,6 +122,8 @@ $lang = array_merge($lang, [
 	'ACP_ASS_ITEM_FEATURED_DESC'		=> 'The period this item will be featured.',
 	'ACP_ASS_ITEM_GIFT'					=> 'Item gift',
 	'ACP_ASS_ITEM_GIFT_DESC'			=> 'Whether or not this item can be gifted to other users.',
+	'ACP_ASS_ITEM_GIFT_ONLY'			=> 'Item gift only',
+	'ACP_ASS_ITEM_GIFT_ONLY_DESC'		=> 'Whether or not this item can only be gifted to other users and not purchased for themselves.',
 	'ACP_ASS_ITEM_GIFT_PERCENTAGE'		=> 'Item gift percentage',
 	'ACP_ASS_ITEM_GIFT_PERCENTAGE_DESC'	=> 'The percentage that will be added on top of the regular item price when this item is being gifted.',
 	'ACP_ASS_ITEM_GIFT_PRICE'			=> 'Item gift price',
@@ -116,6 +135,8 @@ $lang = array_merge($lang, [
 	'ACP_ASS_ITEM_PRICE'				=> 'Item price',
 	'ACP_ASS_ITEM_REFUND_DESC'			=> 'The amount of time before which an unused item can be refunded.',
 	'ACP_ASS_ITEM_REFUND_STRING'		=> 'Item refund time',
+	'ACP_ASS_ITEM_RELATED_ENABLED'		=> 'Enable related items',
+	'ACP_ASS_ITEM_RELATED_ITEMS'		=> 'Related items',
 	'ACP_ASS_ITEM_RESOLVE'				=> 'Resolve',
 	'ACP_ASS_ITEM_RESOLVE_CONFIRM'		=> 'Are you sure you want to mark this item conflict as resolved?',
 	'ACP_ASS_ITEM_RESOLVE_SUCCESS'		=> 'You have successfully marked this item conflict as resolved.',
@@ -147,6 +168,7 @@ $lang = array_merge($lang, [
 	'ACP_ASS_LOGS_PER_PAGE'				=> 'Logs per page',
 
 	'ACP_ASS_NO_IMAGE_ICON'				=> '“No image” icon',
+	'ACP_ASS_NO_ITEMS_SELECTED'			=> 'You haven’t selected any items.',
 	'ACP_ASS_NOTES'						=> 'Notes',
 	'ACP_ASS_NOTES_NO'					=> 'There are no notes',
 
@@ -200,6 +222,8 @@ $lang = array_merge($lang, [
 	'ACP_ASS_SETTINGS_CAROUSEL'			=> 'Carousel settings',
 	'ACP_ASS_SETTINGS_DEFAULT'			=> 'Default settings',
 	'ACP_ASS_SETTINGS_DISPLAY'			=> 'Display settings',
+	'ACP_ASS_SETTINGS_GIFT'				=> 'Gift settings',
+	'ACP_ASS_SETTINGS_INVENTORY'		=> 'Inventory settings',
 	'ACP_ASS_SETTINGS_SHOP'				=> 'Shop settings',
 	'ACP_ASS_SETTINGS_SPECIAL'			=> 'Special settings',
 	'ACP_ASS_SETTINGS_TYPE'				=> 'Type settings',
@@ -211,4 +235,6 @@ $lang = array_merge($lang, [
 	'ACP_ASS_SHOP_INACTIVE_DESC'		=> 'Shop inactive message',
 	'ACP_ASS_SHOP_INACTIVE_DESC_DESC'	=> 'This message will be displayed to users who do not have the required permissions when the shop is inactive.',
 	'ACP_ASS_SHOP_ICON'					=> 'Shop icon',
+
+	'ACP_ASS_USER_INVENTORY'			=> 'User’s inventory',
 ]);

@@ -48,6 +48,19 @@ Conflicts occur when the item is activated by a user but there are problems with
 For example the item’s file no longer exists, or some specific item type data is missing or incorrect.
 Depending on the <i>Deactivate item with conflicts</i> setting, the item is automatically <span class="icon-red">deactivated</span> and has to be <span class="icon-green">activated</span> again manually.',
 
+	'ACP_ASS_HELP_AVAILABLE'		=> 'This determines the item’s availability.
+	
+This is an optional field.
+All dates are in the board’s timezone.
+An elegant date picker has been added for ease-of-use.
+
+The period can be removed by clicking on <span class="icon-red">Clear</span> in the date picker.
+Clicking on the information icon (<icon class="icon fa-info fa-fw icon-red"></icon>) will show the board’s current time.
+
+If the current date and time falls within the provided period, this item will be availabe in the shop.
+When this item is no longer available, it will not show up in the shop but still be available in a user’s inventory.
+If this field is left empty, this item is always available.',
+
 	'ACP_ASS_HELP_BACKGROUND'		=> 'This determines the item’s background.
 	
 This is an optional field.
@@ -132,6 +145,13 @@ If gifting is disabled, this item can only be purchased for personal use.
 Otherwise this item can be gifted to a different user.
 A different price can be set for this item, when a user is gifting it, see <i>Item gift type</i>.',
 
+	'ACP_ASS_HELP_GIFT_ONLY'		=> 'This determines the item’s gift only status.
+	
+This is a required field.
+
+If this is enabled, this item can only be gifted to other users, meaning it can not be purchased for personal use.
+A different price can be set for this item, when a user is gifting it, see <i>Item gift type</i>.\',',
+
 	'ACP_ASS_HELP_GIFT_PERCENTAGE'	=> 'This determines the item’s gift percentage.
 	
 When the <i>Item gift type</i> is set to <span class="icon-green">percentage</span>, this value will determine the gift price.
@@ -194,6 +214,22 @@ For example, if this is set to <samp>1 week</samp>, this item can be refunded wi
 An item can only be refunded when it has not yet been used.
 If this is left empty, this item can <span class="icon-red">not be refunded</span>.',
 
+	'ACP_ASS_HELP_RELATED_ENABLED'	=> 'This determines the item’s related items status.
+	
+This is a required field.
+
+If enabled, this item’s <i>Related items</i> will be displayed in the shop’s item page.
+If enabled but no <i>Related items</i> are selected, the closest <em>ordered</em> items will be displayed.',
+
+	'ACP_ASS_HELP_RELATED_ITEMS'	=> 'This determines the item’s related items.
+	
+This is an optional field.
+An elegant select box has been added for ease-of-use.
+A maximum of 8 items may be selected.
+
+If <i>Enable related items</i> is enabled, these items will be displayed.
+If <i>Enable related items</i> is enabled and no items are selected, the closest <em>ordered</em> items will be displayed.',
+
 	'ACP_ASS_HELP_SALE'				=> 'This determines the item’s sale period.
 	
 This is an optional field.
@@ -245,7 +281,8 @@ Afterwards it can still be changed to a different or more appropriate slug.',
 This fieldset is only visible when <strong>editing</strong> an item.
 
 The first check indicates whether or not this item is currently on sale, if the current time is within the <i>Item sale</i> period.
-The second check indicates whether or not this item is currently featured, if the current time is within the <i>Item featured</i> period.',
+The second check indicates whether or not this item is currently featured, if the current time is within the <i>Item featured</i> period.
+The third check indicates whether or not this item is currently available, if the current time is within the <i>Item available</i> period or if the period is not set.',
 
 	'ACP_ASS_HELP_STOCK'			=> 'This determines the item’s current stock.
 	

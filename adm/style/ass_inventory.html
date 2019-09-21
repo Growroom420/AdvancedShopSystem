@@ -1,0 +1,206 @@
+{% include 'overall_header.html' %}
+
+{% INCLUDECSS '@phpbbstudio_aps/css/aps_form.css' %}
+{% INCLUDECSS '@phpbbstudio_aps/css/aps_common.css' %}
+{% INCLUDECSS '@phpbbstudio_ass/css/ass_common.css' %}
+
+<h1>{{ PAGE_TITLE }}</h1>
+<p>{{ lang('ACP_ASS_INVENTORY_EXPLAIN') }}</p>
+
+{% if not S_TYPE %}
+
+	<fieldset class="nobg centered-text">
+		<div class="clearfix">
+			<div class="column1">
+				<a class="aps-button-blue ass-button-inventory" href="{{ U_GLOBAL }}">
+					<span>{{ lang('ACP_MANAGE_USERS') }}</span>
+					<i class="fa fa-users fa-4x"></i>
+				</a>
+			</div>
+			<div class="column2">
+				<a class="aps-button-blue ass-button-inventory" href="{{ U_MANAGE }}">
+					<span>{{ lang('ACP_ASS_USER_INVENTORY') }}</span>
+					<i class="fa fa-user fa-4x"></i>
+				</a>
+			</div>
+		</div>
+	</fieldset>
+
+{% else %}
+
+	<fieldset class="quick">
+		<a class="aps-button-blue" href="{{ U_BACK }}" title="{{ lang('BACK') }}">
+			<i class="icon fa-angle-left fa-fw"></i>
+			<span>{{ lang('BACK') }}</span>
+		</a>
+	</fieldset>
+
+	<form class="aps-form" id="ass_inventory" name="ass_inventory" method="post" action="{{ U_ACTION }}">
+		{{ include('@phpbbstudio_ass/ass_errors.html') }}
+
+		{% if S_TYPE == 'global' %}
+			{% INCLUDECSS '@phpbbstudio_ass/css/select2.min.css' %}
+			{% INCLUDEJS '@phpbbstudio_ass/js/select2.min.js' %}
+			{% INCLUDEJS '@phpbbstudio_ass/js/ass_common.js' %}
+
+			<fieldset>
+				<dl>
+					<dt><label for="action">{{ lang('ACTION') ~ lang('COLON') }}</label></dt>
+					<dd>
+						<label>
+							<input class="radio aps-bool" id="action" name="action" type="radio" value="add"{{ S_ADD ? ' checked' }}>
+							<span class="aps-button-green">{{ lang('ADD') }}</span>
+						</label>
+						<label>
+							<input class="radio aps-bool" name="action" type="radio" value="delete"{{ not S_ADD ? ' checked' }}>
+							<span class="aps-button-red">{{ lang('DELETE') }}</span>
+						</label>
+					</dd>
+				</dl>
+				<dl>
+					<dt><label for="usernames">{{ lang('USERNAMES') ~ lang('COLON') }}</label></dt>
+					<dd>
+						<textarea id="usernames" name="usernames" rows="5">{{ USERNAMES }}</textarea>
+						<div class="centered-text">
+							<label>
+								<a class="aps-button-blue ass-no-radius-top" href="{{ U_FIND_USER }}" onclick="find_username(this.href); return false;">
+									{{ lang('FIND_USERNAME') }}
+								</a>
+							</label>
+						</div>
+					</dd>
+				</dl>
+				<dl>
+					<dt><label for="groups">{{ lang('GROUPS') ~ lang('COLON') }}</label></dt>
+					<dd>
+						<select class="ass-width-90p ass-vertical-resize" id="groups" name="groups[]" multiple data-studio-select="true" data-language="{{ user.data.user_lang }}">
+							{% for group in groups %}
+								<option{% if group.S_SPECIAL %} class="sep"{% endif %} value="{{ group.ID }}"{{ group.S_SELECTED ? ' selected' }}>
+									{{ group.NAME }}
+								</option>
+							{% endfor %}
+						</select>
+					</dd>
+				</dl>
+				<dl>
+					<dt><label for="items">{{ lang('ACP_ASS_ITEMS') ~ lang('COLON') }}</label></dt>
+					<dd>
+						<select class="ass-width-90p ass-vertical-resize" id="items" name="items[]" multiple data-studio-select="true" data-language="{{ user.data.user_lang }}">
+							{% for category in categories %}
+								<optgroup label="{{ category.TITLE }}" {% if category.S_INACTIVE %} class="icon-red" title="{{ lang('ASS_CATEGORY_INACTIVE') }}"{% endif %}>
+									{% for item in category.items %}
+										<option value="{{ item.ID }}"{{ item.S_SELECTED ? ' selected' }}{% if item.S_INACTIVE %} class="sep icon-red" title="{{ lang('ASS_ITEM_INACTIVE') }}"{% endif %}>{{ item.TITLE }}</option>
+									{% endfor %}
+								</optgroup>
+							{% endfor %}
+						</select>
+					</dd>
+				</dl>
+			</fieldset>
+		{% else %}
+
+			{% if U_FIND_USER %}
+				<fieldset>
+					<dl>
+						<dt><label for="username">{{ lang('USERNAME') ~ lang('COLON') }}</label></dt>
+						<dd>
+							<input class="inputbox autowidth" id="username" name="username" type="text" required>
+							<label>
+								<a class="aps-button-blue" href="{{ U_FIND_USER }}" onclick="find_username(this.href); return false;">
+									{{ lang('FIND_USERNAME') }}
+								</a>
+							</label>
+						</dd>
+					</dl>
+				</fieldset>
+			{% else %}
+				{% INCLUDECSS '@phpbbstudio_ass/css/select2.min.css' %}
+				{% INCLUDEJS '@phpbbstudio_ass/js/select2.min.js' %}
+				{% INCLUDEJS '@phpbbstudio_ass/js/ass_common.js' %}
+
+				<fieldset>
+					<table class="table1 forums zebra-table responsive">
+						<thead>
+							<tr>
+								<th class="centered-text">{{ lang('ENABLED') }}</th>
+								<th class="centered-text">{{ lang('ACP_ASS_CONFLICT') }}</th>
+								<th class="name">{{ lang('ASS_ITEM') }}</th>
+								<th class="centered-text">{{ lang('ASS_PURCHASE_TIME') }}</th>
+								<th class="centered-text">{{ lang('ASS_USED_LAST') }}</th>
+								<th class="centered-text">{{ lang('ASS_USAGES') }}</th>
+								<th class="centered-text">{{ lang('ASS_GIFT') }}</th>
+								<th class="centered-text">{{ lang('ACTIONS') }}</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for category in categories if category.S_INVENTORY %}
+								{% for item in category.items if item.S_INVENTORY %}
+									<tr>
+										<td class="actions {{ item.S_ACTIVE and category.S_ACTIVE ? 'yes' : 'never' }}"{% if not item.S_ACTIVE or not category.S_ACTIVE %} title="{{ lang(item.S_ACTIVE ? 'ASS_CATEGORY_INACTIVE' : 'ASS_ITEM_INACTIVE') }}"{% endif %}>
+											<i class="icon fa-fw {{ item.S_ACTIVE and category.S_ACTIVE ? 'fa-check icon-green' : 'fa-times icon-red' }}" aria-hidden="true"></i>
+										</td>
+										<td class="actions {{ item.CONFLICT ? 'never' : 'yes' }}">
+											<i class="icon fa-fw {{ item.CONFLICT ? 'fa-exclamation icon-red' : 'fa-check icon-green' }}" aria-hidden="true"></i>
+										</td>
+										<td>
+											<span>{{ category.TITLE }}</span>
+											<i class="icon fa-angle-double-right fa-fw icon-orange" aria-hidden="true"></i>
+											<strong class="icon-black">{{ item.TITLE }}</strong>
+										</td>
+										<td>{{ item.PURCHASE_TIME }}</td>
+										<td>{{ item.USE_TIME }}</td>
+										<td class="actions">{{ item.USE_COUNT }}</td>
+										<td>{{ item.GIFTER }}</td>
+										<td class="actions ass-actions">
+											<a class="aps-button-red" href="{{ U_DELETE ~ item.ID }}" title="{{ lang('DELETE') }}" data-ajax="row_delete">
+												<i class="icon fa-trash fa-fw" aria-hidden="true"></i>
+												<span class="sr-only">{{ lang('DELETE') }}</span>
+											</a>
+										</td>
+									</tr>
+								{% endfor %}
+							{% else %}
+								<tr>
+									<td colspan=""></td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</fieldset>
+
+				<fieldset>
+					<legend>{{ lang('ADD') }}</legend>
+					<dl>
+						<dt><label for="items">{{ lang('ACP_ASS_ITEMS') ~ lang('COLON') }}</label></dt>
+						<dd>
+							<select class="ass-width-90p ass-vertical-resize" id="items" name="items[]" multiple data-studio-select="true" data-language="{{ user.data.user_lang }}">
+								{% for category in categories %}
+									<optgroup label="{{ category.TITLE }}" {% if category.S_INACTIVE %} class="icon-red" title="{{ lang('ASS_CATEGORY_INACTIVE') }}"{% endif %}>
+										{% for item in category.items if not item.S_INVENTORY %}
+											<option value="{{ item.ID }}"{{ item.S_SELECTED ? ' selected' }}{% if item.S_INACTIVE %} class="sep icon-red" title="{{ lang('ASS_ITEM_INACTIVE') }}"{% endif %}>{{ item.TITLE }}</option>
+										{% endfor %}
+									</optgroup>
+								{% endfor %}
+							</select>
+						</dd>
+					</dl>
+
+					<input type="hidden" name="username" value="{{ USERNAME }}">
+				</fieldset>
+			{% endif %}
+
+		{% endif %}
+
+		<fieldset>
+			<p class="submit-buttons">
+				{{ S_FORM_TOKEN }}
+				<input class="aps-button-green" id="submit" name="{{ S_TYPE == 'manage' and U_FIND_USER ? 'submit_user' : 'submit' }}" type="submit" value="{{ lang('SUBMIT') }}">
+				&nbsp;
+				<input class="aps-button-red" id="reset" name="reset" type="reset" value="{{ lang('RESET') }}">
+			</p>
+		</fieldset>
+	</form>
+
+{% endif %}
+
+{% include 'overall_footer.html' %}

@@ -113,7 +113,7 @@ class category
 			throw new shop_exception(404, 'ASS_ERROR_NOT_FOUND_CATEGORY');
 		}
 
-		if (!$category->get_active() && !$this->auth->acl_get('u_ass_can_view_inactive_shop'))
+		if (!$category->get_active() && !$this->auth->acl_get('u_ass_can_view_inactive_items'))
 		{
 			throw new shop_exception(403, 'ASS_ERROR_NOT_ACTIVE_CATEGORY');
 		}
@@ -132,7 +132,7 @@ class category
 	{
 		$sql = 'SELECT * 
 				FROM ' . $this->categories_table . ' 
-				' . ($only_active && !$this->auth->acl_get('u_ass_can_view_inactive_shop') ? 'WHERE category_active = 1' : '') . '
+				' . ($only_active && !$this->auth->acl_get('u_ass_can_view_inactive_items') ? 'WHERE category_active = 1' : '') . '
 				ORDER BY category_order ASC';
 		$result = $this->db->sql_query($sql);
 		$rowset = $this->db->sql_fetchrowset($result);
@@ -152,7 +152,8 @@ class category
 	{
 		$sql = 'SELECT *
 				FROM ' . $this->categories_table . '
-				WHERE ' . $this->db->sql_in_set('category_id', array_unique($ids), false, true) . '
+				WHERE ' . $this->db->sql_in_set('category_id', array_unique($ids), false, true) .
+				(!$this->auth->acl_get('u_ass_can_view_inactive_items') ? ' AND category_active = 1' : '') . '
 				ORDER BY category_order ASC';
 		$result = $this->db->sql_query($sql);
 		$rowset = $this->db->sql_fetchrowset($result);

@@ -10,6 +10,7 @@
 
 namespace phpbbstudio\ass\controller;
 
+use phpbbstudio\ass\exceptions\shop_exception;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -185,7 +186,7 @@ class shop_controller
 
 		$days = $this->request->variable('days', 0, false, \phpbb\request\request_interface::GET);
 		$sort = $this->request->variable('sort', 'order', true, \phpbb\request\request_interface::GET);
-		$dir = $this->request->variable('direction', 'desc', true, \phpbb\request\request_interface::GET);
+		$dir = $this->request->variable('direction', 'asc', true, \phpbb\request\request_interface::GET);
 
 		$dir = in_array($dir, array_keys($dir_array)) ? $dir : 'asc';
 		$sort = in_array($sort, array_keys($sort_array)) ? $sort : 'order';
@@ -292,12 +293,20 @@ class shop_controller
 		$category = $this->operator_cat->load_entity($category_slug);
 		$item = $this->operator_item->load_entity($item_slug, $category->get_slug(), $category->get_id());
 
+		if (!$this->operator_item->is_available($item))
+		{
+			throw new shop_exception(410, 'ASS_ERROR_NOT_AVAILABLE');
+		}
+
 		$this->controller->create_shop('shop', $category, $item);
 
 		$this->controller->setup_carousel();
 		$this->controller->setup_panels();
 
-		$this->operator_item->assign_related_items($item);
+		if ($item->get_related_enabled())
+		{
+			$this->operator_item->assign_related_items($item);
+		}
 
 		$this->template->assign_vars($this->operator_item->get_variables($item));
 

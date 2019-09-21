@@ -1,3 +1,5 @@
+{% INCLUDECSS '@phpbbstudio_ass/css/select2.min.css' %}
+{% INCLUDEJS '@phpbbstudio_ass/js/select2.min.js' %}
 {% INCLUDEJS '@phpbbstudio_ass/js/ass_help.js' %}
 
 <div class="ass-help-toolbox hidden">
@@ -45,9 +47,10 @@
 
 <fieldset>
 	<legend>{{ lang('ACP_ASS_SETTINGS_DEFAULT') }}</legend>
+
 	<dl>
 		<dt><label for="price">{{ lang('ACP_ASS_ITEM_PRICE') ~ lang('COLON') }}</label></dt>
-		<dd class="ass-input-icon">{{ aps_icon() }}<input class="autowidth" id="price" name="price" type="number" value="{{ aps_format(ITEM_PRICE) }}" min="0" step="{{ aps_step() }}"></dd>
+		<dd class="ass-input-icon">{{ aps_icon() }}<input class="autowidth" id="price" name="price" type="number" value="{{ aps_format(ITEM_PRICE) }}" min="0" max="999999999999.99" step="{{ aps_step() }}"></dd>
 	</dl>
 	<dl>
 		<dt><label for="stock_unlimited">{{ lang('ACP_ASS_ITEM_STOCK_UNLIMITED') ~ lang('COLON') }}</label>{{ desc('STOCK_UNLIMITED') }}</dt>
@@ -70,14 +73,11 @@
 		<dt><label for="stock_threshold">{{ lang('ACP_ASS_ITEM_STOCK_THRESHOLD') ~ lang('COLON') }}</label>{{ desc('STOCK_THRESHOLD') }}</dt>
 		<dd><input class="autowidth" id="stock_threshold" name="stock_threshold" type="number" value="{{ ITEM_STOCK_THRESHOLD }}" min="0" step="1"></dd>
 	</dl>
-	<dl>
-		<dt><label for="count">{{ lang('ACP_ASS_ITEM_COUNT') ~ lang('COLON') }}</label>{{ desc('COUNT') ~ desc('COUNT_ZERO', true) }}</dt>
-		<dd><input class="autowidth" id="count" name="count" type="number" value="{{ ITEM_COUNT }}" min="0" step="1"></dd>
-	</dl>
 </fieldset>
 
 <fieldset>
-	<legend>{{ lang('ACP_ASS_SETTINGS_SPECIAL') }}</legend>
+	<legend>{{ lang('ACP_ASS_SETTINGS_GIFT') }}</legend>
+
 	<dl>
 		<dt><label for="gift">{{ lang('ACP_ASS_ITEM_GIFT') ~ lang('COLON') }}</label>{{ desc('GIFT') }}</dt>
 		<dd>
@@ -87,6 +87,19 @@
 			</label>
 			<label>
 				<input class="radio aps-bool" name="gift" type="radio" value="0"{{ not ITEM_GIFT ? ' checked' }}>
+				<span class="aps-button-red">{{ lang('NO') }}</span>
+			</label>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label for="gift_only">{{ lang('ACP_ASS_ITEM_GIFT_ONLY') ~ lang('COLON') }}</label>{{ desc('GIFT_ONLY') }}</dt>
+		<dd>
+			<label>
+				<input class="radio aps-bool" id="gift_only" name="gift_only" type="radio" value="1"{{ ITEM_GIFT_ONLY ? ' checked' }}>
+				<span class="aps-button-green">{{ lang('YES') }}</span>
+			</label>
+			<label>
+				<input class="radio aps-bool" name="gift_only" type="radio" value="0"{{ not ITEM_GIFT_ONLY ? ' checked' }}>
 				<span class="aps-button-red">{{ lang('NO') }}</span>
 			</label>
 		</dd>
@@ -106,15 +119,20 @@
 	</dl>
 	<dl>
 		<dt><label for="gift_percentage">{{ lang('ACP_ASS_ITEM_GIFT_PERCENTAGE') ~ lang('COLON') }}</label>{{ desc('GIFT_PERCENTAGE') }}</dt>
-		<dd class="ass-input-icon"><i class="icon fa-percent fa-fw" aria-hidden="true"></i><input class="autowidth" id="gift_percentage" name="gift_percentage" type="number" value="{{ ITEM_GIFT_PERCENTAGE }}" min="0" step="1"></dd>
+		<dd class="ass-input-icon"><i class="icon fa-percent fa-fw" aria-hidden="true"></i><input class="autowidth" id="gift_percentage" name="gift_percentage" type="number" value="{{ ITEM_GIFT_PERCENTAGE }}" min="-100" max="999" step="1"></dd>
 	</dl>
 	<dl>
 		<dt><label for="gift_price">{{ lang('ACP_ASS_ITEM_GIFT_PRICE') ~ lang('COLON') }}</label>{{ desc('GIFT_PRICE') }}</dt>
-		<dd class="ass-input-icon">{{ aps_icon() }}<input class="autowidth" id="gift_price" name="gift_price" type="number" value="{{ aps_format(ITEM_GIFT_PRICE) }}" min="0" step="{{ aps_step() }}"></dd>
+		<dd class="ass-input-icon">{{ aps_icon() }}<input class="autowidth" id="gift_price" name="gift_price" type="number" value="{{ aps_format(ITEM_GIFT_PRICE) }}" min="0" max="999999999999.99" step="{{ aps_step() }}"></dd>
 	</dl>
+</fieldset>
+
+<fieldset>
+	<legend>{{ lang('ACP_ASS_SETTINGS_SPECIAL') }}</legend>
+
 	<dl>
 		<dt><label for="sale_price">{{ lang('ACP_ASS_ITEM_SALE_PRICE') ~ lang('COLON') }}</label>{{ desc('SALE_PRICE') }}</dt>
-		<dd class="ass-input-icon">{{ aps_icon() }}<input class="autowidth" id="sale_price" name="sale_price" type="number" value="{{ aps_format(ITEM_SALE_PRICE) }}" min="0" step="{{ aps_step() }}"></dd>
+		<dd class="ass-input-icon">{{ aps_icon() }}<input class="autowidth" id="sale_price" name="sale_price" type="number" value="{{ aps_format(ITEM_SALE_PRICE) }}" min="0" max="999999999999.99" step="{{ aps_step() }}"></dd>
 	</dl>
 	{% set timezone =
 		'<fieldset>' ~
@@ -177,6 +195,31 @@
 			{% endspaceless %}
 		</dd>
 	</dl>
+	<dl>
+		<dt><label for="available_start">{{ lang('ACP_ASS_ITEM_AVAILABLE') ~ lang('COLON') }}</label>
+			{{ desc('AVAILABLE') ~ desc('TIMEZONE', true) }}
+			<i class="icon fa-info-circle fa-fw icon-pink ass-pointer" onclick="phpbb.alert('{{ lang('INFORMATION') }}', '{{ timezone|e('js') }}')"></i>
+		</dt>
+		<dd class="shop-date ass-input-icon">
+			{% spaceless %}
+				<i class="icon fa-calendar-plus-o fa-fw" aria-hidden="true"></i>
+				<input class="autowidth" id="available_start" name="available_start" type="text" value="{{ ITEM_AVAILABLE_START_UNIX ? ITEM_AVAILABLE_START_UNIX|date(DATE_FORMAT, TIMEZONE) }}">&nbsp;
+				<i class="icon fa-calendar-times-o fa-fw" aria-hidden="true"></i>
+				{# <!--suppress HtmlFormInputWithoutLabel --> #}
+				<input class="autowidth" id="available_until" name="available_until" type="text" value="{{ ITEM_AVAILABLE_UNTIL_UNIX ? ITEM_AVAILABLE_UNTIL_UNIX|date(DATE_FORMAT, TIMEZONE) }}" readonly>
+			{% endspaceless %}
+		</dd>
+	</dl>
+</fieldset>
+
+<fieldset>
+	<legend>{{ lang('ACP_ASS_SETTINGS_INVENTORY') }}</legend>
+
+	<dl>
+		<dt><label for="count">{{ lang('ACP_ASS_ITEM_COUNT') ~ lang('COLON') }}</label>{{ desc('COUNT') ~ desc('COUNT_ZERO', true) }}</dt>
+		<dd><input class="autowidth" id="count" name="count" type="number" value="{{ ITEM_COUNT }}" min="0" step="1"></dd>
+	</dl>
+
 	{# These strings should NOT be translated, as strtotime() only accept English. #}
 	{% set str_to_time = ['1 year', '1 week', '5 days 12 hours', '3 weeks 6 days 23 hours 59 minutes 59 seconds'] %}
 	{% set str_to_time = str_to_time|join('</code>&rdquo;<br>&ldquo;<code>') %}
@@ -239,6 +282,33 @@
 			</button>
 		</dd>
 	</dl>
+	<dl>
+		<dt><label for="related_enabled">{{ lang('ACP_ASS_ITEM_RELATED_ENABLED') ~ lang('COLON') }}</label></dt>
+		<dd>
+			<label>
+				<input class="radio aps-bool" id="related_enabled" name="related_enabled" type="radio" value="1"{{ ITEM_RELATED_ENABLED ? ' checked' }}>
+				<span class="aps-button-green">{{ lang('ENABLED') }}</span>
+			</label>
+			<label>
+				<input class="radio aps-bool" name="related_enabled" type="radio" value="0"{{ not ITEM_RELATED_ENABLED ? ' checked' }}>
+				<span class="aps-button-red">{{ lang('DISABLED') }}</span>
+			</label>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label for="related_items">{{ lang('ACP_ASS_ITEM_RELATED_ITEMS') ~ lang('COLON') }}</label></dt>
+		<dd>
+			<select class="ass-width-90p ass-vertical-resize" id="related_items" name="related_items[]" multiple data-studio-select="{{ ITEM_RELATED_ITEMS|join(',') }}" data-language="{{ user.data.user_lang }}" data-maximum-selection-length="8">
+				{% for category in categories %}
+					<optgroup label="{{ category.TITLE }}" {% if category.S_INACTIVE %} class="icon-red" title="{{ lang('ASS_CATEGORY_INACTIVE') }}"{% endif %}>
+						{% for item in category.items if not item.S_INVENTORY %}
+							<option value="{{ item.ID }}"{{ item.S_SELECTED ? ' selected' }}{% if item.S_INACTIVE %} class="sep icon-red" title="{{ lang('ASS_ITEM_INACTIVE') }}"{% endif %}>{{ item.TITLE }}</option>
+						{% endfor %}
+					</optgroup>
+				{% endfor %}
+			</select>
+		</dd>
+	</dl>
 </fieldset>
 
 {% if S_ASS_EDIT %}
@@ -247,12 +317,14 @@
 			<dl>
 				<dt><label for="dates">{{ lang('ASS_ITEM_CREATE_TIME') ~ lang('COLON') }}</label></dt><dd>{{ user.format_date(ITEM_CREATE_TIME) }}</dd>
 				<dt><strong>{{ lang('ASS_ITEM_EDIT_TIME') ~ lang('COLON') }}</strong></dt><dd>{{ ITEM_EDIT_TIME ? user.format_date(ITEM_EDIT_TIME) : lang('NEVER') }}</dd>
+				<dd>&nbsp;</dd>
 			</dl>
 		</fieldset>
 		<fieldset class="column2">
 			<dl>
 				<dt><label for="states">{{ lang('ASS_ON_SALE') ~ lang('COLON') }}</label></dt><dd><i class="icon fa-{{ ITEM_SALE ? 'check icon-green' : 'times icon-red' }} fa-fw" aria-hidden="true"></i></dd>
 				<dt><strong>{{ lang('ASS_FEATURED') ~ lang('COLON') }}</strong></dt><dd><i class="icon fa-{{ ITEM_FEATURED ? 'check icon-green' : 'times icon-red' }} fa-fw" aria-hidden="true"></i></dd>
+				<dt><strong>{{ lang('ACP_ASS_AVAILABLE') ~ lang('COLON') }}</strong></dt><dd><i class="icon fa-{{ ITEM_AVAILABLE ? 'check icon-green' : 'times icon-red' }} fa-fw" aria-hidden="true"></i></dd>
 			</dl>
 		</fieldset>
 	</div>

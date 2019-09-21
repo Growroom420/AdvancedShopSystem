@@ -25,6 +25,7 @@ $lang = array_merge($lang, [
 	'ACP_ASS_SYSTEM'		=> 'Advanced Shop System',
 	'ACP_ASS_CATEGORIES'	=> 'Categories',
 	'ACP_ASS_FILES'			=> 'Files',
+	'ACP_ASS_INVENTORY'		=> 'Inventory',
 	'ACP_ASS_ITEMS'			=> 'Items',
 	'ACP_ASS_LOGS'			=> 'Logs',
 	'ACP_ASS_OVERVIEW'		=> 'Overview',
@@ -39,6 +40,11 @@ $lang = array_merge($lang, [
 	'LOG_ACP_ASS_ITEM_EDITED'			=> '<strong>Advanced Shop System &mdash;</strong> Item edited<br>» %s',
 
 	'LOG_ACP_ASS_ITEM_RESOLVED'			=> '<strong>Advanced Shop System &mdash;</strong> Item conflict resolved<br>» %s',
+
+	'LOG_ACP_ASS_INVENTORY_ADD'			=> '<strong>Advanced Shop System &mdash;</strong> Added items to users’ inventories.<br>» Items (%1$s): %2$s<br>» Users (%3$s): %4$s',
+	'LOG_ACP_ASS_INVENTORY_ADD_USER'	=> '<strong>Advanced Shop System &mdash;</strong> Added items to a user’s inventory.<br>» Items (%1$s): %2$s<br>» Username: %3$s',
+	'LOG_ACP_ASS_INVENTORY_DELETE'		=> '<strong>Advanced Shop System &mdash;</strong> Deleted items from users’ inventories.<br>» Items (%1$s): %2$s<br>» Users (%3$s): %4$s',
+	'LOG_ACP_ASS_INVENTORY_DELETE_USER'	=> '<strong>Advanced Shop System &mdash;</strong> Deleted an item from a user’s inventory.<br>» Item: %1$s<br>» Username: %2$s',
 
 	'LOG_ACP_ASS_LOG_DELETED_ALL'		=> '<strong>Advanced Shop System &mdash;</strong> Deleted all log entries',
 	'LOG_ACP_ASS_LOG_DELETED_ENTRY'		=> '<strong>Advanced Shop System &mdash;</strong> Deleted a log entry',

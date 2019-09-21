@@ -159,7 +159,7 @@ class item
 
 		$item->set_category_slug($category_slug);
 
-		if (!$item->get_active() && !$this->auth->acl_get('u_ass_can_view_inactive_item'))
+		if (!$item->get_active() && !$this->auth->acl_get('u_ass_can_view_inactive_items'))
 		{
 			throw new shop_exception(403, 'ASS_ERROR_NOT_ACTIVE_ITEM');
 		}
@@ -183,12 +183,13 @@ class item
 	public function get_items($category_id, $sql_where = '', $sql_order = 'i.item_order', $sql_dir = 'ASC', $active_only = false, $limit = 0, $start = 0)
 	{
 		$sql_active = $active_only ? $this->get_sql_where_active('i.') : '';
+		$sql_available = $active_only ? $this->get_sql_where_available('i.') : '';
 
 		$sql = 'SELECT i.*, c.category_slug
 				FROM ' . $this->items_table . ' i,
 					' . $this->categories_table . ' c
 				WHERE i.category_id = c.category_id
-					AND i.category_id = ' . (int) $category_id . $sql_active . $sql_where . "
+					AND i.category_id = ' . (int) $category_id . $sql_active . $sql_available . $sql_where . "
 				ORDER BY {$sql_order} {$sql_dir}";
 		$result = $limit ? $this->db->sql_query_limit($sql, $limit, $start) : $this->db->sql_query($sql);
 		$rowset = (array) $this->db->sql_fetchrowset($result);
@@ -201,22 +202,31 @@ class item
 	 * Get item entities from identifiers.
 	 *
 	 * @param  array	$ids				The item identifiers
+	 * @param  bool		$as_entities		Whether or not to return entities
 	 * @return array						Item entities
 	 * @access public
 	 */
-	public function get_items_by_id(array $ids)
+	public function get_items_by_id(array $ids, $as_entities = true)
 	{
 		$sql = 'SELECT i.*, c.category_slug
 				FROM ' . $this->items_table . ' i,
 					' . $this->categories_table . ' c
 				WHERE i.category_id = c.category_id
-					AND ' . $this->db->sql_in_set('item_id', array_unique($ids), false, true) . '
+					AND ' . $this->db->sql_in_set('i.item_id', array_unique($ids), false, true) .
+					$this->get_sql_where_active('i.') . '
 				ORDER BY i.item_order ASC';
 		$result = $this->db->sql_query($sql);
 		$rowset = (array) $this->db->sql_fetchrowset($result);
 		$this->db->sql_freeresult($result);
 
-		return $this->get_entities($rowset);
+		if ($as_entities)
+		{
+			return $this->get_entities($rowset);
+		}
+		else
+		{
+			return $rowset;
+		}
 	}
 
 	/**
@@ -230,9 +240,10 @@ class item
 	public function get_item_count($category_id, $sql_where = '')
 	{
 		$sql = 'SELECT COUNT(item_id) as count
-				FROM ' . $this->items_table . '
-				WHERE category_id = ' . (int) $category_id . $sql_where . '
-					' . $this->get_sql_where_active();
+				FROM ' . $this->items_table . ' i,
+					' . $this->categories_table . ' c
+				WHERE i.category_id = c.category_id
+					AND i.category_id = ' . (int) $category_id . $sql_where . $this->get_sql_where_active('i.');
 		$result = $this->db->sql_query($sql);
 		$count = $this->db->sql_fetchfield('count');
 		$this->db->sql_freeresult($result);
@@ -329,10 +340,10 @@ class item
 				$this->items_table		=> 'i',
 				$this->categories_table	=> 'c',
 			],
-			'WHERE'		=> 'i.item_active = 1
-				AND i.category_id = c.category_id ' .
+			'WHERE'		=> 'i.category_id = c.category_id' .
+				($category_id ? ' AND i.category_id = ' . (int) $category_id : '') .
 				$this->get_sql_where_active('i.') .
-				($category_id ? ' AND i.category_id = ' . (int) $category_id : ''),
+				$this->get_sql_where_available('i.'),
 		];
 
 		switch ($mode)
@@ -370,7 +381,7 @@ class item
 			break;
 
 			case 'random':
-				$sql_array['WHERE'] .= ' AND ' . $this->aps_dbal->random();
+				$sql_array['ORDER_BY'] = $this->aps_dbal->random();
 			break;
 		}
 
@@ -391,27 +402,36 @@ class item
 	 * Get and assign related items to the template
 	 *
 	 * @param  entity	$item				The item entity
-	 * @param  int		$limit				The amount of items to assign
 	 * @return void
 	 * @access public
 	 */
-	public function assign_related_items(entity $item, $limit = 4)
+	public function assign_related_items(entity $item)
 	{
-		$sql = 'SELECT i.*, c.category_slug, ABS(CAST(i.item_order as SIGNED) - ' . $item->get_order() . ') as distance
-				FROM ' . $this->items_table . ' i,
-					' . $this->categories_table . ' c
-				WHERE i.category_id = c.category_id
-					AND i.category_id = ' . $item->get_category() . '
-					AND i.item_id <> ' . $item->get_id() .
-					$this->get_sql_where_active('i.') . '
-				ORDER BY distance ASC';
-		$result = $this->db->sql_query_limit($sql, (int) $limit);
-		$rowset = (array) $this->db->sql_fetchrowset($result);
-		$this->db->sql_freeresult($result);
+		$item_ids = $item->get_related_items();
 
-		usort($rowset, function($a, $b) {
-			return $a['item_order'] - $b['item_order'];
-		});
+		if (empty($item_ids))
+		{
+			$sql = 'SELECT i.*, c.category_slug, ABS(CAST(i.item_order as SIGNED) - ' . $item->get_order() . ') as distance
+					FROM ' . $this->items_table . ' i,
+						' . $this->categories_table . ' c
+					WHERE i.category_id = c.category_id
+						AND i.category_id = ' . $item->get_category() . '
+						AND i.item_id <> ' . $item->get_id() .
+						$this->get_sql_where_active('i.') .
+						$this->get_sql_where_available('i.') . '
+					ORDER BY distance ASC';
+			$result = $this->db->sql_query_limit($sql, 4);
+			$rowset = (array) $this->db->sql_fetchrowset($result);
+			$this->db->sql_freeresult($result);
+
+			usort($rowset, function($a, $b) {
+				return $a['item_order'] - $b['item_order'];
+			});
+		}
+		else
+		{
+			$rowset = $this->get_items_by_id($item_ids, false);
+		}
 
 		foreach ($rowset as $row)
 		{
@@ -446,6 +466,7 @@ class item
 			"{$prefix}BACKGROUND_SRC"	=> $item->get_background() ? $this->get_background_path($item->get_background()) : '',
 			"{$prefix}IMAGES"			=> $item->get_images(),
 			"{$prefix}IMAGES_SRC"		=> $item->get_images() ? array_map([$this, 'get_background_path'], $item->get_images()) : [],
+			"{$prefix}RELATED_ITEMS"	=> $item->get_related_items(),
 
 			"{$prefix}COUNT"			=> $item->get_count(),
 			"{$prefix}STOCK"			=> $item->get_stock(),
@@ -469,6 +490,9 @@ class item
 			"{$prefix}FEATURED_START_UNIX"	=> $item->get_featured_start(),
 			"{$prefix}FEATURED_UNTIL_UNIX"	=> $item->get_featured_until(),
 
+			"{$prefix}AVAILABLE_START_UNIX"	=> $item->get_available_start(),
+			"{$prefix}AVAILABLE_UNTIL_UNIX"	=> $item->get_available_until(),
+
 			"{$prefix}EXPIRE_STRING"	=> $item->get_expire_string(),
 			"{$prefix}EXPIRE_SECONDS"	=> $item->get_expire_seconds(),
 			"{$prefix}EXPIRE_WITHIN"	=> $item->get_expire_seconds() ? $this->time->seconds_to_string($item->get_expire_seconds()) : '',
@@ -483,9 +507,12 @@ class item
 			"{$prefix}REFUND_UNIX"		=> $item->get_refund_seconds() ? time() + $item->get_refund_seconds() : 0,
 
 			"{$bool}{$prefix}ACTIVE"			=> $item->get_active(),
+			"{$bool}{$prefix}AVAILABLE"			=> $this->is_available($item),
 			"{$bool}{$prefix}CONFLICT"			=> $item->get_conflict(),
-			"{$bool}{$prefix}FEATURED"			=> $item->get_featured_start() ? $this->time->within($item->get_featured_start(), $item->get_featured_until()) : false,
+			"{$bool}{$prefix}FEATURED"			=> $this->is_featured($item),
 			"{$bool}{$prefix}GIFT"				=> $item->get_gift(),
+			"{$bool}{$prefix}GIFT_ONLY"			=> $item->get_gift_only(),
+			"{$bool}{$prefix}RELATED_ENABLED"	=> $item->get_related_enabled(),
 			"{$bool}{$prefix}SALE"				=> $this->on_sale($item),
 			"{$bool}{$prefix}STOCK_UNLIMITED"	=> $item->get_stock_unlimited(),
 			"{$bool}{$prefix}OUT_OF_STOCK"		=> !$item->get_stock_unlimited() && !$item->get_stock(),
@@ -498,6 +525,30 @@ class item
 			"U_{$prefix}REFUND"			=> $item->get_category_slug() ? $this->router->inventory($item->get_category_slug(), $item->get_slug(), 'refund') : '',
 			"U_{$prefix}VIEW"			=> $item->get_category_slug() ? $this->router->item($item->get_category_slug(), $item->get_slug()) : '',
 		];
+	}
+
+	/**
+	 * Check whether or not an item is available.
+	 *
+	 * @param  entity	$item			The item entity
+	 * @return bool						Whether or not the item is available
+	 * @access public
+	 */
+	public function is_available(entity $item)
+	{
+		return $item->get_available_start() ? $this->time->within($item->get_available_start(), $item->get_available_until()) : true;
+	}
+
+	/**
+	 * Check whether or not an item is featured.
+	 *
+	 * @param  entity	$item			The item entity
+	 * @return bool						Whether or not the item is featured
+	 * @access public
+	 */
+	public function is_featured(entity $item)
+	{
+		return $item->get_featured_start() ? $this->time->within($item->get_featured_start(), $item->get_featured_until()) : false;
 	}
 
 	/**
@@ -534,6 +585,33 @@ class item
 	 */
 	protected function get_sql_where_active($alias = '')
 	{
-		return $this->auth->acl_get('u_ass_can_view_inactive_item') ? '' : " AND {$alias}item_active = 1";
+		$sql_where = '';
+
+		if (!$this->auth->acl_get('u_ass_can_view_inactive_items'))
+		{
+			$sql_where .= " AND {$alias}item_active = 1";
+
+			if ($alias)
+			{
+				$sql_where .= ' AND c.category_active = 1';
+			}
+		}
+
+		return $sql_where;
+	}
+
+	/**
+	 * Get the item availability SQL WHERE statement
+	 *
+	 * @param  string	$alias			The table alias
+	 * @return string					The SQL WHERE statement
+	 * @access protected
+	 */
+	protected function get_sql_where_available($alias = '')
+	{
+		$time = time();
+
+		return " AND (({$alias}item_available_start = 0 AND {$alias}item_available_until = 0)
+			OR ({$time} BETWEEN {$alias}item_available_start AND {$alias}item_available_until))";
 	}
 }

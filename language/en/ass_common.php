@@ -22,8 +22,9 @@ if (empty($lang) || !is_array($lang))
  * Some characters you may want to copy&paste: ’ » “ ” …
  */
 $lang = array_merge($lang, [
-	'ASS_ALL'				=> 'All',
-	'ASS_AND'				=> ' and ', // The "and" in the following sentence: 2 days, 6 hours and 5 minutes
+	'ASS_ALL'					=> 'All',
+	'ASS_AND'					=> ' and ', // The "and" in the following sentence: 2 days, 6 hours and 5 minutes
+	'ASS_AVAILABILITY_END_ON'	=> 'Availability will end on %s',
 
 	'ASS_CATEGORY'			=> 'Category',
 	'ASS_CATEGORY_INACTIVE'	=> 'This category is currently not active!',
@@ -192,18 +193,22 @@ $lang = array_merge($lang, [
 	'ASS_ERROR_NOT_AUTH_GIFT'		=> 'You are not authorised to gift items.',
 	'ASS_ERROR_NOT_AUTH_PURCHASE'	=> 'You are not authorised to purchase items.',
 	'ASS_ERROR_NOT_AUTH_RECEIVE'	=> 'The requested user is not authorised to receive gifts.',
+	'ASS_ERROR_NOT_AVAILABLE'		=> 'The requested item is no longer available.',
 	'ASS_ERROR_NOT_ENOUGH_POINTS'	=> 'You currently do not have enough %s to purchase this item.',
 	'ASS_ERROR_NOT_EXISTS'			=> 'The requested %s does not yet exists.',
 	'ASS_ERROR_NOT_FOUND_CATEGORY'	=> 'The requested category could not be found.',
 	'ASS_ERROR_NOT_FOUND_ITEM'		=> 'The requested item could not be found.',
 	'ASS_ERROR_NOT_FOUND'			=> 'The requested %s could not be found.',
 	'ASS_ERROR_NOT_GIFTABLE'		=> 'The requested item can not be gifted.',
+	'ASS_ERROR_NOT_GIFT_SELF'		=> 'You are not allowed to gift yourself.',
 	'ASS_ERROR_NOT_OWNED'			=> 'You currently do not own this item.',
 	'ASS_ERROR_NOT_REFUND'			=> 'You are no longer authorised to refund this item. You have already used it.',
 	'ASS_ERROR_NOT_UNIQUE'			=> 'The field “%1$s” contains a non-unique value. The value is already in use by “%2$s”.',
 	'ASS_ERROR_OUT_OF_STOCK'		=> 'The requested item is currently out of stock.',
-	'ASS_ERROR_TOO_SHORT'			=> 'The field “%1$s” is too short. It must have more than %2$s characters and currently has %3$s characters.',
+	'ASS_ERROR_TOO_HIGH'			=> 'The field “%1$s” is too high. It must be lower than %2$s and it currently is %3$s.',
 	'ASS_ERROR_TOO_LONG'			=> 'The field “%1$s” is too long. It must have less than %2$s characters and currently has %3$s characters.',
+	'ASS_ERROR_TOO_LOW'				=> 'The field “%1$s” is too low. It must be higher than %2$s and it currently is %3$s.',
+	'ASS_ERROR_TOO_SHORT'			=> 'The field “%1$s” is too short. It must have more than %2$s characters and currently has %3$s characters.',
 	'ASS_ERROR_UNSIGNED'			=> 'The field “%s” is negative. It must have a positive value.',
 	'ASS_ERROR_ILLEGAL_CHARS'		=> 'The field “%s” contains illegal characters.',
 ]);

@@ -183,6 +183,11 @@ class inventory_controller
 			throw new shop_exception(403, 'ASS_ERROR_NOT_AUTH_PURCHASE');
 		}
 
+		if (!$this->operator_item->is_available($item))
+		{
+			throw new shop_exception(410, 'ASS_ERROR_NOT_AVAILABLE');
+		}
+
 		if (!$purchase)
 		{
 			if (!$this->auth->acl_get('u_ass_can_gift'))
@@ -218,6 +223,11 @@ class inventory_controller
 			if ($user_id === ANONYMOUS)
 			{
 				throw new shop_exception(404, 'NO_USER');
+			}
+
+			if ($user_id === (int) $this->user->data['user_id'])
+			{
+				throw new shop_exception(403, 'ASS_ERROR_NOT_GIFT_SELF');
 			}
 
 			$auth2 = new \phpbb\auth\auth;

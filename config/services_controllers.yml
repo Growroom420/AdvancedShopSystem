@@ -8,6 +8,26 @@ services:
             - '@template'
             - '@user'
 
+    phpbbstudio.ass.controller.acp.inventory:
+        class: phpbbstudio\ass\controller\acp_inventory_controller
+        arguments:
+            - '@dbal.conn'
+            - '@group_helper'
+            - '@language'
+            - '@log'
+            - '@phpbbstudio.ass.operator.category'
+            - '@phpbbstudio.ass.operator.item'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '%tables.groups%'
+            - '%tables.users%'
+            - '%tables.user_group%'
+            - '%phpbbstudio.ass.tables.inventory%'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+
+
     phpbbstudio.ass.controller.acp.items:
         class: phpbbstudio\ass\controller\acp_items_controller
         arguments:

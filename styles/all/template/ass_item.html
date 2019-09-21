@@ -119,26 +119,28 @@
 					</div>
 				</div>
 
-				<div class="aps-col s8">
-					<a class="aps-button-{{ not S_OUT_OF_STOCK ? 'green shop-relative' : 'red shop-cursor-ban' }} aps-center shop-block shop-bold shop-button-active"{% if not S_OUT_OF_STOCK %} href="{{ U_PURCHASE }}" data-shop-link="shop_purchase"{% endif %}>
-						{% if not S_OUT_OF_STOCK %}
-							<span class="shop-item-helper right delay-{{ delay }}">{{ lang('ASS_ITEM_PURCHASE') }}</span>
-							{% set delay = delay + 1 %}
-						{% endif %}
+				{% if not S_GIFT_ONLY %}
+					<div class="aps-col s{{ S_GIFT and S_CAN_GIFT ? 8 : 12 }}">
+						<a class="aps-button-{{ not S_OUT_OF_STOCK ? 'green shop-relative' : 'red shop-cursor-ban' }} aps-center shop-block shop-bold shop-button-active"{% if not S_OUT_OF_STOCK %} href="{{ U_PURCHASE }}" data-shop-link="shop_purchase"{% endif %}>
+							{% if not S_OUT_OF_STOCK %}
+								<span class="shop-item-helper right delay-{{ delay }}">{{ lang('ASS_ITEM_PURCHASE') }}</span>
+								{% set delay = delay + 1 %}
+							{% endif %}
 
-						{{ lang(S_OUT_OF_STOCK ? 'ASS_STOCK_OUT' : 'ASS_PURCHASE') }}
-					</a>
-				</div>
+							{{ lang(S_OUT_OF_STOCK ? 'ASS_STOCK_OUT' : 'ASS_PURCHASE') }}
+						</a>
+					</div>
+				{% endif %}
 
 				{% if S_GIFT and S_CAN_GIFT %}
-					<div class="aps-col s4">
-						<a class="aps-button-blue aps-center shop-block shop-relative{{ S_OUT_OF_STOCK ? ' shop-button-disabled' }}"{% if not S_OUT_OF_STOCK %} href="{{ U_GIFT }}" title="{{ lang('ASS_GIFT') }}" data-shop-link="shop_purchase"{% endif %}>
+					<div class="aps-col s{{ S_GIFT_ONLY ? 12 : 4 }}">
+						<a class="aps-button-{{ S_GIFT_ONLY and S_OUT_OF_STOCK ? 'red' : 'blue' }} aps-center shop-block shop-relative{{ S_GIFT_ONLY ? ' shop-bold shop-button-active' }}{{ not S_GIFT_ONLY and S_OUT_OF_STOCK ? ' shop-button-disabled' }}"{% if not S_OUT_OF_STOCK %} href="{{ U_GIFT }}" title="{{ lang('ASS_GIFT') }}" data-shop-link="shop_purchase"{% endif %}>
 							{% if not S_OUT_OF_STOCK %}
 								<span class="shop-item-helper left delay-{{ delay }}">{{ lang('ASS_ITEM_GIFT') }}</span>
 								{% set delay = delay + 1 %}
 							{% endif %}
 							<i class="icon {{ aps_config('ass_gift_icon') }} fa-fw" aria-hidden="true"></i>
-							<span class="sr-only">{{ lang('ASS_GIFT') }}</span>
+							<span{% if not S_GIFT_ONLY %} class="sr-only"{% endif %}>{{ lang('ASS_GIFT') }}</span>
 						</a>
 					</div>
 				{% endif %}
@@ -207,6 +209,12 @@
 				{% if S_SALE %}
 					<div class="aps-col s12 aps-center">
 						<em>{{ lang('ASS_SALE_END_ON', user.format_date(SALE_UNTIL_UNIX)) }}</em>
+					</div>
+				{% endif %}
+
+				{% if AVAILABLE_UNTIL_UNIX and S_AVAILABLE %}
+					<div class="aps-col s12 aps-center">
+						<em>{{ lang('ASS_AVAILABILITY_END_ON', user.format_date(AVAILABLE_UNTIL_UNIX)) }}</em>
 					</div>
 				{% endif %}
 			</div>

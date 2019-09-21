@@ -11,6 +11,7 @@ jQuery(function($) {
 		iconPicker: $('.aps-icon-picker'),
 		imageAddRow: $('#add_image_row'),
 		sortRows: $('[data-studio-sortable]'),
+		selects: $('[data-studio-select]'),
 		sliders: $('.shop-slider'),
 		panels: $('[data-studio-panel]'),
 		dates: {
@@ -38,8 +39,14 @@ jQuery(function($) {
 		});
 	}
 
+	if (studio.selects.length) {
+		studio.selects.select2({
+			closeOnSelect: false,
+		});
+	}
+
 	/**
-	 * Load the requested Item type tempate.
+	 * Load the requested Item type template.
 	 *
 	 * @return {void}
 	 */

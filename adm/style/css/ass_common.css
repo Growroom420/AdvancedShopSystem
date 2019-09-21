@@ -16,6 +16,14 @@
 	width: 200px;
 }
 
+.ass-width-90p {
+	width: 90%;
+}
+
+.ass-vertical-resize {
+	resize: vertical;
+}
+
 .ass-inline {
 	display: inline-block;
 }
@@ -81,6 +89,10 @@
 	max-width: 90%;
 	margin: 0 0 4px;
 	padding: 4px;
+}
+
+.ass-color-palette a {
+	width: 100% !important;
 }
 
 .ass-radio { display: none; }
@@ -561,4 +573,17 @@ output {
 .ass-help-prev {
 	right: unset;
 	left: 16px;
+}
+
+/* Inventory */
+.ass-button-inventory {
+	display: block;
+	height: auto;
+	padding: 16px;
+}
+
+.ass-button-inventory > span {
+	font-size: 24px;
+	display: block;
+	margin-bottom: 16px;
 }

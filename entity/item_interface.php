@@ -258,6 +258,7 @@ interface item_interface
 	 *
 	 * @param  double		$price			The item price
 	 * @return item			$this			This object for chaining calls
+	 * @throws runtime_exception
 	 * @access public
 	 */
 	public function set_price($price);
@@ -275,6 +276,7 @@ interface item_interface
 	 *
 	 * @param  int			$count			The item count
 	 * @return item			$this			This object for chaining calls
+	 * @throws runtime_exception
 	 * @access public
 	 */
 	public function set_count($count);
@@ -292,6 +294,7 @@ interface item_interface
 	 *
 	 * @param  int			$purchases		The item purchases
 	 * @return item			$this			This object for chaining calls
+	 * @throws runtime_exception
 	 * @access public
 	 */
 	public function set_purchases($purchases);
@@ -309,6 +312,7 @@ interface item_interface
 	 *
 	 * @param  int			$stock			The item stock
 	 * @return item			$this			This object for chaining calls
+	 * @throws runtime_exception
 	 * @access public
 	 */
 	public function set_stock($stock);
@@ -326,6 +330,7 @@ interface item_interface
 	 *
 	 * @param  int			$threshold		The item stock notification threshold
 	 * @return item			$this			This object for chaining calls
+	 * @throws runtime_exception
 	 * @access public
 	 */
 	public function set_stock_threshold($threshold);
@@ -470,6 +475,23 @@ interface item_interface
 	public function set_gift($gift);
 
 	/**
+	 * Get the item gift only status.
+	 *
+	 * @return bool							The item gift only status
+	 * @access public
+	 */
+	public function get_gift_only();
+
+	/**
+	 * Set the item gift only status.
+	 *
+	 * @param  bool			$gift_only		The item gift only status
+	 * @return item			$this			This object for chaining calls
+	 * @access public
+	 */
+	public function set_gift_only($gift_only);
+
+	/**
 	 * Get the item gift type.
 	 *
 	 * @return bool							The item gift type
@@ -499,6 +521,7 @@ interface item_interface
 	 *
 	 * @param  int			$percentage		The item gift price percentage
 	 * @return item			$this			This object for chaining calls
+	 * @throws runtime_exception
 	 * @access public
 	 */
 	public function set_gift_percentage($percentage);
@@ -516,6 +539,7 @@ interface item_interface
 	 *
 	 * @param  double		$price			The item gift price
 	 * @return item			$this			This object for chaining calls
+	 * @throws runtime_exception
 	 * @access public
 	 */
 	public function set_gift_price($price);
@@ -533,6 +557,7 @@ interface item_interface
 	 *
 	 * @param  double		$price			The item sale price
 	 * @return item			$this			This object for chaining calls
+	 * @throws runtime_exception
 	 * @access public
 	 */
 	public function set_sale_price($price);
@@ -606,6 +631,40 @@ interface item_interface
 	public function set_featured_until($time);
 
 	/**
+	 * Get the item available start timestamp.
+	 *
+	 * @return int							The item available start timestamp
+	 * @access public
+	 */
+	public function get_available_start();
+
+	/**
+	 * Set the item available start timestamp.
+	 *
+	 * @param  int			$time			The item available start timestamp
+	 * @return item			$this			This object for chaining calls
+	 * @access public
+	 */
+	public function set_available_start($time);
+
+	/**
+	 * Get the item available until timestamp.
+	 *
+	 * @return int							The item available until timestamp
+	 * @access public
+	 */
+	public function get_available_until();
+
+	/**
+	 * Set the item available until timestamp.
+	 *
+	 * @param  int			$time			The item available until timestamp
+	 * @return item			$this			This object for chaining calls
+	 * @access public
+	 */
+	public function set_available_until($time);
+
+	/**
 	 * Get the item background image.
 	 *
 	 * @return string						The item background image
@@ -638,6 +697,41 @@ interface item_interface
 	 * @access public
 	 */
 	public function set_images(array $images);
+
+	/**
+	 * Get the item related items status.
+	 *
+	 * @return bool							The item related item status
+	 * @access public
+	 */
+	public function get_related_enabled();
+
+	/**
+	 * Set the item related items status.
+	 *
+	 * @param  bool			$related		The item related item status
+	 * @return item			$this			This object for chaining calls
+	 * @throws runtime_exception
+	 * @access public
+	 */
+	public function set_related_enabled($related);
+
+	/**
+	 * Get the item related items.
+	 *
+	 * @return array						The item related items.
+	 * @access public
+	 */
+	public function get_related_items();
+
+	/**
+	 * Set the item related items.
+	 *
+	 * @param  array		$items			The item related items
+	 * @return item			$this			This object for chaining calls
+	 * @access public
+	 */
+	public function set_related_items(array $items);
 
 	/**
 	 * Get the item creation timestamp.

@@ -60,6 +60,7 @@
 
 ## Other extensions
 - [Advanced Points System](https://github.com/phpBB-Studio/AdvancedPointsSystem)
+- Advanced Points System · Purchases _(Work In Progress)_
 - Bank _(To be determined)_
 - Lottery _(To be determined)_
 - Robbery _(To be determined)_

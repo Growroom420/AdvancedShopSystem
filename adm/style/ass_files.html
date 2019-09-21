@@ -23,7 +23,7 @@
 {% INCLUDECSS '@phpbbstudio_ass/css/ass_common.css' %}
 
 {% if S_FILE_INDEX %}
-	<fieldset>
+	<div>
 		<a class="column1 centered-text" href="{{ U_FILE_FILES }}">
 			<fieldset>
 				<h2 class="centered-text ass-mar">Files</h2>
@@ -36,7 +36,7 @@
 				<i class="fa fa-file-image-o fa-5x ass-mar"></i>
 			</fieldset>
 		</a>
-	</fieldset>
+	</div>
 {% else %}
 	<fieldset>
 		<legend>{{ lang('ACP_ASS_FILES') }}</legend>
@@ -83,7 +83,7 @@
 						<input type="hidden" name="action" value="add_dir">
 						{{ S_FORM_TOKEN }}
 					</form>
-					<form class="aps-form ass-inline ass-mar-side" name="ass_files" method="post" action="{{ U_ACTION_FORM }}" enctype='multipart/form-data'>
+					<form class="aps-form ass-inline ass-mar-side" name="ass_files" method="post" action="{{ U_ACTION_FORM }}" enctype="multipart/form-data">
 						<label class="ass-label-fix">
 							<input class="autowidth ass-no-radius-right" id="file" name="file" type="file"{% if ALLOWED_EXTS %} accept="{{ ALLOWED_EXSTS }}"{% endif %}>
 						</label>

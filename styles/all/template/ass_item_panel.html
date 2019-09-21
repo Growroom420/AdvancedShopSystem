@@ -19,7 +19,7 @@
 	</div>
 	<div class="aps-row aps-panel-footer">
 		<div class="aps-col s6 aps-no-mar-bot shop-no-pad">
-			{% if S_CAN_PURCHASE and not item.S_OUT_OF_STOCK %}
+			{% if S_CAN_PURCHASE and not item.S_OUT_OF_STOCK and not item.S_GIFT_ONLY %}
 				<a class="aps-button-green shop-panel-footer-button" href="{{ item.U_PURCHASE }}" title="{{ lang('ASS_PURCHASE') }}" data-shop-link="ass_purchase">
 					<i class="icon {{ aps_config('ass_shop_icon') }} fa-fw" aria-hidden="true"></i>
 					<span class="sr-only">{{ lang('ASS_PURCHASE') }}</span>

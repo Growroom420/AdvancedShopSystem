@@ -4,7 +4,7 @@
 	{% endif %}
 
 	<div class="shop-panel-bottom aps-center">
-		{% if S_CAN_PURCHASE %}
+		{% if S_CAN_PURCHASE and not item.S_GIFT_ONLY %}
 			{% if item.S_OUT_OF_STOCK %}
 				<span class="aps-button-red shop-button-active pull-left" title="{{ lang('ASS_STOCK_OUT') }}">
 					<i class="icon {{ aps_config('ass_shop_icon') }} fa-fw" aria-hidden="true"></i>

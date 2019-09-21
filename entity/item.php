@@ -41,6 +41,15 @@ class item implements item_interface
 	/** @var array Item data */
 	protected $data;
 
+	/** @var double Maximum value for DECIMAL:14 */
+	const DECIMAL_14 = 999999999999.99;
+
+	/** @var int Maximum value for INT:3 */
+	const INT_3 = 999;
+
+	/** @var int Maximum value for ULINT */
+	const ULINT = 4294967295;
+
 	/**
 	 * Constructor.
 	 *
@@ -434,6 +443,16 @@ class item implements item_interface
 	{
 		$price = (double) $price;
 
+		if ($price < 0)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_LOW', ['PRICE', 0, $price]);
+		}
+
+		if ($price > self::DECIMAL_14)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_HIGH', ['PRICE', self::DECIMAL_14, $price]);
+		}
+
 		$this->data['item_price'] = $price;
 
 		return $this;
@@ -453,6 +472,16 @@ class item implements item_interface
 	public function set_count($count)
 	{
 		$count = (int) $count;
+
+		if ($count < 0)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_LOW', ['COUNT', 0, $count]);
+		}
+
+		if ($count > self::ULINT)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_HIGH', ['COUNT', self::ULINT, $count]);
+		}
 
 		$this->data['item_count'] = $count;
 
@@ -474,6 +503,16 @@ class item implements item_interface
 	{
 		$purchases = (int) $purchases;
 
+		if ($purchases < 0)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_LOW', ['PURCHASES', 0, $purchases]);
+		}
+
+		if ($purchases > self::ULINT)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_HIGH', ['PURCHASES', self::ULINT, $purchases]);
+		}
+
 		$this->data['item_purchases'] = $purchases;
 
 		return $this;
@@ -494,6 +533,16 @@ class item implements item_interface
 	{
 		$stock = (int) $stock;
 
+		if ($stock < 0)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_LOW', ['STOCK', 0, $stock]);
+		}
+
+		if ($stock > self::ULINT)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_HIGH', ['STOCK', self::ULINT, $stock]);
+		}
+
 		$this->data['item_stock'] = $stock;
 
 		return $this;
@@ -513,6 +562,16 @@ class item implements item_interface
 	public function set_stock_threshold($threshold)
 	{
 		$threshold = (int) $threshold;
+
+		if ($threshold < 0)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_LOW', ['STOCK_THRESHOLD', 0, $threshold]);
+		}
+
+		if ($threshold > self::ULINT)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_HIGH', ['STOCK_THRESHOLD', self::ULINT, $threshold]);
+		}
 
 		$this->data['item_stock_threshold'] = $threshold;
 
@@ -739,6 +798,26 @@ class item implements item_interface
 	/**
 	 * {@inheritDoc}
 	 */
+	public function get_gift_only()
+	{
+		return isset($this->data['item_gift_only']) ? (bool) $this->data['item_gift_only'] : false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function set_gift_only($gift_only)
+	{
+		$gift_only = (bool) $gift_only;
+
+		$this->data['item_gift_only'] = $gift_only;
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_gift_type()
 	{
 		return isset($this->data['item_gift_type']) ? (bool) $this->data['item_gift_type'] : true;
@@ -771,6 +850,16 @@ class item implements item_interface
 	{
 		$percentage = (int) $percentage;
 
+		if ($percentage < -100)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_LOW', ['PRICE', -100, $percentage]);
+		}
+
+		if ($percentage > self::INT_3)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_HIGH', ['PRICE', self::INT_3, $percentage]);
+		}
+
 		$this->data['item_gift_percentage'] = $percentage;
 
 		return $this;
@@ -791,6 +880,16 @@ class item implements item_interface
 	{
 		$price = (double) $price;
 
+		if ($price < 0)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_LOW', ['GIFT_PRICE', 0, $price]);
+		}
+
+		if ($price > self::DECIMAL_14)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_HIGH', ['GIFT_PRICE', self::DECIMAL_14, $price]);
+		}
+
 		$this->data['item_gift_price'] = $price;
 
 		return $this;
@@ -810,6 +909,16 @@ class item implements item_interface
 	public function set_sale_price($price)
 	{
 		$price = (double) $price;
+
+		if ($price < 0)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_LOW', ['SALE_PRICE', 0, $price]);
+		}
+
+		if ($price > self::DECIMAL_14)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_HIGH', ['SALE_PRICE', self::DECIMAL_14, $price]);
+		}
 
 		$this->data['item_sale_price'] = $price;
 
@@ -939,6 +1048,72 @@ class item implements item_interface
 	/**
 	 * {@inheritDoc}
 	 */
+	public function get_available_start()
+	{
+		return isset($this->data['item_available_start']) ? (int) $this->data['item_available_start'] : 0;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function set_available_start($time)
+	{
+		$time = (string) $time;
+
+		if ($time !== '')
+		{
+			$tz = date_default_timezone_get();
+
+			date_default_timezone_set($this->config['board_timezone']);
+
+			$time = date_timestamp_get(\DateTime::createFromFormat('d/m/Y H:i', $time));
+
+			date_default_timezone_set($tz);
+		}
+
+		$time = (int) $time;
+
+		$this->data['item_available_start'] = $time;
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function get_available_until()
+	{
+		return isset($this->data['item_available_until']) ? (int) $this->data['item_available_until'] : 0;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function set_available_until($time)
+	{
+		$time = (string) $time;
+
+		if ($time !== '')
+		{
+			$tz = date_default_timezone_get();
+
+			date_default_timezone_set($this->config['board_timezone']);
+
+			$time = date_timestamp_get(\DateTime::createFromFormat('d/m/Y H:i', $time));
+
+			date_default_timezone_set($tz);
+		}
+
+		$time = (int) $time;
+
+		$this->data['item_available_until'] = $time;
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_background()
 	{
 		return isset($this->data['item_background']) ? (string) $this->data['item_background'] : '';
@@ -974,6 +1149,54 @@ class item implements item_interface
 		$images = array_filter($images);
 
 		$this->data['item_images'] = json_encode($images);
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function get_related_enabled()
+	{
+		return isset($this->data['item_related_enabled']) ? (bool) $this->data['item_related_enabled'] : true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function set_related_enabled($related)
+	{
+		$related = (bool) $related;
+
+		$this->data['item_related_enabled'] = $related;
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function get_related_items()
+	{
+		return isset($this->data['item_related_items']) ? (array) json_decode($this->data['item_related_items'], true) : [];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function set_related_items(array $items)
+	{
+		$items = (array) $items;
+
+		$items = array_filter($items);
+		$items = array_unique($items);
+
+		if (($count = count($items)) > 8)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_HIGH', ['RELATED_ITEMS', 8, $count]);
+		}
+
+		$this->data['item_related_items'] = json_encode($items);
 
 		return $this;
 	}

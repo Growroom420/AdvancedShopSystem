@@ -89,7 +89,7 @@
 				<dd>
 					{% include 'acp_posting_buttons.html' %}
 
-					<div class="ass-color-palette" id="color_palette_placeholder" data-orientation="h" data-height="12" data-width="24" data-bbcode="true"></div>
+					<div class="ass-color-palette" data-orientation="h" data-height="12" data-width="calc((100% - 48px) / 25); padding: 0" data-bbcode="true"></div>
 
 					<textarea class="inputbox" id="desc" name="desc" rows="5">{{ attribute(_context, type ~ '_DESC') }}</textarea>
 				</dd>
@@ -121,6 +121,9 @@
 					<tr>
 						<th class="centered-text">{{ lang('ENABLED') }}</th>
 						<th class="centered-text">{{ lang('ACP_ASS_CONFLICT' ~ (not S_ITEMS ? 'S')) }}</th>
+						{% if S_ITEMS %}
+							<th class="centered-text">{{ lang('ACP_ASS_AVAILABLE') }}</th>
+						{% endif %}
 						<th class="centered-text">{{ lang('ACP_ASS_' ~ type ~ '_ICON') }}</th>
 						<th class="name">{{ lang('ACP_ASS_' ~ type ~ '_TITLE') }}</th>
 						<th class="centered-text">{{ lang('ACP_ASS_' ~ type ~ '_SLUG') }}</th>
@@ -136,6 +139,11 @@
 							<td class="actions {{ row.CONFLICT ? 'never' : 'yes' }}">
 								<i class="icon fa-fw {{ row.CONFLICT ? 'fa-exclamation icon-red' : 'fa-check icon-green' }}" aria-hidden="true"></i>
 							</td>
+							{% if S_ITEMS %}
+								<td class="actions {{ row.S_AVAILABLE ? 'yes' : 'never' }}" title="{{ lang(row.S_AVAILABLE ? 'ENABLED' : 'DISABLED') }}">
+									<i class="icon fa-fw {{ row.S_AVAILABLE ? 'fa-check icon-green' : 'fa-times icon-red' }}" aria-hidden="true"></i>
+								</td>
+							{% endif %}
 							<td class="actions"{% if row.ICON %} title="{{ row.ICON }}"{% endif %}>
 								{% if row.ICON %}
 									<i class="icon {{ row.ICON }} fa-fw" aria-hidden="true"></i>
@@ -159,6 +167,13 @@
 											<span class="sr-only">{{ lang('EDIT') }}</span>
 										</a>
 										&nbsp;
+										{% if S_ITEMS %}
+											<a class="aps-button-blue" href="{{ row.U_COPY }}" title="{{ lang('ACP_ASS_COPY') }}">
+												<i class="icon fa-clipboard fa-fw" aria-hidden="true"></i>
+												<span class="sr-only">{{ lang('ACP_ASS_COPY') }}</span>
+											</a>
+											&nbsp;
+										{% endif %}
 										<a class="aps-button-red" href="{{ row.U_DELETE }}" title="{{ lang('DELETE') }}" data-ajax="row_delete">
 											<i class="icon fa-trash fa-fw" aria-hidden="true"></i>
 											<span class="sr-only">{{ lang('DELETE') }}</span>

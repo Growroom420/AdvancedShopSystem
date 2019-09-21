@@ -278,19 +278,60 @@ class acp_items_controller
 			case 'cat_add':
 			case 'cat_edit':
 			case 'add':
+			case 'copy':
 			case 'edit':
 				$s_edit = in_array($action, ['edit', 'cat_edit']);
-				$s_item = in_array($action, ['add', 'edit']);
+				$s_item = in_array($action, ['add', 'copy', 'edit']);
 
 				$entity = $s_item ? $this->operator_item->get_entity() : $this->operator_cat->get_entity();
 
 				if ($s_edit)
 				{
-					$entity->load(($s_item ? $item_id : $category_id));
+					try
+					{
+						$entity->load(($s_item ? $item_id : $category_id));
+					}
+					catch (runtime_exception $e)
+					{
+						$message = $this->language->lang($e->getMessage(), $this->language->lang($s_item ? 'ASS_ITEM' : 'ASS_CATEGORY'));
+						trigger_error($message . adm_back_link($this->u_action), E_USER_WARNING);
+					}
 				}
 				else if ($s_item)
 				{
-					$entity->set_category($category_id);
+					// Copy an item
+					if ($action === 'copy')
+					{
+						$data = $this->operator_item->get_items_by_id([$item_id], false);
+
+						if (empty($data[0]))
+						{
+							$message = $this->language->lang('ASS_ERROR_NOT_FOUND', $this->language->lang('ASS_ITEM'));
+							trigger_error($message . adm_back_link($this->u_action), E_USER_WARNING);
+						}
+
+						$data = array_diff_key($data[0], array_flip([
+							'item_id',
+							'item_title',
+							'item_slug',
+							'item_purchases',
+							'item_stock',
+							'item_create_time',
+							'item_edit_time',
+							'item_conflict',
+							'category_slug',
+						]));
+
+						$entity->import($data);
+
+						$action = 'add';
+						$item_id = 0;
+						$category_id = $entity->get_category();
+					}
+					else
+					{
+						$entity->set_category($category_id);
+					}
 				}
 
 				if ($s_item && $s_edit)
@@ -333,9 +374,11 @@ class acp_items_controller
 					'CONFLICT'		=> $entity->get_conflict(),
 
 					'S_ACTIVE'		=> $entity->get_active(),
+					'S_AVAILABLE'	=> $this->operator_item->is_available($entity),
 					'S_AUTH'		=> $s_auth,
 
 					'U_DELETE'		=> $s_auth ? "{$this->u_action}&amp;action=delete&iid={$entity->get_id()}" : '',
+					'U_COPY'		=> $s_auth ? "{$this->u_action}&amp;action=copy&iid={$entity->get_id()}" : '',
 					'U_EDIT'		=> $s_auth ? "{$this->u_action}&amp;action=edit&iid={$entity->get_id()}" : '',
 				]);
 			}
@@ -405,8 +448,8 @@ class acp_items_controller
 				'stock_unlimited'	=> $this->request->variable('stock_unlimited', false),
 				'stock'				=> $this->request->variable('stock', 0),
 				'stock_threshold'	=> $this->request->variable('stock_threshold', 0),
-				'count'				=> $this->request->variable('count', 0),
 				'gift'				=> $this->request->variable('gift', false),
+				'gift_only'			=> $this->request->variable('gift_only', false),
 				'gift_type'			=> $this->request->variable('gift_type', false),
 				'gift_percentage'	=> $this->request->variable('gift_percentage', 0),
 				'gift_price'		=> $this->request->variable('gift_price', 0.00),
@@ -415,11 +458,16 @@ class acp_items_controller
 				'sale_until'		=> $this->request->variable('sale_until', ''),
 				'featured_start'	=> $this->request->variable('featured_start', ''),
 				'featured_until'	=> $this->request->variable('featured_until', ''),
+				'available_start'	=> $this->request->variable('available_start', ''),
+				'available_until'	=> $this->request->variable('available_until', ''),
+				'count'				=> $this->request->variable('count', 0),
 				'refund_string'		=> $this->request->variable('refund_string', '', true),
 				'expire_string'		=> $this->request->variable('expire_string', '', true),
 				'delete_string'		=> $this->request->variable('delete_string', '', true),
 				'background'		=> $this->request->variable('background', '', true),
 				'images'			=> $this->request->variable('images', [''], true),
+				'related_enabled'	=> $this->request->variable('related_enabled', false),
+				'related_items'		=> $this->request->variable('related_items', [0]),
 			];
 
 			$post_variables = $this->request->get_super_global(\phpbb\request\request_interface::POST);
@@ -520,6 +568,8 @@ class acp_items_controller
 				]),
 			]);
 
+			$this->set_related_items_for_select($entity->get_id(), $entity->get_related_items());
+
 			if ($s_edit && !$submit && $type === null)
 			{
 				$errors[] = $this->language->lang('ASS_ITEM_TYPE_NOT_EXIST');
@@ -601,6 +651,39 @@ class acp_items_controller
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Assign categories and items to the template for the related items selection.
+	 *
+	 * @param  int			$item_id	The item identifiers
+	 * @param  array		$item_ids	The related items identifiers
+	 * @return void
+	 * @access protected
+	 */
+	protected function set_related_items_for_select($item_id, array $item_ids)
+	{
+		/** @var category $category */
+		foreach ($this->operator_cat->get_categories() as $category)
+		{
+			$this->template->assign_block_vars('categories', array_merge([
+				'S_INACTIVE'	=> !$category->get_active(),
+			], $this->operator_cat->get_variables($category)));
+
+			/** @var item $item */
+			foreach ($this->operator_item->get_items($category->get_id()) as $item)
+			{
+				if ($item->get_id() === $item_id)
+				{
+					continue;
+				}
+
+				$this->template->assign_block_vars('categories.items', array_merge([
+					'S_INACTIVE'	=> !$item->get_active(),
+					'S_SELECTED'	=> in_array($item->get_id(), $item_ids),
+				], $this->operator_item->get_variables($item)));
+			}
+		}
 	}
 
 	/**
