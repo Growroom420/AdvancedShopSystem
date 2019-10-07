@@ -1,5 +1,27 @@
 # phpBB Studio - Advanced Shop System
 
+#### v1.1.1-beta
+- Fixed users being able to gift themselves _(now for real)_
+- Fixed pressing enter causing the page to reload instead of submitting the gift form
+- Fixed redundant `=` in an HTML class attribute
+- Fixed points distribution, now all goes through Advanced Points System
+- Fixed the permission for managing the ACP Inventory not showing up
+- Fixed entity import names to prevent warnings on lower PHP versions
+- Fixed “File” item type not downloading when immediately deleted
+- Fixed double slashes (`//`) in shop folders' and files' paths
+- Added additional checks to file functions to ensure file existance
+- Added style template events
+- Added item stacking
+  - Multiple of the same item can now be in a user's inventory
+  - Only when the item is allowed to be stacked by the Administrator
+  - The maximum item stack is configurable on a per item basis
+  - Users need the permission to be authorised to stack items
+  - Full explanation added to the “Take the tour” upon item creation
+- Extended index panels configuration
+  - Panels can now be disabled by giving them a limit of 0
+  - Panels can now be ordered, determining in which order they are displayed
+  - Panels width is now also configurable by the administrator
+
 #### v1.1.0-beta
 - Fixed shop index’ random items not being random
 - Fixed category’s items displaying in reverse order

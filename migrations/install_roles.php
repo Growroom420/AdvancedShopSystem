@@ -85,8 +85,8 @@ class install_roles extends \phpbb\db\migration\migration
 	private function role_exists($role)
 	{
 		$sql = 'SELECT role_id
-				FROM ' . ACL_ROLES_TABLE . '
-				WHERE role_name = "' . $this->db->sql_escape($role) . '"';
+				FROM ' . $this->table_prefix . "acl_roles
+				WHERE role_name = '" . $this->db->sql_escape($role) . "'";
 		$result = $this->db->sql_query_limit($sql, 1);
 		$role_id = $this->db->sql_fetchfield('role_id');
 		$this->db->sql_freeresult($result);

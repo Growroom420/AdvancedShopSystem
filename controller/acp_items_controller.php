@@ -461,6 +461,7 @@ class acp_items_controller
 				'available_start'	=> $this->request->variable('available_start', ''),
 				'available_until'	=> $this->request->variable('available_until', ''),
 				'count'				=> $this->request->variable('count', 0),
+				'stack'				=> $this->request->variable('stack', 1),
 				'refund_string'		=> $this->request->variable('refund_string', '', true),
 				'expire_string'		=> $this->request->variable('expire_string', '', true),
 				'delete_string'		=> $this->request->variable('delete_string', '', true),

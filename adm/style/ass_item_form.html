@@ -67,11 +67,11 @@
 	</dl>
 	<dl>
 		<dt><label for="stock">{{ lang('ACP_ASS_ITEM_STOCK') ~ lang('COLON') }}</label>{{ desc('STOCK') }}</dt>
-		<dd><input class="autowidth" id="stock" name="stock" type="number" value="{{ ITEM_STOCK }}" min="0" step="1"></dd>
+		<dd><input class="autowidth" id="stock" name="stock" type="number" value="{{ ITEM_STOCK }}" min="0" max="4294967295" step="1"></dd>
 	</dl>
 	<dl>
 		<dt><label for="stock_threshold">{{ lang('ACP_ASS_ITEM_STOCK_THRESHOLD') ~ lang('COLON') }}</label>{{ desc('STOCK_THRESHOLD') }}</dt>
-		<dd><input class="autowidth" id="stock_threshold" name="stock_threshold" type="number" value="{{ ITEM_STOCK_THRESHOLD }}" min="0" step="1"></dd>
+		<dd><input class="autowidth" id="stock_threshold" name="stock_threshold" type="number" value="{{ ITEM_STOCK_THRESHOLD }}" min="0" max="4294967295" step="1"></dd>
 	</dl>
 </fieldset>
 
@@ -217,7 +217,11 @@
 
 	<dl>
 		<dt><label for="count">{{ lang('ACP_ASS_ITEM_COUNT') ~ lang('COLON') }}</label>{{ desc('COUNT') ~ desc('COUNT_ZERO', true) }}</dt>
-		<dd><input class="autowidth" id="count" name="count" type="number" value="{{ ITEM_COUNT }}" min="0" step="1"></dd>
+		<dd><input class="autowidth" id="count" name="count" type="number" value="{{ ITEM_COUNT }}" min="0" max="4294967295" step="1"></dd>
+	</dl>
+	<dl>
+		<dt><label for="stack">{{ lang('ACP_ASS_ITEM_STACK') ~ lang('COLON') }}</label>{{ desc('STACK') }}</dt>
+		<dd><input class="autowidth" id="stack" name="stack" type="number" value="{{ ITEM_STACK }}" min="1" max="4294967295" step="1" required></dd>
 	</dl>
 
 	{# These strings should NOT be translated, as strtotime() only accept English. #}

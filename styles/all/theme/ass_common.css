@@ -262,6 +262,12 @@
 .shop-panel-icon-silver:after { color: #a7a7ad; }
 .shop-panel-icon-bronze:after { color: #824a02; }
 
+.shop-inventory-stack {
+	position: relative;
+	z-index: 1;
+	margin-left: -2px;
+}
+
 .shop-sale-tag {
 	position: absolute;
 	top: 0;

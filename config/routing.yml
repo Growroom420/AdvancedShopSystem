@@ -43,9 +43,10 @@ phpbbstudio_ass_history_pagination:
         _controller: phpbbstudio.ass.controller.inventory:history
 
 phpbbstudio_ass_inventory:
-    path: /aps/inventory/{category_slug}/{item_slug}/{action}
+    path: /aps/inventory/{category_slug}/{item_slug}/{index}/{action}
     defaults:
         _controller: phpbbstudio.ass.controller.inventory:inventory
         category_slug: ''
         item_slug: ''
         action: ''
+        index: 1

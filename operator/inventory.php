@@ -10,14 +10,17 @@
 
 namespace phpbbstudio\ass\operator;
 
-use phpbbstudio\ass\entity\category;
-use phpbbstudio\ass\entity\item;
+use phpbbstudio\ass\entity\category as category_entity;
+use phpbbstudio\ass\entity\item as item_entity;
 
 /**
  * phpBB Studio - Advanced Shop System: Inventory operator
  */
 class inventory
 {
+	/** @var \phpbbstudio\aps\points\distributor */
+	protected $aps_distributor;
+
 	/** @var \phpbbstudio\aps\core\functions */
 	protected $aps_functions;
 
@@ -45,6 +48,7 @@ class inventory
 	/**
 	 * Constructor.
 	 *
+	 * @param  \phpbbstudio\aps\points\distributor	$aps_distributor	APS Distributor oject
 	 * @param  \phpbbstudio\aps\core\functions		$aps_functions		APS Functions object
 	 * @param  \phpbb\config\config					$config				Config object
 	 * @param  \phpbb\db\driver\driver_interface	$db					Database object
@@ -57,16 +61,18 @@ class inventory
 	 * @access public
 	 */
 	public function __construct(
+		\phpbbstudio\aps\points\distributor $aps_distributor,
 		\phpbbstudio\aps\core\functions $aps_functions,
 		\phpbb\config\config $config,
 		\phpbb\db\driver\driver_interface $db,
-		\phpbbstudio\ass\operator\item $operator_item,
+		item $operator_item,
 		\phpbb\user $user,
 		$inventory_table,
 		$items_table,
 		$users_table
 	)
 	{
+		$this->aps_distributor	= $aps_distributor;
 		$this->aps_functions	= $aps_functions;
 		$this->config			= $config;
 		$this->db				= $db;
@@ -104,11 +110,11 @@ class inventory
 	/**
 	 * Get a user's inventory.
 	 *
-	 * @param  category|null	$category		The category entity
+	 * @param  category_entity|null	$category	The category entity
 	 * @return array							The user's inventory
 	 * @access public
 	 */
-	public function get_inventory(category $category = null)
+	public function get_inventory(category_entity $category = null)
 	{
 		$rowset = [];
 
@@ -123,7 +129,7 @@ class inventory
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			$rowset[(int) $row['item_id']] = $row;
+			$rowset[(int) $row['inventory_id']] = $row;
 		}
 		$this->db->sql_freeresult($result);
 
@@ -133,18 +139,19 @@ class inventory
 	/**
 	 * Get an inventory item.
 	 *
-	 * @param  item				$item			The item entity
+	 * @param  item_entity		$item			The item entity
+	 * @param  int				$index			The item index
 	 * @return array
 	 * @access public
 	 */
-	public function get_inventory_item(item $item)
+	public function get_inventory_item(item_entity $item, $index)
 	{
 		$sql = 'SELECT * 
 				FROM ' . $this->inventory_table . '
 				WHERE user_id = ' . (int) $this->user->data['user_id'] . '
 					AND item_id = ' . $item->get_id() . '
 					AND category_id = ' . $item->get_category();
-		$result = $this->db->sql_query_limit($sql, 1);
+		$result = $this->db->sql_query_limit($sql, 1, $index);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
@@ -152,46 +159,47 @@ class inventory
 	}
 
 	/**
-	 * Check if a user can purchase an item and does not already own it.
+	 * Get the item stack count in a user's inventory.
 	 *
-	 * @param  item				$item			The item entity
+	 * @param  item_entity		$item			The item entity
 	 * @param  int				$user_id		The user identifier
-	 * @return bool
+	 * @return int								The item stack count
 	 * @access public
 	 */
-	public function check_purchase(item $item, $user_id = 0)
+	public function get_inventory_stack(item_entity $item, $user_id = 0)
 	{
 		$user_id = $user_id ? $user_id : $this->user->data['user_id'];
 
-		$sql = 'SELECT 1
+		$sql = 'SELECT COUNT(inventory_id) as stack
 				FROM ' . $this->inventory_table . '
 				WHERE user_id = ' . (int) $user_id . '
 					AND item_id = ' . $item->get_id() . '
 					AND category_id = ' . $item->get_category();
-		$result = $this->db->sql_query_limit($sql, 1);
-		$row = $this->db->sql_fetchrow($result);
+		$result = $this->db->sql_query($sql);
+		$stack = $this->db->sql_fetchfield('stack');
 		$this->db->sql_freeresult($result);
 
-		return (bool) ($row !== false);
+		return (int) $stack;
 	}
 
 	/**
 	 * Add a purchase (or gift).
 	 *
-	 * @param  item				$item			The item entity
+	 * @param  item_entity		$item			The item entity
 	 * @param  int				$user_id		The user identifier
 	 * @param  bool				$purchase		Whether it's a purchase or a gift
 	 * @return double
 	 * @access public
 	 */
-	public function add_purchase(item $item, $user_id = 0, $purchase = true)
+	public function add_purchase(item_entity $item, $user_id = 0, $purchase = true)
 	{
 		$price = $this->get_price($item, $purchase);
-		$points = $this->user->data['user_points'] - $price;
+		$points = $this->aps_functions->equate_points($this->user->data['user_points'], $price, '-');
+		$points = $this->aps_functions->format_points($points);
 
 		$this->db->sql_transaction('begin');
 
-		$this->update_user_points($points);
+		$this->aps_distributor->update_points($points);
 
 		$sql = 'INSERT INTO ' . $this->inventory_table . ' ' . $this->db->sql_build_array('INSERT', [
 			'category_id'		=> $item->get_category(),
@@ -220,35 +228,16 @@ class inventory
 	}
 
 	/**
-	 * Update a user's points.
-	 *
-	 * @param  double			$points			The new user points
-	 * @return bool
-	 * @access public
-	 */
-	public function update_user_points($points)
-	{
-		$sql = 'UPDATE ' . $this->users_table . ' SET ' . $this->db->sql_build_array('UPDATE', [
-				'user_points' => $points,
-			]) . ' WHERE user_id = ' . (int) $this->user->data['user_id'];
-		$this->db->sql_query($sql);
-
-		return (bool) $this->db->sql_affectedrows();
-	}
-
-	/**
 	 * Delete an inventory item.
 	 *
-	 * @param  item				$item			The item entity
+	 * @param  int				$inventory_id	The inventory identifier
 	 * @return bool								Whether or not the item was deleted
 	 * @access public
 	 */
-	public function delete(item $item)
+	public function delete($inventory_id)
 	{
 		$sql = 'DELETE FROM ' . $this->inventory_table . '
-				WHERE user_id = ' . (int) $this->user->data['user_id'] . '
-					AND item_id = ' . $item->get_id() . '
-					AND category_id = ' . $item->get_category();
+				WHERE inventory_id = ' . (int) $inventory_id;
 		$this->db->sql_query($sql);
 
 		return (bool) $this->db->sql_affectedrows();
@@ -274,18 +263,16 @@ class inventory
 	/**
 	 * Update the activated count for an inventory item.
 	 *
-	 * @param  item				$item			The item entity
+	 * @param  int				$inventory_id	The inventory identifier
 	 * @param  array			$data			The inventory item data
 	 * @return bool								Whether or not the inventory item was updated
 	 * @access public
 	 */
-	public function activated(item $item, array $data)
+	public function activated($inventory_id, $data)
 	{
 		$sql = 'UPDATE ' . $this->inventory_table . ' 
 			SET ' . $this->db->sql_build_array('UPDATE', $data) . '
-			WHERE user_id = ' . (int) $this->user->data['user_id'] . '
-				AND item_id = ' . $item->get_id() . '
-				AND category_id = ' . $item->get_category();
+			WHERE inventory_id = ' . (int) $inventory_id;
 		$this->db->sql_query($sql);
 
 		return (bool) $this->db->sql_affectedrows();
@@ -294,12 +281,12 @@ class inventory
 	/**
 	 * Check if the current user can afford this item.
 	 *
-	 * @param  item				$item			The item entity
+	 * @param  item_entity		$item			The item entity
 	 * @param  bool				$purchase		Whether it's a purchase or a gift
 	 * @return bool								Whether or not the user can afford this item
 	 * @access public
 	 */
-	public function check_price(item $item, $purchase = true)
+	public function check_price(item_entity $item, $purchase = true)
 	{
 		if ($this->config['aps_points_min'] !== '')
 		{
@@ -320,12 +307,12 @@ class inventory
 	/**
 	 * Get the price for an item, taking into account sale and gift.
 	 *
-	 * @param  item				$item			The item entity
+	 * @param  item_entity		$item			The item entity
 	 * @param  bool				$purchase		Whether it's a purchase or a gift
 	 * @return double							The item price
 	 * @access public
 	 */
-	public function get_price(item $item, $purchase = true)
+	public function get_price(item_entity $item, $purchase = true)
 	{
 		if ($purchase)
 		{

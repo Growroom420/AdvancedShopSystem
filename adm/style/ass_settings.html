@@ -177,9 +177,34 @@
 						</dd>
 					</dl>
 					<dl>
+						<dt><label for="{{ type }}_order">{{ lang('ACP_ASS_PANEL_ORDER') ~ lang('COLON') }}</label></dt>
+						<dd><input id="{{ type }}_order" name="{{ type }}_order" type="number" value="{{ ORDER[type] }}" min="{{ data.order.min }}" max="{{ data.order.max }}" step="1"></dd>
+					</dl>
+					<dl>
+						<dt><label for="{{ type }}_width">{{ lang('ACP_ASS_PANEL_WIDTH') ~ lang('COLON') }}</label></dt>
+						<dd>
+							{% if type == 'random' %}
+								<label>
+									<input class="radio ass-radio" name="{{ type }}_width" type="radio" value="3"{{ WIDTH[type] == 3 ? ' checked' }}>
+									<span class="aps-button-blue">25 %</span>
+								</label>
+							{% endif %}
+							<label>
+								<input class="radio ass-radio" id="{{ type }}_width" name="{{ type }}_width" type="radio" value="4"{{ WIDTH[type] == 4 ? ' checked' }}>
+								<span class="aps-button-blue">33 %</span>
+							</label>
+							{% if type != 'random' %}
+								<label>
+									<input class="radio ass-radio" name="{{ type }}_width" type="radio" value="6"{{ WIDTH[type] == 6 ? ' checked' }}>
+									<span class="aps-button-blue">50 %</span>
+								</label>
+							{% endif %}
+						</dd>
+					</dl>
+					<dl>
 						<dt><label for="{{ type }}_limit">{{ lang('ACP_ASS_PANEL_LIMIT') ~ lang('COLON') }}</label></dt>
 						<dd>
-							<input class="shop-slider" id="{{ type }}_limit" name="{{ type }}_limit" type="range" value="{{ LIMIT[type] }}" min="{{ data.min }}" max="{{ data.max }}" step="1" required>
+							<input class="shop-slider" id="{{ type }}_limit" name="{{ type }}_limit" type="range" value="{{ LIMIT[type] }}" min="{{ data.limit.min }}" max="{{ data.limit.max }}" step="1" required>
 							<output>{{ LIMIT[type] }}</output>
 						</dd>
 					</dl>

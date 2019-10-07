@@ -35,6 +35,7 @@ services:
         parent: phpbbstudio.ass.items.base
         shared: false
         calls:
+            - [set_aps_distributor, [@phpbbstudio.aps.distributor]]
             - [set_aps_functions, [@phpbbstudio.aps.functions]]
         tags:
             - { name: phpbbstudio.ass.item }

@@ -78,6 +78,20 @@
 				</div>
 			{% endif %}
 
+			{% if S_ASS_PURCHASE and not S_PURCHASE_SUCCESS %}
+				<div class="aps-col s12">
+					<div class="aps-panel">
+						<div class="aps-panel-content">
+							{% if ASS_ITEM_STACK %}
+								{{ lang('ASS_WARNING_STACK', ASS_ITEM_STACK) }}
+							{% else %}
+								{{ lang('ASS_ERROR_NOT_OWNED') }}
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			{% endif %}
+
 			<div class="aps-col s12">
 				<div class="aps-panel">
 					<div class="aps-panel-content">

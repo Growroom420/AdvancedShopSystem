@@ -33,6 +33,7 @@ services:
     phpbbstudio.ass.operator.inventory:
         class: phpbbstudio\ass\operator\inventory
         arguments:
+            - '@phpbbstudio.aps.distributor'
             - '@phpbbstudio.aps.functions'
             - '@config'
             - '@dbal.conn'

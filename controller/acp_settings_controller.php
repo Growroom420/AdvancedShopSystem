@@ -126,15 +126,15 @@ class acp_settings_controller
 			'bluegray', 'gray', 'lightgray', 'black', 'white', 'lighten', 'darken'];
 
 		$panels = [
-			'featured'		=> ['min' => 2, 'max' => 10],
-			'sale'			=> ['min' => 2, 'max' => 10],
-			'featured_sale'	=> ['min' => 2, 'max' => 4],
-			'random'		=> ['min' => 0, 'max' => 20],
-			'recent'		=> ['min' => 2, 'max' => 10],
-			'limited'		=> ['min' => 2, 'max' => 10],
+			'featured'		=> ['limit' => ['min' => 0, 'max' => 10], 'order' => ['min' => 1, 'max' => 6], 'width' => ['min' => 4, 'max' => 6]],
+			'sale'			=> ['limit' => ['min' => 0, 'max' => 10], 'order' => ['min' => 1, 'max' => 6], 'width' => ['min' => 4, 'max' => 6]],
+			'featured_sale'	=> ['limit' => ['min' => 0, 'max' => 4], 'order' => ['min' => 1, 'max' => 6], 'width' => ['min' => 4, 'max' => 6]],
+			'random'		=> ['limit' => ['min' => 0, 'max' => 20], 'order' => ['min' => 1, 'max' => 6], 'width' => ['min' => 3, 'max' => 4]],
+			'recent'		=> ['limit' => ['min' => 0, 'max' => 10], 'order' => ['min' => 1, 'max' => 6], 'width' => ['min' => 4, 'max' => 6]],
+			'limited'		=> ['limit' => ['min' => 0, 'max' => 10], 'order' => ['min' => 1, 'max' => 6], 'width' => ['min' => 4, 'max' => 6]],
 		];
 
-		$options = ['banner_size', 'banner_colour', 'icon_colour', 'icon', 'limit'];
+		$options = ['banner_size', 'banner_colour', 'icon_colour', 'icon', 'limit', 'order', 'width'];
 		$settings = [
 			'int'		=> ['enabled', 'active', 'gift_enabled', 'deactivate_conflicts', 'items_per_page', 'logs_per_page', 'carousel_arrows', 'carousel_dots', 'carousel_fade', 'carousel_play', 'carousel_play_speed', 'carousel_speed'],
 			'string'	=> ['shop_icon', 'inventory_icon', 'no_image_icon', 'gift_icon'],
@@ -166,7 +166,7 @@ class acp_settings_controller
 		// Panel settings
 		$variables = [];
 
-		foreach (array_keys($panels) as $panel)
+		foreach ($panels as $panel => $data)
 		{
 			foreach ($options as $option)
 			{
@@ -180,6 +180,31 @@ class acp_settings_controller
 				{
 					$value = $this->request->variable($name, $default);
 
+					if (isset($data[$option]))
+					{
+						if ($value < $data[$option]['min'])
+						{
+							$field = $this->language->lang('ACP_ASS_PANEL_' . utf8_strtoupper($panel));
+							$field .= $this->language->lang('COLON');
+							$field .= ' ' . $this->language->lang('ACP_ASS_PANEL_' . utf8_strtoupper($option));
+
+							$errors[] = $this->language->lang('ASS_ERROR_TOO_LOW', $field, $data[$option]['min'], $value);
+
+							continue;
+						}
+
+						if ($value > $data[$option]['max'])
+						{
+							$field = $this->language->lang('ACP_ASS_PANEL_' . utf8_strtoupper($panel));
+							$field .= $this->language->lang('COLON');
+							$field .= ' ' . $this->language->lang('ACP_ASS_PANEL_' . utf8_strtoupper($option));
+
+							$errors[] = $this->language->lang('ASS_ERROR_TOO_HIGH', $field, $data[$option]['max'], $value);
+
+							continue;
+						}
+					}
+
 					if ($value != $default)
 					{
 						$this->config->set($config_name, $value);
@@ -187,6 +212,16 @@ class acp_settings_controller
 				}
 			}
 		}
+
+		uksort($panels, function($a, $b)
+		{
+			if ($this->config["ass_panel_{$a}_order"] == $this->config["ass_panel_{$b}_order"])
+			{
+				return 0;
+			}
+
+			return $this->config["ass_panel_{$a}_order"] < $this->config["ass_panel_{$b}_order"] ? -1 : 1;
+		});
 
 		if ($submit && empty($errors))
 		{

@@ -145,6 +145,8 @@ $lang = array_merge($lang, [
 	'ACP_ASS_ITEM_SALE_PRICE'			=> 'Item sale price',
 	'ACP_ASS_ITEM_SALE_PRICE_DESC'		=> 'The price that will be used when this item is on sale.',
 	'ACP_ASS_ITEM_SLUG'					=> 'Item slug',
+	'ACP_ASS_ITEM_STACK'				=> 'Item stack count',
+	'ACP_ASS_ITEM_STACK_DESC'			=> 'The amount of identical items can be in an inventory at the same time.',
 	'ACP_ASS_ITEM_STOCK'				=> 'Item stock',
 	'ACP_ASS_ITEM_STOCK_DESC'			=> 'The current item’s stock.',
 	'ACP_ASS_ITEM_STOCK_THRESHOLD'		=> 'Item stock threshold',
@@ -218,6 +220,8 @@ $lang = array_merge($lang, [
 	'ACP_ASS_PANEL_ICON'				=> 'Icon',
 	'ACP_ASS_PANEL_ICON_COLOUR'			=> 'Icon colour',
 	'ACP_ASS_PANEL_LIMIT'				=> 'Limit',
+	'ACP_ASS_PANEL_ORDER'				=> 'Order',
+	'ACP_ASS_PANEL_WIDTH'				=> 'Width',
 
 	'ACP_ASS_SETTINGS_CAROUSEL'			=> 'Carousel settings',
 	'ACP_ASS_SETTINGS_DEFAULT'			=> 'Default settings',

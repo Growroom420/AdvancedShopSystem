@@ -264,22 +264,39 @@ interface item_interface
 	public function set_price($price);
 
 	/**
-	 * Get the item count.
+	 * Get the item use count.
 	 *
-	 * @return int							The item count
+	 * @return int							The item use count
 	 * @access public
 	 */
 	public function get_count();
 
 	/**
-	 * Set the item count.
+	 * Set the item use count.
 	 *
-	 * @param  int			$count			The item count
+	 * @param  int			$count			The item use count
 	 * @return item			$this			This object for chaining calls
 	 * @throws runtime_exception
 	 * @access public
 	 */
 	public function set_count($count);
+	/**
+	 * Get the item stack count.
+	 *
+	 * @return int							The item stack count
+	 * @access public
+	 */
+	public function get_stack();
+
+	/**
+	 * Set the item stack count.
+	 *
+	 * @param  int			$stack			The item stack count
+	 * @return item			$this			This object for chaining calls
+	 * @throws runtime_exception
+	 * @access public
+	 */
+	public function set_stack($stack);
 
 	/**
 	 * Get the item purchases.

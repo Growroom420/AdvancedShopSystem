@@ -24,6 +24,9 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class inventory_controller
 {
+	/** @var \phpbbstudio\aps\points\distributor */
+	protected $aps_distributor;
+
 	/** @var \phpbbstudio\aps\core\functions */
 	protected $aps_functions;
 
@@ -87,6 +90,7 @@ class inventory_controller
 	/**
 	 * Constructor.
 	 *
+	 * @param  \phpbbstudio\aps\points\distributor			$aps_distributor	APS Distributor object
 	 * @param  \phpbbstudio\aps\core\functions				$aps_functions		APS Functions object
 	 * @param  \phpbb\auth\auth								$auth				Auth object
 	 * @param  \phpbb\config\config							$config				Config object
@@ -111,6 +115,7 @@ class inventory_controller
 	 * @access public
 	 */
 	public function __construct(
+		\phpbbstudio\aps\points\distributor $aps_distributor,
 		\phpbbstudio\aps\core\functions $aps_functions,
 		\phpbb\auth\auth $auth,
 		\phpbb\config\config $config,
@@ -133,6 +138,7 @@ class inventory_controller
 		\phpbb\user_loader $user_loader
 	)
 	{
+		$this->aps_distributor	= $aps_distributor;
 		$this->aps_functions	= $aps_functions;
 		$this->auth				= $auth;
 		$this->config			= $config;
@@ -217,7 +223,7 @@ class inventory_controller
 		if (confirm_box(true) && !$purchase)
 		{
 			$username = $this->request->variable('username', '', true);
-			$user_id = $this->user_loader->load_user_by_username($username);
+			$user_id = (int) $this->user_loader->load_user_by_username($username);
 			$user2 = $this->user_loader->get_user($user_id);
 
 			if ($user_id === ANONYMOUS)
@@ -241,11 +247,26 @@ class inventory_controller
 			$username = $this->user_loader->get_username($user_id, 'no_profile');
 		}
 
-		if ($purchase || (!$purchase && $user_id))
+		if ($purchase || (confirm_box(true) && !$purchase))
 		{
-			if ($this->operator_inv->check_purchase($item, $user_id))
+			$stack = $this->operator_inv->get_inventory_stack($item, $user_id);
+
+			if ($stack >= $item->get_stack())
 			{
-				throw new shop_exception(409, 'ASS_ERROR_ALREADY_OWNED' . (!$purchase ? '_USER' : ''), [$username]);
+				$message = $purchase ? 'ASS_ERROR_STACK_LIMIT' : 'ASS_ERROR_STACK_LIMIT_USER';
+				$params = $purchase ? [] : [$username];
+
+				throw new shop_exception(409, $message, $params);
+			}
+
+			$auth = !empty($auth2) ? $auth2 : $this->auth;
+
+			if ($stack && !$auth->acl_get('u_ass_can_stack'))
+			{
+				$message = $purchase ? 'ASS_ERROR_STACK_NO_AUTH' : 'ASS_ERROR_STACK_NO_AUTH_USER';
+				$params = $purchase ? [] : [$username];
+
+				throw new shop_exception(409, $message, $params);
 			}
 		}
 
@@ -257,6 +278,7 @@ class inventory_controller
 		$l_mode = $purchase ? 'ASS_PURCHASE' : 'ASS_GIFT';
 
 		$this->template->assign_vars([
+			'ASS_ITEM_STACK'		=> $stack,
 			'ASS_PURCHASE_PRICE'	=> $this->operator_inv->get_price($item, $purchase),
 			'S_ASS_PURCHASE'		=> $purchase,
 		]);
@@ -334,12 +356,15 @@ class inventory_controller
 	 *
 	 * @param  string		$category_slug		The category slug
 	 * @param  string		$item_slug			The item slug
+	 * @param  int			$index				The item index
 	 * @param  string		$action				The action
 	 * @return Response
 	 * @access public
 	 */
-	public function inventory($category_slug, $item_slug, $action)
+	public function inventory($category_slug, $item_slug, $index, $action)
 	{
+		$index0 = $index - 1;
+
 		$this->controller->check_shop();
 
 		$this->operator_inv->clean_inventory();
@@ -351,10 +376,20 @@ class inventory_controller
 		$s_item		= $item !== null;
 
 		$inventory	= $this->operator_inv->get_inventory($category);
-		$categories	= $this->operator_cat->get_categories_by_id(array_column($inventory, 'category_id'));
-		$items		= $this->operator_item->get_items_by_id(array_column($inventory, 'item_id'));
+
+		$cat_ids	= array_column($inventory, 'category_id');
+		$item_ids	= array_column($inventory, 'item_id', 'inventory_id');
+
+		$categories	= $this->operator_cat->get_categories_by_id($cat_ids);
+		$items		= $this->operator_item->get_items_by_id($item_ids);
 
 		$variables	= [];
+		$item_map	= [];
+
+		foreach ($item_ids as $inventory_id => $item_id)
+		{
+			$item_map[$item_id] = array_keys($item_ids, $item_id);
+		}
 
 		if ($s_item && !in_array($item->get_id(), array_keys($items)))
 		{
@@ -374,7 +409,7 @@ class inventory_controller
 				throw new shop_item_exception(404, 'ASS_ITEM_TYPE_NOT_EXIST');
 			}
 
-			$row = $this->operator_inv->get_inventory_item($item);
+			$row = $this->operator_inv->get_inventory_item($item, $index0);
 
 			switch ($action)
 			{
@@ -412,11 +447,26 @@ class inventory_controller
 						$message = !empty($success) ? $this->language->lang($type->get_language('success')) : 'Some error message';
 						$title = !empty($success) ? $this->language->lang($type->get_language('title')) : $this->language->lang('INFORMATION');
 
-						$count	= (int) $success + (int) $row['use_count'];
+						$count	= (int) $row['use_count'];
+
+						if (!empty($success) && empty($success['file']))
+						{
+							$count++;
+						}
+
 						$limit	= $item->get_count() && $item->get_count() === $count;
 						$delete	= !$item->get_delete_seconds() && $limit;
 
-						if (!empty($success))
+						$file = !empty($success['file']) ? $success['file'] : false;
+
+						if ($file)
+						{
+							$limit = $item->get_count() && $item->get_count() === ($count + 1);
+							$delete = !$item->get_delete_seconds() && $limit;
+
+							$u_file = $this->router->inventory($item->get_category_slug(), $item->get_slug(), $index, 'download', ['hash' => generate_link_hash($file)]);
+						}
+						else if (!empty($success))
 						{
 							$data = [
 								'use_count'	=> $count,
@@ -424,23 +474,45 @@ class inventory_controller
 							];
 
 							$delete
-								? $this->operator_inv->delete($item)
-								: $this->operator_inv->activated($item, $data);
+								? $this->operator_inv->delete($row['inventory_id'])
+								: $this->operator_inv->activated($row['inventory_id'], $data);
 
 							$data['use_time'] = $this->user->format_date($data['use_time']);
 
 							$this->log->add($item, false);
 						}
 
-						$file = !empty($success['file']) ? $success['file'] : false;
-
-						if ($file)
-						{
-							$u_file = $this->router->inventory($item->get_category_slug(), $item->get_slug(), 'download', ['hash' => generate_link_hash($file)]);
-						}
-
 						if ($this->request->is_ajax())
 						{
+							if ($delete)
+							{
+								$inventory_ids = $item_map[$item->get_id()];
+
+								unset($inventory_ids[array_search($row['inventory_id'], $inventory_ids)]);
+
+								if (!empty($inventory_ids))
+								{
+									$inventory_ids = array_values($inventory_ids);
+
+									// Get the first inventory row
+									$row = $inventory[$inventory_ids[0]];
+
+									$stack = $this->get_stack_info($inventory_ids, $index0);
+
+									$vars = $this->get_inventory_variables($category, $item, $row, $stack);
+
+									if (!empty($vars['BACKGROUND_SRC']))
+									{
+										// Fix the incorrect web root path
+										$vars['BACKGROUND_SRC'] = $this->operator_item->get_absolute_background_path($vars['BACKGROUND_SRC']);
+									}
+
+									$this->template->set_filenames(['item' => '@phpbbstudio_ass/ass_item_inventory.html']);
+									$this->template->assign_vars(['item' => $vars]);
+									$next_item = $this->template->assign_display('item');
+								}
+							}
+
 							return new JsonResponse([
 								'MESSAGE_TITLE'	=> $title,
 								'MESSAGE_TEXT'	=> $message,
@@ -450,6 +522,8 @@ class inventory_controller
 								'id'			=> $item->get_id(),
 								'data'			=> !empty($data) ? $data : false,
 								'file'			=> !empty($u_file) ? $u_file . '&force=1' : false,
+								'item'			=> !empty($next_item) ? $next_item : false,
+								'index'			=> $index,
 							]);
 						}
 						else
@@ -466,7 +540,7 @@ class inventory_controller
 					{
 						confirm_box(false, $type->get_language(), '', $type->get_confirm_template($item->get_data()), $this->helper->get_current_url());
 
-						return new RedirectResponse($this->router->inventory($item->get_category_slug(), $item->get_slug()));
+						return new RedirectResponse($this->router->inventory($item->get_category_slug(), $item->get_slug(), $index));
 					}
 				break;
 
@@ -484,11 +558,28 @@ class inventory_controller
 
 					if (check_link_hash($hash, $file) && $this->request->is_set('force', \phpbb\request\request_interface::GET))
 					{
+						$count	= (int) $row['use_count'] + 1;
+						$limit	= $item->get_count() && $item->get_count() === $count;
+						$delete	= !$item->get_delete_seconds() && $limit;
+
+						$data = [
+							'use_count'	=> $count,
+							'use_time'	=> time(),
+						];
+
+						$delete
+							? $this->operator_inv->delete($row['inventory_id'])
+							: $this->operator_inv->activated($row['inventory_id'], $data);
+
+						$data['use_time'] = $this->user->format_date($data['use_time']);
+
+						$this->log->add($item, false);
+
 						return $this->download($file);
 					}
 					else if ($this->request->is_set('hash', \phpbb\request\request_interface::GET))
 					{
-						$u_file = $this->router->inventory($item->get_category_slug(), $item->get_slug(), 'download', ['hash' => $hash, 'force' => true]);
+						$u_file = $this->router->inventory($item->get_category_slug(), $item->get_slug(), $index, 'download', ['hash' => $hash, 'force' => true]);
 
 						$this->template->assign_var('U_DOWNLOAD_FILE', $u_file);
 					}
@@ -507,23 +598,53 @@ class inventory_controller
 								throw new shop_exception(403, 'ASS_ERROR_NOT_REFUND');
 							}
 
-							$points = $this->user->data['user_points'] + $row['purchase_price'];
+							$points = $this->aps_functions->equate_points($this->user->data['user_points'], $row['purchase_price']);
+							$points = $this->aps_functions->boundaries($points);
+							$points = $this->aps_functions->format_points($points);
 
-							$this->operator_inv->update_user_points($points);
+							$this->aps_distributor->update_points($points);
 
 							$item->set_purchases($item->get_purchases() - 1)
 								->set_stock($item->get_stock() + (int) !$item->get_stock_unlimited())
 								->save();
 						}
 
-						$this->operator_inv->delete($item);
+						$this->operator_inv->delete($row['inventory_id']);
 
 						if ($this->request->is_ajax())
 						{
+							$inventory_ids = $item_map[$item->get_id()];
+
+							unset($inventory_ids[array_search($row['inventory_id'], $inventory_ids)]);
+
+							if (!empty($inventory_ids))
+							{
+								$inventory_ids = array_values($inventory_ids);
+
+								// Get the first inventory row
+								$row = $inventory[$inventory_ids[0]];
+
+								$stack = $this->get_stack_info($inventory_ids, $index0);
+
+								$vars = $this->get_inventory_variables($category, $item, $row, $stack);
+
+								if (!empty($vars['BACKGROUND_SRC']))
+								{
+									// Fix the incorrect web root path
+									$vars['BACKGROUND_SRC'] = $this->operator_item->get_absolute_background_path($vars['BACKGROUND_SRC']);
+								}
+
+								$this->template->set_filenames(['item' => '@phpbbstudio_ass/ass_item_inventory.html']);
+								$this->template->assign_vars(['item' => $vars]);
+								$next_item = $this->template->assign_display('item');
+							}
+
 							return new JsonResponse([
 								'MESSAGE_TITLE'	=> $this->language->lang($l_action),
 								'MESSAGE_TEXT'	=> $this->language->lang($l_action . '_SUCCESS'),
 								'id'			=> $item->get_id(),
+								'item'			=> !empty($next_item) ? $next_item : false,
+								'index'			=> $index,
 							]);
 						}
 						else
@@ -543,9 +664,11 @@ class inventory_controller
 			}
 		}
 
-		$expire = 0;
-		$gifts = 0;
-		$total = 0;
+		$counts = [
+			'expire'	=> 0,
+			'gifts'		=> 0,
+			'total'		=> 0,
+		];
 
 		/** @var category $cat */
 		foreach ($categories as $cat)
@@ -557,48 +680,36 @@ class inventory_controller
 			{
 				if ($it->get_category() === $cat->get_id())
 				{
-					$row = $inventory[$it->get_id()];
+					$inventory_ids	= $item_map[$it->get_id()];
+					$inventory_id	= $inventory_ids[0];
 
-					/** @var item_type $type */
-					$type = $this->items_manager->get_type($it->get_type());
+					$s_this_item	= $s_item && $item->get_id() === $it->get_id();
 
-					$s_type = $type !== null;
-
-					if ($s_type)
+					if ($s_this_item)
 					{
-						$type->set_category($cat);
-						$type->set_item($it);
+						if (isset($inventory_ids[$index0]))
+						{
+							$inventory_id = $inventory_ids[$index0];
+						}
+						else
+						{
+							throw new shop_exception(404, 'ASS_ERROR_NOT_OWNED_STACK');
+						}
 					}
 
-					$s_has_expired = $this->time->has_expired($row['purchase_time'], $it->get_expire_seconds());
-					$s_will_expire = $this->time->will_expire($row['purchase_time'], $it->get_expire_seconds());
+					// Get the first inventory row
+					$row = $inventory[$inventory_id];
 
-					$expire = !$s_has_expired && $s_will_expire ? $expire + 1 : $expire;
-					$gifts = $row['gifter_id'] ? $gifts + 1 : $gifts;
-					$total = $total + 1;
+					$stack = $this->get_stack_info($inventory_ids, $index0);
 
-					$vars = array_merge(
-						$this->operator_item->get_variables($it),
-						[
-							'ACTIVATE'		=> $s_type ? $this->language->lang($type->get_language('action')) : '',
-							'GIFTER_NAME'	=> $row['gifter_id'] ? get_username_string('full', $row['gifter_id'], $row['gifter_name'], $row['gifter_colour']) : '',
-							'PURCHASE_UNIX'	=> (int) $row['purchase_time'],
-							'USE_COUNT'		=> (int) $row['use_count'],
-							'USE_UNIX'		=> (int) $row['use_time'],
-
-							'S_AJAX'		=> $s_type ? $type->get_confirm_ajax() : '',
-							'S_GIFTED'		=> !empty($row['gifter_id']),
-							'S_LIMIT'		=> $it->get_count() && (int) $row['use_count'] >= $it->get_count(),
-							'S_REFUND'		=> $it->get_refund_seconds() && !$row['use_count'] ? (int) $row['purchase_time'] + $it->get_refund_seconds() > time() : false,
-							'S_HAS_EXPIRED'	=> $s_has_expired,
-							'S_WILL_EXPIRE'	=> $s_will_expire,
-							'S_TYPE_ERROR'	=> !$s_type,
-						]
-					);
+					$vars = $this->get_inventory_variables($cat, $it, $row, $stack, $index, $counts);
 
 					$this->template->assign_block_vars('ass_categories.items', $vars);
 
-					$variables = $s_item && $item->get_id() === $it->get_id() ? $vars : $variables;
+					if (empty($variables) && $s_this_item)
+					{
+						$variables = $vars;
+					}
 				}
 			}
 		}
@@ -611,9 +722,9 @@ class inventory_controller
 		$this->template->assign_vars([
 			'ITEM_INFO'		=> $variables,
 
-			'COUNT_EXPIRE'	=> $expire,
-			'COUNT_GIFTS'	=> $gifts,
-			'COUNT_TOTAL'	=> $total,
+			'COUNT_EXPIRE'	=> $counts['expire'],
+			'COUNT_GIFTS'	=> $counts['gifts'],
+			'COUNT_TOTAL'	=> $counts['total'],
 
 			'S_IS_GIFT'		=> $action === 'gift',
 
@@ -743,6 +854,13 @@ class inventory_controller
 		return $this->helper->render('ass_history.html', $this->language->lang('ASS_INVENTORY'));
 	}
 
+	/**
+	 * Create a download response for a specific file.
+	 *
+	 * @param  string		$file		The file name
+	 * @return Response
+	 * @access protected
+	 */
 	protected function download($file)
 	{
 		$response = new Response($file);
@@ -755,5 +873,95 @@ class inventory_controller
 		$response->setContent(readfile($file));
 
 		return $response;
+	}
+
+	/**
+	 * Get an inventory item's template variables.
+	 *
+	 * @param  category		$category	The category entity
+	 * @param  item			$item		The item entity
+	 * @param  array		$row		The inventory row
+	 * @param  array		$stack		The item stack information
+	 * @param  int			$index		The item index
+	 * @param  array		$counts		The inventory overview counts
+	 * @return array					The inventory item template variables
+	 * @access protected
+	 */
+	protected function get_inventory_variables(category $category, item $item, array $row, array $stack, $index = 1, array &$counts = [])
+	{
+		/** @var item_type $type */
+		$type = $this->items_manager->get_type($item->get_type());
+
+		$s_type = $type !== null;
+
+		if ($s_type)
+		{
+			$type->set_category($category);
+			$type->set_item($item);
+		}
+
+		$s_has_expired = $this->time->has_expired($row['purchase_time'], $item->get_expire_seconds());
+		$s_will_expire = $this->time->will_expire($row['purchase_time'], $item->get_expire_seconds());
+
+		if (!empty($counts))
+		{
+			$counts = [
+				'expire'	=> !$s_has_expired && $s_will_expire ? $counts['expire'] + 1 : $counts['expire'],
+				'gifts'		=> $row['gifter_id'] ? $counts['gifts'] + 1 : $counts['gifts'],
+				'total'		=> $counts['total'] + $stack['count'],
+			];
+		}
+
+		return array_merge($this->operator_item->get_variables($item, '', true, $index), [
+			'ACTIVATE'		=> $s_type ? $this->language->lang($type->get_language('action')) : '',
+			'GIFTER_NAME'	=> $row['gifter_id'] ? get_username_string('full', $row['gifter_id'], $row['gifter_name'], $row['gifter_colour']) : '',
+			'PURCHASE_UNIX'	=> (int) $row['purchase_time'],
+			'STACK_COUNT'	=> (int) $stack['count'],
+			'USE_COUNT'		=> (int) $row['use_count'],
+			'USE_UNIX'		=> (int) $row['use_time'],
+
+			'S_AJAX'		=> $s_type ? $type->get_confirm_ajax() : '',
+			'S_GIFTED'		=> !empty($row['gifter_id']),
+			'S_LIMIT'		=> $item->get_count() && (int) $row['use_count'] >= $item->get_count(),
+			'S_REFUND'		=> $item->get_refund_seconds() && !$row['use_count'] ? (int) $row['purchase_time'] + $item->get_refund_seconds() > time() : false,
+			'S_HAS_EXPIRED'	=> $s_has_expired,
+			'S_WILL_EXPIRE'	=> $s_will_expire,
+			'S_TYPE_ERROR'	=> !$s_type,
+
+			'U_STACK_NEXT'	=> $stack['next'] ? $this->router->inventory($item->get_category_slug(), $item->get_slug(), $stack['next']) : '',
+			'U_STACK_PREV'	=> $stack['prev'] ? $this->router->inventory($item->get_category_slug(), $item->get_slug(), $stack['prev']) : '',
+		]);
+	}
+
+	/**
+	 * Calculate an inventory item's stacking information.
+	 *
+	 * @param  array	$array			The inventory identifiers
+	 * @param  int		$index			The current index (0 based)
+	 * @return array					The stacking information
+	 * @access protected
+	 */
+	protected function get_stack_info(array $array, $index)
+	{
+		// The amount of inventory items for this specific item
+		$count = count($array);
+
+		// Whether or not the current item index is the first or the last
+		$prev = $index !== 0 ? $index - 1 : false;
+		$next = $index < ($count - 1) ? $index + 1 : false;
+
+		/**
+		 * Because the array with inventory identifiers is 0-based,
+		 * but we use a 1-based approach for routes,
+		 * we have to increment the previous and next indices by 1.
+		 */
+		$prev = $prev !== false ? $prev + 1 : 0;
+		$next = $next !== false ? $next + 1 : 0;
+
+		return [
+			'count'	=> (int) $count,
+			'next'	=> (int) $next,
+			'prev'	=> (int) $prev,
+		];
 	}
 }

@@ -109,16 +109,34 @@ class shop_controller
 		$this->controller->setup_carousel();
 		$this->controller->setup_panels();
 
-		$this->operator_item->assign_specific_items('featured', $this->config['ass_panel_featured_limit']);
-		$this->operator_item->assign_specific_items('sale', $this->config['ass_panel_sale_limit']);
-		$this->operator_item->assign_specific_items('featured_sale', $this->config['ass_panel_featured_sale_limit']);
-		$this->operator_item->assign_specific_items('recent', $this->config['ass_panel_recent_limit']);
-		$this->operator_item->assign_specific_items('limited', $this->config['ass_panel_limited_limit']);
-		$this->operator_item->assign_specific_items('random', $this->config['ass_panel_random_limit']);
+		$panels = [
+			'limited'		=> ['carousel' => true, 'title' => 'ASS_ITEMS_LIMITED'],
+			'recent'		=> ['carousel' => true, 'title' => 'ASS_ITEMS_RECENT'],
+			'sale'			=> ['carousel' => true, 'title' => 'ASS_SALE_ITEMS'],
+			'featured'		=> ['carousel' => true, 'title'	=> 'ASS_FEATURED_ITEMS'],
+			'featured_sale'	=> ['carousel' => false],
+			'random'		=> ['carousel' => false],
+		];
 
-		$this->template->assign_vars([
-			'SHOP_PANEL_RANDOM_WIDTH'	=> (int) $this->config['ass_panel_random_limit'] % 3 === 0 ? 4 : 3,
-		]);
+		uksort($panels, function($a, $b)
+		{
+			if ($this->config["ass_panel_{$a}_order"] == $this->config["ass_panel_{$b}_order"])
+			{
+				return 0;
+			}
+
+			return $this->config["ass_panel_{$a}_order"] < $this->config["ass_panel_{$b}_order"] ? -1 : 1;
+		});
+
+		foreach (array_keys($panels) as $panel)
+		{
+			if ($this->config["ass_panel_{$panel}_limit"])
+			{
+				$this->operator_item->assign_specific_items($panel, $this->config["ass_panel_{$panel}_limit"]);
+			}
+		}
+
+		$this->template->assign_vars(['ass_panels' => $panels]);
 
 		return $this->helper->render('ass_shop.html', $this->language->lang('ASS_SHOP'));
 	}

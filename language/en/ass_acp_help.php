@@ -276,6 +276,15 @@ So the URL in a user’s browser will look something like <i><samp>http://exampl
 If the <i>Item slug</i> has no value yet, it will automatically be created from the <i>Item title</i>.
 Afterwards it can still be changed to a different or more appropriate slug.',
 
+	'ACP_ASS_HELP_STACK'			=> 'This determines the item’s stack count.
+	
+The value has to be equal to or greater than 1.
+If set to 1, the item can <span class="icon-red">not</span> be stacked.
+
+If this value is higher than 1, users who have the correct permission (<em>Can stack inventory items</em>) can own multiple instances of this item.
+Once they own multiple of the same it, an indicator will show up in their inventory with the amount they currently own.
+They can then navigate through the identical items using the navigation chevrons (<icon class="icon fa-chevron-left fa-fw icon-blue"></icon> and <icon class="icon fa-chevron-right fa-fw icon-blue"></icon>).',
+
 	'ACP_ASS_HELP_STATES'			=> 'This shows various item states.
 	
 This fieldset is only visible when <strong>editing</strong> an item.

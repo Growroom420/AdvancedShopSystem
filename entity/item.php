@@ -491,6 +491,36 @@ class item implements item_interface
 	/**
 	 * {@inheritDoc}
 	 */
+	public function get_stack()
+	{
+		return isset($this->data['item_stack']) ? (int) $this->data['item_stack'] : 1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function set_stack($stack)
+	{
+		$stack = (int) $stack;
+
+		if ($stack < 1)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_LOW', ['STACK', 1, $stack]);
+		}
+
+		if ($stack > self::ULINT)
+		{
+			throw new runtime_exception('ASS_ERROR_TOO_HIGH', ['STACK', self::ULINT, $stack]);
+		}
+
+		$this->data['item_stack'] = $stack;
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_purchases()
 	{
 		return isset($this->data['item_purchases']) ? (int) $this->data['item_purchases'] : 0;

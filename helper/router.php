@@ -61,14 +61,15 @@ class router
 	 *
 	 * @param  string	$category_slug		The category slug
 	 * @param  string	$item_slug			The item slug
+	 * @param  int		$index				The item index
 	 * @param  string	$action				The action
 	 * @param  array	$params				Additional parameters
 	 * @return string						The URL
 	 * @access public
 	 */
-	public function inventory($category_slug = '', $item_slug = '', $action = '', array $params = [])
+	public function inventory($category_slug = '', $item_slug = '', $index = 1, $action = '', array $params = [])
 	{
-		$params = array_merge(['category_slug' => $category_slug, 'item_slug' => $item_slug, 'action' => $action], $params);
+		$params = array_merge(['category_slug' => $category_slug, 'item_slug' => $item_slug, 'index' => $index, 'action' => $action], $params);
 
 		return $this->helper->route('phpbbstudio_ass_inventory', $params);
 	}

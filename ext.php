@@ -23,7 +23,10 @@ class ext extends \phpbb\extension\base
 	 */
 	public function is_enableable()
 	{
-		if (!$this->container->get('ext.manager')->is_enabled('phpbbstudio/aps'))
+		/** @var \phpbb\extension\manager $ext_manager */
+		$ext_manager = $this->container->get('ext.manager');
+
+		if (!$ext_manager->is_enabled('phpbbstudio/aps'))
 		{
 			$user = $this->container->get('user');
 			$lang = $user->lang;
@@ -31,6 +34,25 @@ class ext extends \phpbb\extension\base
 			$user->add_lang_ext('phpbbstudio/ass', 'ass_ext');
 
 			$lang['EXTENSION_NOT_ENABLEABLE'] .= '<br>' . $user->lang('ASS_REQUIRES_APS');
+
+			$user->lang = $lang;
+
+			return false;
+		}
+
+		$md_manager = $ext_manager->create_extension_metadata_manager('phpbbstudio/aps');
+		$aps_version = (string) $md_manager->get_metadata('version');
+		$aps_required = '1.0.2-beta';
+
+		/** Make sure the APS version is 1.0.1-beta or higher */
+		if (phpbb_version_compare($aps_version, $aps_required, '<'))
+		{
+			$user = $this->container->get('user');
+			$lang = $user->lang;
+
+			$user->add_lang_ext('phpbbstudio/ass', 'ass_ext');
+
+			$lang['EXTENSION_NOT_ENABLEABLE'] .= '<br>' . $user->lang('ASS_REQUIRES_APS_VERSION', $aps_required);
 
 			$user->lang = $lang;
 

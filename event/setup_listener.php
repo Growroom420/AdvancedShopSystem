@@ -81,17 +81,19 @@ class setup_listener implements EventSubscriberInterface
 		}
 
 		$perms = [
-			'a_ass_overview',
-			'a_ass_settings',
+			'a_ass_inventory',
 			'a_ass_items',
 			'a_ass_files',
 			'a_ass_logs',
-			'u_ass_can_purchase',
-			'u_ass_can_view_inactive_shop',
-			'u_ass_can_view_inactive_items',
+			'a_ass_overview',
+			'a_ass_settings',
 			'u_ass_can_gift',
+			'u_ass_can_purchase',
 			'u_ass_can_receive_gift',
 			'u_ass_can_receive_stock_notifications',
+			'u_ass_can_stack',
+			'u_ass_can_view_inactive_items',
+			'u_ass_can_view_inactive_shop',
 		];
 
 		foreach ($perms as $permission)

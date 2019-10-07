@@ -23,135 +23,42 @@
 	{{ include('@phpbbstudio_ass/ass_carousel.html') }}
 
 	<div class="aps-row">
-		{% if ass_featured|length or (ass_sale|length and ass_limited|length) %}
-			<div class="aps-col s12 m6 shop-fake-width">
-				<div class="aps-panel">
-					{% if not ass_sale|length and not ass_limited|length %}
-						<div class="aps-panel-header">
-							{% if SHOP_PANEL_FEATURED_ICON %}
-								<i class="icon shop-panel-icon{{ SHOP_PANEL_FEATURED_ICON }}"></i>
-							{% endif %}
+		{% for panel, data in ass_panels %}
+			{% if attribute(loops, 'ass_' ~ panel) is defined %}
+				{% set items = attribute(loops, 'ass_' ~ panel) %}
+				{% if data.carousel %}
+					<div class="aps-col s12 m6 shop-fake-width">
+						<div class="aps-panel">
+							<div class="aps-panel-header">
+								{% set icon = attribute(_context, 'SHOP_PANEL_' ~ panel|upper ~ '_ICON') %}
+								{% if icon %}
+									<i class="icon shop-panel-icon{{ icon }}"></i>
+								{% endif %}
 
-							<h3>{{ lang('ASS_FEATURED_ITEMS') }}</h3>
-						</div>
-					{% endif %}
-					<div class="aps-panel-content shop-overflow shop-no-pad">
-						{% if SHOP_PANEL_FEATURED_ICON and (ass_sale|length or ass_limited|length) %}
-							<i class="icon shop-panel-icon{{ SHOP_PANEL_FEATURED_ICON }}"></i>
-						{% endif %}
-						<div data-shop-carousel="true">
-							{% for item in ass_featured %}
-								{{ include('@phpbbstudio_ass/ass_item_carousel.html') }}
-							{% else %}
-								<div class="aps-center shop-vertical shop-padding shop-panel-height">
-									<strong class="error">{{ lang('ASS_ITEMS_NONE') }}</strong>
-								</div>
-							{% endfor %}
-						</div>
-					</div>
-					<div class="aps-panel-footer shop-carousel-footer"></div>
-				</div>
-			</div>
-		{% endif %}
-
-		{% if ass_sale|length or (ass_featured|length and ass_limited|length) or (not ass_featured|length and not ass_limited|length) %}
-			<div class="aps-col s12 m6 shop-fake-width">
-				<div class="aps-panel">
-					{% if not ass_limited|length and not ass_featured|length %}
-						<div class="aps-panel-header">
-							{% if SHOP_PANEL_SALE_ICON %}
-								<i class="icon shop-panel-icon{{ SHOP_PANEL_SALE_ICON }}"></i>
-							{% endif %}
-
-							<h3>{{ lang('ASS_SALE_ITEMS') }}</h3>
-						</div>
-					{% endif %}
-					<div class="aps-panel-content shop-overflow shop-no-pad">
-						{% if SHOP_PANEL_SALE_ICON and ass_limited|length or ass_featured|length %}
-							<i class="icon shop-panel-icon{{ SHOP_PANEL_SALE_ICON }}"></i>
-						{% endif %}
-
-						<div data-shop-carousel="true">
-							{% for item in ass_sale %}
-								{{ include('@phpbbstudio_ass/ass_item_carousel.html') }}
-							{% else %}
-								<div class="aps-center shop-vertical shop-padding shop-panel-height">
-									<strong class="error">{{ lang('ASS_ITEMS_NONE') }}</strong>
-								</div>
-							{% endfor %}
-						</div>
-					</div>
-					<div class="aps-panel-footer shop-carousel-footer"></div>
-				</div>
-			</div>
-		{% endif %}
-
-		{% for item in ass_featured_sale %}
-			{% if ass_featured|length == 1 %}
-				<div class="aps-col s3 aps-no-mar shop-no-pad"></div>
-			{% endif %}
-			<div class="aps-col s6 m{{ ass_featured_sale|length > 2 ? 4 : 6 }}">
-				{{ include('@phpbbstudio_ass/ass_item_panel.html') }}
-			</div>
-			{% if ass_featured|length == 1 %}
-				<div class="aps-col s3 aps-no-mar shop-no-pad"></div>
-			{% endif %}
-		{% endfor %}
-
-		<div class="aps-col s12 m6 shop-fake-width">
-			<div class="aps-panel">
-				<div class="aps-panel-header">
-					{% if SHOP_PANEL_RECENT_ICON %}
-						<i class="icon shop-panel-icon{{ SHOP_PANEL_RECENT_ICON }}"></i>
-					{% endif %}
-
-					<h3>{{ lang('ASS_ITEMS_RECENT') }}</h3>
-				</div>
-				<div class="aps-panel-content shop-overflow shop-no-pad">
-					<div data-shop-carousel="true">
-						{% for item in ass_recent %}
-							{{ include('@phpbbstudio_ass/ass_item_carousel.html') }}
-						{% else %}
-							<div class="aps-center shop-vertical shop-padding shop-panel-height">
-								<strong class="error">{{ lang('ASS_ITEMS_NONE') }}</strong>
+								<h3>{{ lang(data.title) }}</h3>
 							</div>
-						{% endfor %}
-					</div>
-				</div>
-				<div class="aps-panel-footer shop-carousel-footer"></div>
-			</div>
-		</div>
-
-		{% if ass_limited|length or (ass_featured|length and ass_sale|length) %}
-			<div class="aps-col s12 m6 shop-fake-width">
-				<div class="aps-panel">
-					<div class="aps-panel-header">
-						{% if SHOP_PANEL_LIMITED_ICON %}
-							<i class="icon shop-panel-icon{{ SHOP_PANEL_LIMITED_ICON }}"></i>
-						{% endif %}
-
-						<h3>{{ lang('ASS_ITEMS_LIMITED') }}</h3>
-					</div>
-					<div class="aps-panel-content shop-overflow shop-no-pad">
-						<div data-shop-carousel="true">
-							{% for item in ass_limited %}
-								{{ include('@phpbbstudio_ass/ass_item_carousel.html') }}
-							{% else %}
-								<div class="aps-center shop-vertical shop-padding shop-panel-height">
-									<strong class="error">{{ lang('ASS_ITEMS_NONE') }}</strong>
+							<div class="aps-panel-content shop-overflow shop-no-pad">
+								<div data-shop-carousel="true">
+									{% for item in items %}
+										{{ include('@phpbbstudio_ass/ass_item_carousel.html') }}
+									{% else %}
+										<div class="aps-center shop-vertical shop-padding shop-panel-height">
+											<strong class="error">{{ lang('ASS_ITEMS_NONE') }}</strong>
+										</div>
+									{% endfor %}
 								</div>
-							{% endfor %}
+							</div>
+							<div class="aps-panel-footer shop-carousel-footer"></div>
 						</div>
 					</div>
-					<div class="aps-panel-footer shop-carousel-footer"></div>
-				</div>
-			</div>
-		{% endif %}
-
-		{% for item in ass_random %}
-			<div class="aps-col s6 m{{ SHOP_PANEL_RANDOM_WIDTH }}">
-				{{ include('@phpbbstudio_ass/ass_item_panel.html', { ITEM_PANEL_ICON: SHOP_PANEL_RANDOM_ICON }) }}
-			</div>
+				{% else %}
+					{% for item in items %}
+						<div class="aps-col s6 m{{ aps_config('ass_panel_' ~ panel ~ '_width') }}">
+							{{ include('@phpbbstudio_ass/ass_item_panel.html', { ITEM_PANEL_ICON: attribute(_context, 'SHOP_PANEL_' ~ panel|upper ~ '_ICON') }) }}
+						</div>
+					{% endfor %}
+				{% endif %}
+			{% endif %}
 		{% endfor %}
 	</div>
 {% endblock %}

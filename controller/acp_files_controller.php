@@ -102,16 +102,20 @@ class acp_files_controller
 
 						$folder = $this->request->variable('folder', '', true);
 
+						$refresh = str_replace('&amp;', '&', $this->get_file_action($mode, $directory));
+
 						try
 						{
 							$this->files->add($directory, $folder);
 						}
 						catch (runtime_exception $e)
 						{
-							trigger_error($this->language->lang_array($e->getMessage(), array_merge([$this->language->lang('ASS_FOLDER')], $e->get_parameters())), E_USER_WARNING);
+							trigger_error($this->language->lang_array($e->getMessage(), array_merge([$this->language->lang('ASS_FOLDER')], $e->get_parameters())) . adm_back_link($refresh), E_USER_WARNING);
 						}
 
-						$json_response->send(['REFRESH_DATA' => ['url' => '', 'time' => 0]]);
+						$json_response->send(['REFRESH_DATA' => ['url' => $refresh, 'time' => 0]]);
+
+						redirect($refresh);
 					break;
 
 					case 'add_file':
@@ -120,16 +124,18 @@ class acp_files_controller
 							trigger_error($this->language->lang('FORM_INVALID') . adm_back_link($this->get_file_action($mode, $directory)), E_USER_WARNING);
 						}
 
+						$refresh = str_replace('&amp;', '&', $this->get_file_action($mode, $directory));
+
 						try
 						{
 							$this->files->upload($directory, 'file');
 						}
 						catch (runtime_exception $e)
 						{
-							trigger_error($e->getMessage() . adm_back_link($this->get_file_action($mode, $directory)), E_USER_WARNING);
+							trigger_error($this->language->lang_array($e->getMessage(), array_merge([$this->language->lang('ASS_FILENAME')], $e->get_parameters())) . adm_back_link($refresh), E_USER_WARNING);
 						}
 
-						meta_refresh(0, $this->get_file_action($mode, $directory));
+						redirect($refresh);
 					break;
 
 					case 'delete_dir':
@@ -165,9 +171,11 @@ class acp_files_controller
 
 				foreach ($files['folders'] as $folder)
 				{
+					$file_time = $this->files->get_file_time($directory, $folder);
+
 					$this->template->assign_block_vars('ass_folders', [
 						'NAME'			=> $folder,
-						'TIME'			=> $this->user->format_date($this->files->get_file_time($directory, $folder)),
+						'TIME'			=> $file_time ? $this->user->format_date($file_time) : '',
 						'U_DELETE'		=> $this->get_file_action($mode, ($directory ? $directory . '%2F' : '') . $folder, 'delete_dir'),
 						'U_VIEW'		=> $this->get_file_action($mode, ($directory ? $directory . '%2F' : '') . $folder, $action, $img_value, $item_file, $img_input),
 					]);
@@ -177,12 +185,15 @@ class acp_files_controller
 				{
 					$dir_file = $directory ? $directory . '/' . $file : $file;
 
+					$file_size = $this->files->get_file_size($directory, $file);
+					$file_time = $this->files->get_file_time($directory, $file);
+
 					$this->template->assign_block_vars('ass_files', [
 						'NAME'			=> $file,
 						'ICON'			=> $this->files->get_file_icon($file),
 						'IMG'			=> $this->files->get_path($directory, true, $file),
-						'SIZE'			=> get_formatted_filesize($this->files->get_file_size($directory, $file)),
-						'TIME'			=> $this->user->format_date($this->files->get_file_time($directory, $file)),
+						'SIZE'			=> $file_size ? get_formatted_filesize($file_size) : '',
+						'TIME'			=> $file_time ? $this->user->format_date($file_time) : '',
 						'VALUE'			=> $dir_file,
 						'S_SELECTED'	=> $s_item_img ? $dir_file === $item_img : $dir_file === $item_file,
 						'U_DELETE'		=> $this->get_file_action($mode, ($directory ? $directory . '%2F' : '') . $file, 'delete_file'),
@@ -233,7 +244,7 @@ class acp_files_controller
 		$file		= $file ? "&file={$file}" : '';
 		$input		= $input ? "&input={$input}" : '';
 
-		$image		= $image === true ? '&amp;image=' : ($image ? "&image={$image}" : '');
+		$image		= $image === true ? '&image=' : ($image ? "&image={$image}" : '');
 
 		return "{$this->u_action}{$mode}{$directory}{$action}{$image}{$file}{$input}";
 	}

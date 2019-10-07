@@ -11,9 +11,9 @@
 namespace phpbbstudio\ass\migrations;
 
 /**
- * phpBB Studio - Advanced Shop System: Permission roles migration
+ * phpBB Studio - Advanced Shop System: v1.1.1 Permissions update migration
  */
-class update_roles extends \phpbb\db\migration\migration
+class v111_update_permissions extends \phpbb\db\migration\migration
 {
 	/**
 	 * Assign migration file dependencies for this migration.
@@ -24,27 +24,29 @@ class update_roles extends \phpbb\db\migration\migration
 	 */
 	static public function depends_on()
 	{
-		return ['\phpbbstudio\ass\migrations\update_permissions'];
+		return ['\phpbbstudio\ass\migrations\install_permissions'];
 	}
 
 	/**
-	 * Update the Advanced Shop System permissions' roles to the database.
+	 * Update the ASS extension permissions to the database.
 	 *
-	 * @return array		Array of permission
+	 * @return array		Array of permissions
 	 * @access public
 	 */
 	public function update_data()
 	{
-		$data = [];
+		$data = [
+			['permission.add', ['u_ass_can_stack']],
+		];
 
-		if ($this->role_exists('ROLE_ADMIN_STANDARD'))
+		if ($this->role_exists('ROLE_USER_STANDARD'))
 		{
-			$data[] = ['permission.permission_set', ['ROLE_ADMIN_STANDARD', 'a_ass_inventory']];
+			$data[] = ['permission.permission_set', ['ROLE_USER_STANDARD', 'u_ass_can_stack']];
 		}
 
-		if ($this->role_exists('ROLE_ADMIN_FULL'))
+		if ($this->role_exists('ROLE_USER_FULL'))
 		{
-			$data[] = ['permission.permission_set', ['ROLE_ADMIN_FULL', 'a_ass_inventory']];
+			$data[] = ['permission.permission_set', ['ROLE_USER_FULL', 'u_ass_can_stack']];
 		}
 
 		return $data;

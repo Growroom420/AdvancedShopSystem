@@ -97,6 +97,7 @@ services:
     phpbbstudio.ass.controller.inventory:
         class: phpbbstudio\ass\controller\inventory_controller
         arguments:
+            - '@phpbbstudio.aps.distributor'
             - '@phpbbstudio.aps.functions'
             - '@auth'
             - '@config'

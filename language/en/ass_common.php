@@ -113,8 +113,8 @@ $lang = array_merge($lang, [
 
 	'ASS_RECIPIENT_NAME'	=> 'Recipient name',
 	'ASS_REFUND'			=> 'Refund',
+	'ASS_REFUND_BEFORE'		=> 'Refundable before',
 	'ASS_REFUND_CONFIRM'	=> 'Are you sure you wish to refund this item?',
-	'ASS_REFUND_DATE'		=> 'Refund date',
 	'ASS_REFUND_SUCCESS'	=> 'You have successfully refunded this item.',
 	'ASS_RELATED_ITEMS'		=> 'Related items',
 
@@ -186,8 +186,6 @@ $lang = array_merge($lang, [
 	'ASS_ERROR_LOGGED'				=> 'This error has been logged. You can notify an Administrator to check the “Admin logs”.',
 
 	'ASS_ERROR_ALREADY_EXISTS'		=> 'The requested %s already exists.',
-	'ASS_ERROR_ALREADY_OWNED'		=> 'You currently already own this item.',
-	'ASS_ERROR_ALREADY_OWNED_USER'	=> '%s currently already owns this item.',
 	'ASS_ERROR_NOT_ACTIVE_CATEGORY'	=> 'The requested category is currently not active.',
 	'ASS_ERROR_NOT_ACTIVE_ITEM'		=> 'The requested item is currently not active.',
 	'ASS_ERROR_NOT_AUTH_GIFT'		=> 'You are not authorised to gift items.',
@@ -202,13 +200,23 @@ $lang = array_merge($lang, [
 	'ASS_ERROR_NOT_GIFTABLE'		=> 'The requested item can not be gifted.',
 	'ASS_ERROR_NOT_GIFT_SELF'		=> 'You are not allowed to gift yourself.',
 	'ASS_ERROR_NOT_OWNED'			=> 'You currently do not own this item.',
+	'ASS_ERROR_NOT_OWNED_STACK'		=> 'You currently do not own this many of this item.',
 	'ASS_ERROR_NOT_REFUND'			=> 'You are no longer authorised to refund this item. You have already used it.',
 	'ASS_ERROR_NOT_UNIQUE'			=> 'The field “%1$s” contains a non-unique value. The value is already in use by “%2$s”.',
 	'ASS_ERROR_OUT_OF_STOCK'		=> 'The requested item is currently out of stock.',
+	'ASS_ERROR_STACK_LIMIT'			=> 'You currently already own the maximum allowed copies of this item.',
+	'ASS_ERROR_STACK_LIMIT_USER'	=> '%s currently already owns the maximum allowed copies of this item.',
+	'ASS_ERROR_STACK_NO_AUTH'		=> 'You are not authorised to own multiple copies of the same items.',
+	'ASS_ERROR_STACK_NO_AUTH_USER'	=> '%s is not authorised to own multiple copies of the same items.',
 	'ASS_ERROR_TOO_HIGH'			=> 'The field “%1$s” is too high. It must be lower than %2$s and it currently is %3$s.',
 	'ASS_ERROR_TOO_LONG'			=> 'The field “%1$s” is too long. It must have less than %2$s characters and currently has %3$s characters.',
 	'ASS_ERROR_TOO_LOW'				=> 'The field “%1$s” is too low. It must be higher than %2$s and it currently is %3$s.',
 	'ASS_ERROR_TOO_SHORT'			=> 'The field “%1$s” is too short. It must have more than %2$s characters and currently has %3$s characters.',
 	'ASS_ERROR_UNSIGNED'			=> 'The field “%s” is negative. It must have a positive value.',
 	'ASS_ERROR_ILLEGAL_CHARS'		=> 'The field “%s” contains illegal characters.',
+
+	'ASS_WARNING_STACK'				=> [
+		1 => 'You currently already own %d copy of this item.',
+		2 => 'You currently already own %d copies of this item.',
+	],
 ]);

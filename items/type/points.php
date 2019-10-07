@@ -15,8 +15,23 @@ namespace phpbbstudio\ass\items\type;
  */
 class points extends base
 {
+	/** @var \phpbbstudio\aps\points\distributor */
+	protected $aps_distributor;
+
 	/** @var \phpbbstudio\aps\core\functions */
 	protected $aps_functions;
+
+	/**
+	 * Set the APS Distributor object.
+	 *
+	 * @param  \phpbbstudio\aps\points\distributor	$aps_distributor	APS Distributor object
+	 * @return void
+	 * @access public
+	 */
+	public function set_aps_distributor(\phpbbstudio\aps\points\distributor $aps_distributor)
+	{
+		$this->aps_distributor = $aps_distributor;
+	}
 
 	/**
 	 * Set the APS Functions object.
@@ -69,15 +84,11 @@ class points extends base
 	 */
 	public function activate(array $data)
 	{
-		$points = $this->user->data['user_points'] + $data['points'];
+		$points = $this->aps_functions->equate_points($this->user->data['user_points'], $data['points']);
+		$points = $this->aps_functions->boundaries($points);
 		$points = $this->aps_functions->format_points($points);
 
-		$sql = 'UPDATE ' . $this->table_prefix . 'users SET ' . $this->db->sql_build_array('UPDATE', [
-			'user_points' => $points,
-		]) . ' WHERE user_id = ' . (int) $this->user->data['user_id'];
-		$this->db->sql_query($sql);
-
-		return (bool) $this->db->sql_affectedrows();
+		return $this->aps_distributor->update_points($points);
 	}
 
 	/**

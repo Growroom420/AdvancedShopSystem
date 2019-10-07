@@ -30,8 +30,22 @@
 	{% endif %}
 
 	<div class="aps-row{{ S_GIFT_ANIMATION ? ' shop-zoom-in' }}">
-		<div class="aps-col s12 shop-no-pad">
-			<h2 class="aps-no-mar shop-padding shop-no-pad-bot shop-text-darkgray">{{ item.TITLE }}</h2>
+		<div class="aps-col s1 shop-no-pad">
+			{% if item.U_STACK_PREV %}
+				<a class="aps-button-blue" href="{{ item.U_STACK_PREV }}" title="{{ lang('PREVIOUS') }}">
+					<i class="icon fa-chevron-left fa-fw"></i>
+				</a>
+			{% endif %}
+		</div>
+		<div class="aps-col s10 shop-no-pad">
+			<h2 class="aps-no-mar aps-center shop-padding shop-no-pad-bot shop-text-darkgray">{{ item.TITLE }}</h2>
+		</div>
+		<div class="aps-col s1 shop-no-pad">
+			{% if item.U_STACK_NEXT %}
+				<a class="aps-button-blue" href="{{ item.U_STACK_NEXT }}" title="{{ lang('NEXT') }}">
+					<i class="icon fa-chevron-right fa-fw"></i>
+				</a>
+			{% endif %}
 		</div>
 
 		{% if U_DOWNLOAD_FILE and S_LOADED_ITEM %}
@@ -40,7 +54,7 @@
 					<div class="aps-panel-content shop-text-darkgray">
 						<script>
 							setTimeout(function() {
-								window.location = '{{ U_DOWNLOAD_FILE }}';
+								window.location = '{{ U_DOWNLOAD_FILE|e('js') }}';
 							}, 1500);
 						</script>
 						{{ lang('ASS_TYPE_FILE_START') }}
@@ -121,7 +135,7 @@
 							<i class="icon fa-li fa-hourglass-end" aria-hidden="true"></i>
 							<span>{{ item.EXPIRE_SECONDS ? user.format_date(item.PURCHASE_UNIX + item.EXPIRE_SECONDS) : lang('NEVER') }}</span>
 						</li>
-						<li title="{{ lang('ASS_REFUND_DATE') }}">
+						<li title="{{ lang('ASS_REFUND_BEFORE') }}">
 							<i class="icon fa-li fa-undo" aria-hidden="true"></i>
 							<span>{{ item.REFUND_SECONDS ? user.format_date(item.PURCHASE_UNIX + item.REFUND_SECONDS) : lang('NEVER') }}</span>
 						</li>

@@ -1,7 +1,7 @@
 <div class="aps-panel" data-shop-item="{{ item.ID }}">
 	<div class="aps-panel-header">
 		{% if ITEM_PANEL_ICON %}
-			<i class="=icon shop-panel-icon{{ ITEM_PANEL_ICON }}"></i>
+			<i class="icon shop-panel-icon{{ ITEM_PANEL_ICON }}"></i>
 		{% elseif item.S_FEATURED and item.S_SALE and SHOP_PANEL_FEATURED_SALE_ICON %}
 			<i class="icon shop-panel-icon{{ SHOP_PANEL_FEATURED_SALE_ICON }}"></i>
 		{% elseif item.S_FEATURED and SHOP_PANEL_FEATURED_ICON %}

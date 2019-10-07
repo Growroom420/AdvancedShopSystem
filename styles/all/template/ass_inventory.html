@@ -8,6 +8,8 @@
 
 	{% INCLUDECSS '@phpbbstudio_ass/ass_common.css' %}
 	{% INCLUDEJS '@phpbbstudio_ass/js/ass_common.js' %}
+
+	{% EVENT phpbbstudio_ass_includes_inventory %}
 {% endblock %}
 
 {% block nav %}
@@ -49,6 +51,8 @@
 											<a class="aps-panel shop-inventory-link" href="{{ item.U_INVENTORY }}">
 												{% if item.S_TYPE_ERROR %}
 													<i class="icon fa-exclamation-triangle icon-white shop-panel-icon shop-panel-icon-tiny shop-panel-icon-red"></i>
+												{% elseif item.STACK_COUNT > 1 %}
+													<span class="icon icon-white shop-panel-icon shop-panel-icon-tiny shop-panel-icon-purple"><strong class="shop-inventory-stack">{{ item.STACK_COUNT }}</strong></span>
 												{% elseif item.S_HAS_EXPIRED %}
 													<i class="icon fa-hourglass-end icon-white shop-panel-icon shop-panel-icon-tiny shop-panel-icon-red"></i>
 												{% elseif item.S_WILL_EXPIRE %}

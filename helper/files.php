@@ -140,7 +140,9 @@ class files
 	 */
 	public function get_file_size($directory, $file)
 	{
-		return filesize($this->get_path($directory, true, $file));
+		$path = $this->get_path($directory, true, $file);
+
+		return $this->filesystem->exists($path) ? filesize($path) : 0;
 	}
 
 	/**
@@ -153,7 +155,9 @@ class files
 	 */
 	public function get_file_time($directory, $file)
 	{
-		return filemtime($this->get_path($directory, true, $file));
+		$path = $this->get_path($directory, true, $file);
+
+		return $this->filesystem->exists($path) ? filemtime($path) : 0;
 	}
 
 	/**
@@ -333,7 +337,7 @@ class files
 
 		if ($this->exists($directory, $file->get('realname')))
 		{
-			throw new runtime_exception('ASS_ERROR_NOT_UNIQUE', ['ASS_FILENAME', $file->get('realname')]);
+			throw new runtime_exception('ASS_ERROR_NOT_UNIQUE', [$file->get('realname')]);
 		}
 
 		$file->move_file($this->get_path($directory, false));
@@ -376,9 +380,11 @@ class files
 	public function get_path($directory, $root = true, $file = '')
 	{
 		$root_path = $root ? $this->root_path : '';
+
+		$directory = $directory ? "/{$directory}" : '';
 		$file = $file ? "/{$file}" : '';
 
-		return "{$root_path}{$this->mode}/aps/{$directory}{$file}";
+		return "{$root_path}{$this->mode}/aps{$directory}{$file}";
 	}
 
 	/**

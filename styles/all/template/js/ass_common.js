@@ -34,7 +34,8 @@ jQuery(function($) {
 				link: '.shop-inventory-link',
 				panel: '.shop-inventory-panel',
 				refund: '.shop-inventory-refund',
-				row: '.shop-inventory-row'
+				row: '.shop-inventory-row',
+				stack: '.shop-inventory-stack'
 			}
 		},
 		sketch: {
@@ -257,6 +258,16 @@ jQuery(function($) {
 					studio.ajax.request(r.S_CONFIRM_ACTION, callback, 'POST', data);
 				}
 			});
+
+			$('input', swal.getContent()).on('keydown', function(e) {
+				if (e.which === 13) {
+					swal.clickConfirm();
+
+					e.preventDefault();
+
+					return false;
+				}
+			});
 		}
 	};
 
@@ -324,17 +335,44 @@ jQuery(function($) {
 	 * @return {void}
 	 */
 	studio.inventory.remove = function(r) {
-		let $item		= $(`[data-shop-item="${r.id}"]`),
-			$section	= $item.parents(studio.inventory.classes.panel),
+		let $items		= $(`[data-shop-item="${r.id}"]`),
+			$section	= $items.parents(studio.inventory.classes.panel),
 			$column		= $section.parent('.aps-col'),
 			$row		= $column.parent(studio.inventory.classes.row);
 
-		$item.remove();
-		$section.remove();
-		$column.remove();
+		let $stack	= $section.find(studio.inventory.classes.stack),
+			stack	= typeof $stack !== 'undefined' ? parseInt($stack.text()) : false;
 
-		if ($row.children().length === 0) {
-			$row.remove();
+		if (stack === false) {
+			$items.remove();
+			$section.remove();
+			$column.remove();
+
+			if ($row.children().length === 0) {
+				$row.remove();
+			}
+		} else {
+			$items.not($section.find($items)).remove();
+
+			if (r.index > 1) {
+				let replaceUrl = location.href.slice(0, -r.index.toString().length) + '1';
+
+				$section.find(studio.inventory.classes.link).attr('href', replaceUrl);
+				phpbb.history.replaceUrl(replaceUrl);
+			}
+
+			if (stack === 2) {
+				$stack.parent().remove();
+			} else {
+				$stack.text(stack - 1);
+			}
+
+			if (r.item) {
+				$items.replaceWith(r.item);
+			} else {
+				$section.draggable('destroy');
+				$section.addClass('shop-cursor-pointer');
+			}
 		}
 	};
 
@@ -378,6 +416,7 @@ jQuery(function($) {
 	 * @param  {bool}		r.delete			The delete indicator
 	 * @param  {bool}		r.success			The success indicator
 	 * @param  {string}		r.file				A window location for downloading a file
+	 * @param  {int}		r.index				The item stack index
 	 * @return {void}
 	 */
 	phpbb.addAjaxCallback('shop_inventory_use', function(r) {
@@ -436,7 +475,7 @@ jQuery(function($) {
 
 				studio.sketch.create(ui.helper);
 			},
-			stop: function(e, ui) {
+			stop: function() {
 				studio.sketch.timer = setTimeout(studio.sketch.destroy, studio.sketch.timeout);
 			}
 		});

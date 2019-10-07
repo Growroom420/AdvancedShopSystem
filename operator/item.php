@@ -447,10 +447,11 @@ class item
 	 * @param  entity	$item				The item entity
 	 * @param  string	$prefix				The variables prefix
 	 * @param  bool		$prepend			Whether or not "statuses" should be prepended
+	 * @param  int		$index				The item index
 	 * @return array						The template variables
 	 * @access public
 	 */
-	public function get_variables(entity $item, $prefix = '', $prepend = true)
+	public function get_variables(entity $item, $prefix = '', $prepend = true, $index = 1)
 	{
 		$bool = $prepend ? 'S_' : '';
 
@@ -469,6 +470,7 @@ class item
 			"{$prefix}RELATED_ITEMS"	=> $item->get_related_items(),
 
 			"{$prefix}COUNT"			=> $item->get_count(),
+			"{$prefix}STACK"			=> $item->get_stack(),
 			"{$prefix}STOCK"			=> $item->get_stock(),
 			"{$prefix}STOCK_INITIAL"	=> !$item->get_stock_unlimited() ? $item->get_stock() + $item->get_purchases() : false,
 			"{$prefix}STOCK_THRESHOLD"	=> $item->get_stock_threshold(),
@@ -517,12 +519,12 @@ class item
 			"{$bool}{$prefix}STOCK_UNLIMITED"	=> $item->get_stock_unlimited(),
 			"{$bool}{$prefix}OUT_OF_STOCK"		=> !$item->get_stock_unlimited() && !$item->get_stock(),
 
-			"U_{$prefix}ACTIVATE"		=> $item->get_category_slug() ? $this->router->inventory($item->get_category_slug(), $item->get_slug(), 'activate') : '',
-			"U_{$prefix}DELETE"			=> $item->get_category_slug() ? $this->router->inventory($item->get_category_slug(), $item->get_slug(), 'delete') : '',
+			"U_{$prefix}ACTIVATE"		=> $item->get_category_slug() ? $this->router->inventory($item->get_category_slug(), $item->get_slug(), $index, 'activate') : '',
+			"U_{$prefix}DELETE"			=> $item->get_category_slug() ? $this->router->inventory($item->get_category_slug(), $item->get_slug(), $index, 'delete') : '',
 			"U_{$prefix}GIFT"			=> $item->get_category_slug() ? $this->router->gift($item->get_category_slug(), $item->get_slug()) : '',
-			"U_{$prefix}INVENTORY"		=> $item->get_category_slug() ? $this->router->inventory($item->get_category_slug(), $item->get_slug()) : '',
+			"U_{$prefix}INVENTORY"		=> $item->get_category_slug() ? $this->router->inventory($item->get_category_slug(), $item->get_slug(), $index) : '',
 			"U_{$prefix}PURCHASE"		=> $item->get_category_slug() ? $this->router->purchase($item->get_category_slug(), $item->get_slug()) : '',
-			"U_{$prefix}REFUND"			=> $item->get_category_slug() ? $this->router->inventory($item->get_category_slug(), $item->get_slug(), 'refund') : '',
+			"U_{$prefix}REFUND"			=> $item->get_category_slug() ? $this->router->inventory($item->get_category_slug(), $item->get_slug(), $index, 'refund') : '',
 			"U_{$prefix}VIEW"			=> $item->get_category_slug() ? $this->router->item($item->get_category_slug(), $item->get_slug()) : '',
 		];
 	}
@@ -574,6 +576,25 @@ class item
 	public function get_background_path($background, $root = true)
 	{
 		return $this->path_helper->update_web_root_path($this->files->set_mode('images')->get_path($background, $root));
+	}
+
+	/**
+	 * Get an item background image absolute path.
+	 *
+	 * @param  string	$background		The item background image
+	 * @return string					The item background image absolute path
+	 * @access public
+	 */
+	public function get_absolute_background_path($background)
+	{
+		$background = $this->path_helper->remove_web_root_path($background);
+
+		if (strpos($background, '.') === 0)
+		{
+			$background = substr($background, 1);
+		}
+
+		return generate_board_url() . $background;
 	}
 
 	/**

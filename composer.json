@@ -3,8 +3,8 @@
 	"type": "phpbb-extension",
 	"description": "A fully integrated and extendable shop extension for the Advanced Points System.",
 	"homepage": "https://www.phpbbstudio.com",
-	"version": "1.1.0-beta",
-	"time": "2019-09-21",
+	"version": "1.1.1-beta",
+	"time": "2019-10-07",
 	"license": "GPL-2.0-only",
 	"authors": [
 		{
