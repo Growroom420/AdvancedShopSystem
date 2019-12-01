@@ -1,0 +1,23 @@
+{% block width %}s12 m6{% endblock %}
+
+{% block content %}
+	{% if purchases|length %}
+		<div class="aps-collection">
+			{% for item in purchases %}
+				<div class="aps-collection-item aps-avatar">
+					{% if item.BACKGROUND_SRC %}
+						<img class="avatar" src="{{ item.BACKGROUND_SRC }}" alt="{{ item.TITLE }}" />
+					{% else %}
+						<i class="avatar fa {{ item.ICON ?: aps_config('ass_no_image_icon') }} fa-3x icon-gray" aria-hidden="true"></i>
+					{% endif %}
+					<span class="title">{{ item.TITLE }}</span><br />
+					<a class="aps-secondary-content" href="{{ item.U_VIEW }}">
+						{{ item.PURCHASES }}
+					</a>
+				</div>
+			{% endfor %}
+		</div>
+	{% else %}
+		<div class="error aps-center">{{ lang('ASS_ITEMS_NONE') }}</div>
+	{% endif %}
+{% endblock %}

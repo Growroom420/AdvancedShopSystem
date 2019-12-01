@@ -17,6 +17,12 @@ use phpbb\exception\runtime_exception;
  */
 class acp_files_controller
 {
+	/** @var \phpbb\cache\driver\driver_interface */
+	protected $cache;
+
+	/** @var \phpbb\config\config */
+	protected $config;
+
 	/** @var \phpbbstudio\ass\helper\files */
 	protected $files;
 
@@ -38,15 +44,19 @@ class acp_files_controller
 	/**
 	 * Constructor.
 	 *
-	 * @param  \phpbbstudio\ass\helper\files	$files			Files object
-	 * @param  \phpbb\language\language			$language		Language object
-	 * @param  \phpbb\request\request			$request		Request object
-	 * @param  \phpbb\template\template			$template		Template object
-	 * @param  \phpbb\user						$user			User object
+	 * @param  \phpbb\cache\driver\driver_interface	$cache			Cache driver object
+	 * @param  \phpbb\config\config					$config			Config object
+	 * @param  \phpbbstudio\ass\helper\files		$files			Files object
+	 * @param  \phpbb\language\language				$language		Language object
+	 * @param  \phpbb\request\request				$request		Request object
+	 * @param  \phpbb\template\template				$template		Template object
+	 * @param  \phpbb\user							$user			User object
 	 * @return void
 	 * @access public
 	 */
 	public function __construct(
+		\phpbb\cache\driver\driver_interface $cache,
+		\phpbb\config\config $config,
 		\phpbbstudio\ass\helper\files $files,
 		\phpbb\language\language $language,
 		\phpbb\request\request $request,
@@ -54,6 +64,8 @@ class acp_files_controller
 		\phpbb\user $user
 	)
 	{
+		$this->cache			= $cache;
+		$this->config			= $config;
 		$this->files			= $files;
 		$this->language			= $language;
 		$this->request			= $request;
@@ -113,7 +125,15 @@ class acp_files_controller
 							trigger_error($this->language->lang_array($e->getMessage(), array_merge([$this->language->lang('ASS_FOLDER')], $e->get_parameters())) . adm_back_link($refresh), E_USER_WARNING);
 						}
 
-						$json_response->send(['REFRESH_DATA' => ['url' => $refresh, 'time' => 0]]);
+						if ($this->config['ass_purge_cache'])
+						{
+							$this->cache->purge();
+						}
+
+						if ($this->request->is_ajax())
+						{
+							$json_response->send(['REFRESH_DATA' => ['url' => $refresh, 'time' => 0]]);
+						}
 
 						redirect($refresh);
 					break;
@@ -135,6 +155,11 @@ class acp_files_controller
 							trigger_error($this->language->lang_array($e->getMessage(), array_merge([$this->language->lang('ASS_FILENAME')], $e->get_parameters())) . adm_back_link($refresh), E_USER_WARNING);
 						}
 
+						if ($this->config['ass_purge_cache'])
+						{
+							$this->cache->purge();
+						}
+
 						redirect($refresh);
 					break;
 
@@ -145,6 +170,11 @@ class acp_files_controller
 						if (confirm_box(true))
 						{
 							$this->files->delete($directory);
+
+							if ($this->config['ass_purge_cache'])
+							{
+								$this->cache->purge();
+							}
 
 							trigger_error("ASS_{$type}_DELETE_SUCCESS");
 						}

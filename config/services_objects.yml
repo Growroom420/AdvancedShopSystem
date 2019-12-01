@@ -21,6 +21,21 @@ services:
             - '@text_formatter.utils'
             - '%phpbbstudio.ass.tables.items%'
 
+    phpbbstudio.ass.operator.blocks:
+        class: phpbbstudio\ass\operator\blocks
+        arguments:
+            - '@phpbbstudio.aps.functions'
+            - '@auth'
+            - '@config'
+            - '@dbal.conn'
+            - '@group_helper'
+            - '@phpbbstudio.ass.operator.item'
+            - '@template'
+            - '@user_loader'
+            - '%phpbbstudio.ass.tables.categories%'
+            - '%phpbbstudio.ass.tables.items%'
+            - '%phpbbstudio.ass.tables.logs%'
+
     phpbbstudio.ass.operator.category:
         class: phpbbstudio\ass\operator\category
         arguments:

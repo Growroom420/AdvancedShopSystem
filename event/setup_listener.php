@@ -67,7 +67,7 @@ class setup_listener implements EventSubscriberInterface
 	 * @return void
 	 * @access public
 	 */
-	public function ass_setup_permissions($event)
+	public function ass_setup_permissions(\phpbb\event\data $event)
 	{
 		$categories = $event['categories'];
 		$permissions = $event['permissions'];

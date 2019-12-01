@@ -1,0 +1,27 @@
+{% block width %}s12 m6{% endblock %}
+
+{% block content %}
+	{% if featured|length %}
+		<div class="aps-collection">
+			{% for item in featured %}
+				<div class="aps-collection-item aps-avatar">
+					{% if item.BACKGROUND_SRC %}
+						<img class="avatar" src="{{ item.BACKGROUND_SRC }}" alt="{{ item.TITLE }}" />
+					{% else %}
+						<i class="avatar fa {{ item.ICON ?: aps_config('ass_no_image_icon') }} fa-3x icon-gray" aria-hidden="true"></i>
+					{% endif %}
+					<span class="title">{{ item.TITLE }}</span><br />
+					<em>
+						<i class="icon {{ aps_config('ass_panel_featured_icon') ?: 'calender-times-o' }} fa-fw" aria-hidden="true"></i>
+						{{ user.format_date(item.FEATURED_UNTIL_UNIX) }}
+					</em>
+					<a class="aps-secondary-content" href="{{ item.U_VIEW }}">
+						<i class="icon fa-external-link fa-fw"></i>
+					</a>
+				</div>
+			{% endfor %}
+		</div>
+	{% else %}
+		<div class="error aps-center">{{ lang('ASS_ITEMS_NONE') }}</div>
+	{% endif %}
+{% endblock %}

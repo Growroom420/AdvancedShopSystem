@@ -3,8 +3,8 @@
 	"type": "phpbb-extension",
 	"description": "A fully integrated and extendable shop extension for the Advanced Points System.",
 	"homepage": "https://www.phpbbstudio.com",
-	"version": "1.1.1-beta",
-	"time": "2019-10-07",
+	"version": "1.1.2-beta",
+	"time": "2019-12-01",
 	"license": "GPL-2.0-only",
 	"authors": [
 		{
@@ -21,7 +21,12 @@
 	"extra": {
 		"display-name": "phpBB Studio - Advanced Shop System",
 		"soft-require": {
-			"phpbb/phpbb": ">=3.2.7,"
+			"phpbb/phpbb": ">=3.2.7,<4.0.0@dev"
+		},
+		"version-check": {
+			"host": "3d-i.github.io",
+			"directory": "/site/vchecks",
+			"filename": "advshop.json"
 		}
 	}
 }

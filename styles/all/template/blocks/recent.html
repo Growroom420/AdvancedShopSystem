@@ -1,0 +1,27 @@
+{% block width %}s12 m6{% endblock %}
+
+{% block content %}
+	{% if recent|length %}
+		<div class="aps-collection">
+			{% for item in recent %}
+				<div class="aps-collection-item aps-avatar">
+					{% if item.BACKGROUND_SRC %}
+						<img class="avatar" src="{{ item.BACKGROUND_SRC }}" alt="{{ item.TITLE }}" />
+					{% else %}
+						<i class="avatar fa {{ item.ICON ?: aps_config('ass_no_image_icon') }} fa-3x icon-gray" aria-hidden="true"></i>
+					{% endif %}
+					<span class="title">{{ item.TITLE }}</span><br />
+					<em>
+						<i class="icon fa-pencil-square-o fa-fw" aria-hidden="true"></i>
+						{{ user.format_date(item.CREATE_TIME) }}
+					</em>
+					<a class="aps-secondary-content" href="{{ item.U_VIEW }}">
+						<i class="icon fa-external-link fa-fw"></i>
+					</a>
+				</div>
+			{% endfor %}
+		</div>
+	{% else %}
+		<div class="error aps-center">{{ lang('ASS_ITEMS_NONE') }}</div>
+	{% endif %}
+{% endblock %}

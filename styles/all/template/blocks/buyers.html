@@ -1,0 +1,13 @@
+{% block width %}s12 m4{% endblock %}
+
+{% block content %}
+	<div class="aps-collection">
+		{% for user in buyers %}
+			<div class="aps-collection-item aps-avatar">
+				{{ user.AVATAR ? user.AVATAR }}
+				<span class="title">{{ user.NAME }}</span>
+				<p>{{ user.COUNT }}</p>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}

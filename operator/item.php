@@ -119,7 +119,7 @@ class item
 	 * Get loaded item entities for a rowset.
 	 *
 	 * @param  array	$rowset				The rowset retrieved from the items table
-	 * @return array						Item entities
+	 * @return entity[]						Item entities
 	 * @access public
 	 */
 	public function get_entities(array $rowset)
@@ -177,7 +177,7 @@ class item
 	 * @param  bool		$active_only		Whether or not to only load active items
 	 * @param  int		$limit				The amount of item entities to return
 	 * @param  int		$start				The offset from where to return entities
-	 * @return array						Item entities
+	 * @return entity[]						Item entities
 	 * @access public
 	 */
 	public function get_items($category_id, $sql_where = '', $sql_order = 'i.item_order', $sql_dir = 'ASC', $active_only = false, $limit = 0, $start = 0)
@@ -203,7 +203,7 @@ class item
 	 *
 	 * @param  array	$ids				The item identifiers
 	 * @param  bool		$as_entities		Whether or not to return entities
-	 * @return array						Item entities
+	 * @return entity[]						Item entities
 	 * @access public
 	 */
 	public function get_items_by_id(array $ids, $as_entities = true)
@@ -329,11 +329,14 @@ class item
 	 * @param  string	$mode				The specific mode
 	 * @param  int		$limit				The amount of items to assign
 	 * @param  int		$category_id		The category identifier
-	 * @return void
+	 * @param  bool		$assign				Whether or not to assign template variables
+	 * @return entity[]
 	 * @access public
 	 */
-	public function assign_specific_items($mode, $limit, $category_id = 0)
+	public function assign_specific_items($mode, $limit, $category_id = 0, $assign = true)
 	{
+		$items = [];
+
 		$sql_array = [
 			'SELECT'	=> 'i.*, c.category_slug',
 			'FROM'		=> [
@@ -349,25 +352,25 @@ class item
 		switch ($mode)
 		{
 			case 'featured':
-				$sql_array['WHERE'] .= ' AND i.item_sale_start = 0
+				$sql_array['ORDER_BY'] = 'i.item_featured_start DESC, i.item_featured_until DESC';
+				$sql_array['WHERE'] .= ' AND i.item_sale_until < ' . time() . '
 										AND i.item_featured_start <> 0 AND i.item_featured_until <> 0
 										AND (' . time() . ' BETWEEN i.item_featured_start AND i.item_featured_until)';
-				$sql_array['ORDER_BY'] = 'i.item_featured_start DESC';
 			break;
 
 			case 'sale':
-				$sql_array['WHERE'] .= ' AND i.item_featured_start = 0
+				$sql_array['ORDER_BY'] = 'i.item_sale_start DESC, i.item_sale_until DESC';
+				$sql_array['WHERE'] .= ' AND i.item_featured_until < ' . time() . '
 										AND i.item_sale_start <> 0 AND i.item_sale_until <> 0
 										AND (' . time() . ' BETWEEN i.item_sale_start AND i.item_sale_until)';
-				$sql_array['ORDER_BY'] = 'i.item_sale_start DESC';
 			break;
 
 			case 'featured_sale':
+				$sql_array['ORDER_BY'] = 'i.item_sale_start DESC, i.item_featured_start DESC';
 				$sql_array['WHERE'] .= ' AND i.item_featured_start <> 0 AND i.item_featured_until <> 0
 										AND (' . time() . ' BETWEEN i.item_featured_start AND i.item_featured_until)
 										AND i.item_sale_start <> 0 AND i.item_sale_until <> 0
 										AND (' . time() . ' BETWEEN i.item_sale_start AND i.item_sale_until)';
-				$sql_array['ORDER_BY'] = 'i.item_sale_start DESC, i.item_featured_start DESC';
 			break;
 
 			case 'recent':
@@ -375,13 +378,22 @@ class item
 			break;
 
 			case 'limited':
-				$sql_array['SELECT'] .= ', i.item_stock';
-				$sql_array['WHERE'] .= ' AND i.item_stock <> 0 AND i.item_stock_unlimited = 0';
 				$sql_array['ORDER_BY'] = 'i.item_stock ASC';
+				$sql_array['WHERE'] .= ' AND i.item_stock <> 0 AND i.item_stock_unlimited = 0';
 			break;
 
 			case 'random':
 				$sql_array['ORDER_BY'] = $this->aps_dbal->random();
+			break;
+
+			case 'purchases':
+				$sql_array['ORDER_BY'] = 'i.item_purchases DESC';
+			break;
+
+			case 'available':
+				$sql_array['ORDER_BY'] = 'i.item_available_start DESC, i.item_available_until DESC';
+				$sql_array['WHERE'] .= ' AND i.item_available_start <> 0 AND i.item_available_until <> 0
+										AND (' . time() . ' BETWEEN i.item_available_start AND i.item_available_until)';
 			break;
 		}
 
@@ -393,9 +405,16 @@ class item
 		{
 			$item = $this->get_entity()->import($row);
 
-			$this->template->assign_block_vars("ass_{$mode}", $this->get_variables($item));
+			if ($assign)
+			{
+				$this->template->assign_block_vars("ass_{$mode}", $this->get_variables($item));
+			}
+
+			$items[$item->get_id()] = $item;
 		}
 		$this->db->sql_freeresult($result);
+
+		return $items;
 	}
 
 	/**

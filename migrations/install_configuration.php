@@ -23,7 +23,7 @@ class install_configuration extends \phpbb\db\migration\container_aware_migratio
 	 */
 	public function effectively_installed()
 	{
-		return isset($this->config['ass_enabled']);
+		return $this->config->offsetExists('ass_enabled');
 	}
 
 	/**

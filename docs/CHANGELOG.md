@@ -1,5 +1,12 @@
 # phpBB Studio - Advanced Shop System
 
+#### v1.1.2-beta
+- Fixed ACP "Overview" spenders block
+- Fixed a bug where sale or featured items would not show up
+- Added automatic cache purge option after file uploads
+- Added shop blocks to the APS display page
+- Added version checker
+
 #### v1.1.1-beta
 - Fixed users being able to gift themselves _(now for real)_
 - Fixed pressing enter causing the page to reload instead of submitting the gift form

@@ -114,6 +114,22 @@
 			</dd>
 		</dl>
 		<dl>
+			<dt>
+				<label for="purge_cache">{{ lang('ACP_ASS_PURGE_CACHE') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('ACP_ASS_PURGE_CACHE_DESC') }}</span>
+			</dt>
+			<dd>
+				<label>
+					<input class="radio aps-bool" id="purge_cache" name="purge_cache" type="radio" value="1"{{ PURGE_CACHE ? ' checked' }}>
+					<span class="aps-button-green">{{ lang('ENABLED') }}</span>
+				</label>
+				<label>
+					<input class="radio aps-bool" name="purge_cache" type="radio" value="0"{{ not PURGE_CACHE ? ' checked' }}>
+					<span class="aps-button-red">{{ lang('DISABLED') }}</span>
+				</label>
+			</dd>
+		</dl>
+		<dl>
 			<dt><label for="items_per_page">{{ lang('ACP_ASS_ITEMS_PER_PAGE') ~ lang('COLON') }}</label></dt>
 			<dd>
 				<input class="shop-slider" id="items_per_page" name="items_per_page" type="range" value="{{ ITEMS_PER_PAGE }}" min="2" max="60" step="2" required>

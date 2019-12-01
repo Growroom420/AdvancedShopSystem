@@ -1,0 +1,18 @@
+{% block width %}s12 m6 aps-js{% endblock %}
+
+{% block content %}
+	<canvas data-aps-chart="pie"
+			data-aps-time="{{ aps_config('aps_display_graph_time') }}"
+			data-aps-empty="{{ lang('APS_POINTS_DATA_EMPTY', aps_name()) }}"
+			aria-label="{{ lang('ASS_PURCHASES_PER_GROUP', aps_name()) }}"
+			role="img">
+		<p>{{ lang('APS_PURCHASES_PER_GROUP', aps_name()) }}</p>
+	</canvas>
+	<div class="hidden">
+		{% for group in purchases_group %}
+			<div data-aps-labels="{{ group.NAME|e }}"
+				 data-aps-value="{{ group.PURCHASES }}">
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}

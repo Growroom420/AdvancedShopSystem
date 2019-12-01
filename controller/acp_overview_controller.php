@@ -175,7 +175,7 @@ class acp_overview_controller
 		$gifters = $this->get_users('gifters');
 		$spenders = $this->get_users('spenders');
 
-		$this->user_loader->load_users(array_merge(array_keys($buyers), array_keys($gifters)));
+		$this->user_loader->load_users(array_merge(array_keys($buyers), array_keys($gifters), array_keys($spenders)));
 
 		$users = [
 			'buyers'	=> $buyers,
@@ -362,7 +362,7 @@ class acp_overview_controller
 				return 'i.item_stock_unlimited <> 1';
 
 			case 'featured':
-				return 'i.item_sale_start = 0
+				return 'i.item_sale_start < ' . time() . '
 					AND i.item_featured_start <> 0 
 					AND i.item_featured_until <> 0
 					AND (' . time() . ' BETWEEN i.item_featured_start AND i.item_featured_until)';
@@ -373,7 +373,7 @@ class acp_overview_controller
 					AND i.item_featured_start > ' . time();
 
 			case 'sale':
-				return 'i.item_featured_start = 0
+				return 'i.item_featured_start < ' . time() . '
 					AND i.item_sale_start <> 0 
 					AND i.item_sale_until <> 0
 					AND (' . time() . ' BETWEEN i.item_sale_start AND item_sale_until)';

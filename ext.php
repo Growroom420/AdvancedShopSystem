@@ -44,7 +44,7 @@ class ext extends \phpbb\extension\base
 		$aps_version = (string) $md_manager->get_metadata('version');
 		$aps_required = '1.0.2-beta';
 
-		/** Make sure the APS version is 1.0.1-beta or higher */
+		/** Make sure the APS version is 1.0.2-beta or higher */
 		if (phpbb_version_compare($aps_version, $aps_required, '<'))
 		{
 			$user = $this->container->get('user');

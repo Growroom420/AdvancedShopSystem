@@ -136,7 +136,7 @@ class acp_settings_controller
 
 		$options = ['banner_size', 'banner_colour', 'icon_colour', 'icon', 'limit', 'order', 'width'];
 		$settings = [
-			'int'		=> ['enabled', 'active', 'gift_enabled', 'deactivate_conflicts', 'items_per_page', 'logs_per_page', 'carousel_arrows', 'carousel_dots', 'carousel_fade', 'carousel_play', 'carousel_play_speed', 'carousel_speed'],
+			'int'		=> ['enabled', 'active', 'gift_enabled', 'deactivate_conflicts', 'purge_cache', 'items_per_page', 'logs_per_page', 'carousel_arrows', 'carousel_dots', 'carousel_fade', 'carousel_play', 'carousel_play_speed', 'carousel_speed'],
 			'string'	=> ['shop_icon', 'inventory_icon', 'no_image_icon', 'gift_icon'],
 		];
 

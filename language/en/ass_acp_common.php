@@ -223,6 +223,9 @@ $lang = array_merge($lang, [
 	'ACP_ASS_PANEL_ORDER'				=> 'Order',
 	'ACP_ASS_PANEL_WIDTH'				=> 'Width',
 
+	'ACP_ASS_PURGE_CACHE'				=> 'Automatically purge cache',
+	'ACP_ASS_PURGE_CACHE_DESC'			=> 'This will automatically purge the cache when performing any actions through the “Files” interface.',
+
 	'ACP_ASS_SETTINGS_CAROUSEL'			=> 'Carousel settings',
 	'ACP_ASS_SETTINGS_DEFAULT'			=> 'Default settings',
 	'ACP_ASS_SETTINGS_DISPLAY'			=> 'Display settings',

@@ -1,4 +1,13 @@
 services:
+    phpbbstudio.ass.listener.blocks:
+        class: phpbbstudio\ass\event\blocks_listener
+        arguments:
+            - '@phpbbstudio.ass.operator.blocks'
+            - '@config'
+            - '@language'
+        tags:
+            - { name: event.listener }
+
     phpbbstudio.ass.listener.setup:
         class: phpbbstudio\ass\event\setup_listener
         arguments:

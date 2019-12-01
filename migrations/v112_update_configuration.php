@@ -11,9 +11,9 @@
 namespace phpbbstudio\ass\migrations;
 
 /**
- * phpBB Studio - Advanced Shop System: v1.1.1 Update configuration migration
+ * phpBB Studio - Advanced Shop System: v1.1.2 Update configuration migration
  */
-class v111_update_configuration extends \phpbb\db\migration\container_aware_migration
+class v112_update_configuration extends \phpbb\db\migration\container_aware_migration
 {
 	/**
 	 * Checks whether the Advanced Shop System configuration does exist or not.
@@ -23,7 +23,7 @@ class v111_update_configuration extends \phpbb\db\migration\container_aware_migr
 	 */
 	public function effectively_installed()
 	{
-		return $this->config->offsetExists('ass_panel_sale_width');
+		return $this->config->offsetExists('ass_purge_cache');
 	}
 
 	/**
@@ -47,23 +47,7 @@ class v111_update_configuration extends \phpbb\db\migration\container_aware_migr
 	public function update_data()
 	{
 		return [
-			['config.add', ['ass_panel_featured_order', 1]],
-			['config.add', ['ass_panel_featured_width', 6]],
-
-			['config.add', ['ass_panel_sale_order', 2]],
-			['config.add', ['ass_panel_sale_width', 6]],
-
-			['config.add', ['ass_panel_featured_sale_order', 3]],
-			['config.add', ['ass_panel_featured_sale_width', 6]],
-
-			['config.add', ['ass_panel_recent_order', 4]],
-			['config.add', ['ass_panel_recent_width', 6]],
-
-			['config.add', ['ass_panel_limited_order', 5]],
-			['config.add', ['ass_panel_limited_width', 6]],
-
-			['config.add', ['ass_panel_random_order', 6]],
-			['config.add', ['ass_panel_random_width', 3]],
+			['config.add', ['ass_purge_cache', false]],
 		];
 	}
 }

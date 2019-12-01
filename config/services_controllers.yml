@@ -2,6 +2,8 @@ services:
     phpbbstudio.ass.controller.acp.files:
         class: phpbbstudio\ass\controller\acp_files_controller
         arguments:
+            - '@cache.driver'
+            - '@config'
             - '@phpbbstudio.ass.files'
             - '@language'
             - '@request'

@@ -55,17 +55,16 @@
 - Fully extendable by other extensions.<br />*(with detailed explanation and examples)*
 
 ## Other items
-- Rank
-- Avatar
-- Groups *(Create a group and Join a group)*
-- Permissions *(Global permissions and Local permissions)*
+- [Rank](https://phpbbstudio.com/extensions/advanced-shop-system-rank)
+- [Avatar](https://phpbbstudio.com/extensions/advanced-shop-system-avatar)
+- [Username](https://phpbbstudio.com/extensions/advanced-shop-system-username)
+- [Groups](https://phpbbstudio.com/extensions/advanced-shop-system-groups) *(Create a group and Join a group)*
+- [Permissions](https://phpbbstudio.com/extensions/advanced-shop-system-permissions) *(Global permissions and Local permissions)*
 
 ## Other extensions
 - [Advanced Points System](https://github.com/phpBB-Studio/AdvancedPointsSystem)
-- Advanced Points System · Purchases _(Work In Progress)_
-- Bank _(To be determined)_
-- Lottery _(To be determined)_
-- Robbery _(To be determined)_
+- [Advanced Points System · Purchases](https://phpbbstudio.com/extensions/advanced-points-system-purchases)
+- [Advanced Points System · Auto Groups](https://github.com/phpBB-Studio/AdvancedShopSystemAutoGroups)
 
 ## Extending Advanced Shop System
 For the extension developers amongst us, we have written a comprehensive Wiki that should describe everything in detail.
@@ -81,7 +80,7 @@ This can be read over at [Extending Advanced Shop System](https://github.com/php
 
 
 ## License
-GNU General Public License, version 2 ([GPLv2](license.txt)).
+GNU General Public License, version 2 ([GPLv2](../license.txt)).
 
 ---
 > [phpbbstudio.com](https://www.phpbbstudio.com) · GitHub [phpbb-studio](https://github.com/phpbb-studio/) · phpBB [3Di](https://www.phpbb.com/community/memberlist.php?mode=viewprofile&u=177467) / [mrgoldy](https://www.phpbb.com/community/memberlist.php?mode=viewprofile&u=1114105)
