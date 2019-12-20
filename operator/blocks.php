@@ -148,7 +148,7 @@ class blocks
 					FROM ' . $this->items_table . ' i,
 						' . $this->categories_table . ' c
 					WHERE i.category_id = c.category_id' .
-					(!$this->auth->acl_get('u_ass_can_view_inactive_items') . ' AND c.category_active = 1') . '
+					(!$this->auth->acl_get('u_ass_can_view_inactive_items') ? ' AND c.category_active = 1' : '') . '
 					GROUP BY i.category_id
 					ORDER BY c.category_order';
 		}
@@ -193,12 +193,12 @@ class blocks
 		{
 			case 'buyers':
 				$select = 'COUNT(log_id)';
-				$where =  ' WHERE recipient_id = 0';
+				$where =  ' WHERE item_purchase = 1 AND recipient_id = 0';
 			break;
 
 			case 'gifters':
 				$select = 'COUNT(log_id)';
-				$where = ' WHERE recipient_id <> 0';
+				$where = ' WHERE item_purchase = 1 AND recipient_id <> 0';
 			break;
 
 			case 'spenders':

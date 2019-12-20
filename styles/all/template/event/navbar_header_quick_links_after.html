@@ -1,0 +1,7 @@
+{% if S_ASS_ENABLED and S_ASS_NAVBAR_HEADER_QUICK_LINKS_AFTER %}
+	<li>
+		<a href="{{ path('phpbbstudio_ass_shop') }}" title="{{ lang('ASS_SHOP') }}" role="menuitem">
+			<i class="icon {{ ASS_SHOP_ICON }} fa-fw" aria-hidden="true"></i><span>{{ lang('ASS_SHOP') }}</span>
+		</a>
+	</li>
+{% endif %}

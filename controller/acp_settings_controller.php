@@ -15,6 +15,9 @@ namespace phpbbstudio\ass\controller;
  */
 class acp_settings_controller
 {
+	/** @var \phpbbstudio\aps\core\functions */
+	protected $aps_functions;
+
 	/** @var \phpbb\config\config */
 	protected $config;
 
@@ -54,6 +57,7 @@ class acp_settings_controller
 	/**
 	 * Constructor.
 	 *
+	 * @param  \phpbbstudio\aps\core\functions	$aps_functions	APS Functions object
 	 * @param  \phpbb\config\config				$config			Config object
 	 * @param  \phpbb\config\db_text			$config_text	Config text object
 	 * @param  \phpbb\language\language			$language		Language object
@@ -69,6 +73,7 @@ class acp_settings_controller
 	 * @access public
 	 */
 	public function __construct(
+		\phpbbstudio\aps\core\functions $aps_functions,
 		\phpbb\config\config $config,
 		\phpbb\config\db_text $config_text,
 		\phpbb\language\language $language,
@@ -82,6 +87,7 @@ class acp_settings_controller
 		$php_ext
 	)
 	{
+		$this->aps_functions	= $aps_functions;
 		$this->config			= $config;
 		$this->config_text		= $config_text;
 		$this->language			= $language;
@@ -118,6 +124,11 @@ class acp_settings_controller
 			{
 				$errors[] = $this->language->lang('FORM_INVALID');
 			}
+		}
+
+		if ($this->request->variable('action', '', true) === 'locations')
+		{
+			$this->link_locations();
 		}
 
 		$banner_sizes	= ['small', 'tiny'];
@@ -251,6 +262,7 @@ class acp_settings_controller
 			'SHOP_BANNER_SIZES'		=> $banner_sizes,
 
 			'U_ACTION'				=> $this->u_action,
+			'U_LOCATIONS'			=> $this->u_action . '&action=locations',
 		]));
 	}
 
@@ -274,6 +286,43 @@ class acp_settings_controller
 			'S_BBCODE_FLASH'	=> true,
 			'S_LINKS_ALLOWED'	=> true,
 		]);
+	}
+
+	/**
+	 * Handles the link locations from the settings page.
+	 *
+	 * @return void
+	 * @access protected
+	 */
+	protected function link_locations()
+	{
+		$this->language->add_lang('aps_acp_common', 'phpbbstudio/aps');
+
+		$locations = $this->aps_functions->get_link_locations('ass_link_locations');
+		$variables = ['S_ASS_LOCATIONS' => true];
+
+		foreach ($locations as $location => $status)
+		{
+			$variables[$location] = (bool) $status;
+		}
+
+		$this->template->assign_vars($variables);
+
+		if ($this->request->is_set_post('submit_locations'))
+		{
+			$links = [];
+
+			foreach (array_keys($locations) as $location)
+			{
+				$links[$location] = $this->request->variable((string) $location, false);
+			}
+
+			$this->aps_functions->set_link_locations($links, 'ass_link_locations');
+
+			$this->log->add('admin', $this->user->data['user_id'], $this->user->data['user_ip'], 'LOG_ACP_ASS_LOCATIONS');
+
+			trigger_error($this->language->lang('ACP_APS_LOCATIONS_SUCCESS') . adm_back_link($this->u_action));
+		}
 	}
 
 	/**

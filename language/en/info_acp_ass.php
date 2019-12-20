@@ -46,6 +46,8 @@ $lang = array_merge($lang, [
 	'LOG_ACP_ASS_INVENTORY_DELETE'		=> '<strong>Advanced Shop System &mdash;</strong> Deleted items from users’ inventories.<br>» Items (%1$s): %2$s<br>» Users (%3$s): %4$s',
 	'LOG_ACP_ASS_INVENTORY_DELETE_USER'	=> '<strong>Advanced Shop System &mdash;</strong> Deleted an item from a user’s inventory.<br>» Item: %1$s<br>» Username: %2$s',
 
+	'LOG_ACP_ASS_LOCATIONS'				=> '<strong>Advanced Shop System &mdash;</strong> Updated link locations',
+
 	'LOG_ACP_ASS_LOG_DELETED_ALL'		=> '<strong>Advanced Shop System &mdash;</strong> Deleted all log entries',
 	'LOG_ACP_ASS_LOG_DELETED_ENTRY'		=> '<strong>Advanced Shop System &mdash;</strong> Deleted a log entry',
 	'LOG_ACP_ASS_LOG_DELETED_ENTRIES'	=> '<strong>Advanced Shop System &mdash;</strong> Deleted multiple log entries',

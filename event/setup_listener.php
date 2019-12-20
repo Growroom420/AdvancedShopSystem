@@ -17,19 +17,39 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class setup_listener implements EventSubscriberInterface
 {
+	/** @var \phpbb\config\config */
+	protected $config;
+
+	/** @var \phpbbstudio\aps\core\functions */
+	protected $functions;
+
 	/** @var \phpbb\language\language */
 	protected $language;
+
+	/** @var \phpbb\template\template */
+	protected $template;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param  \phpbb\language\language		$language		Language object
+	 * @param  \phpbb\config\config				$config			Config object
+	 * @param  \phpbbstudio\aps\core\functions	$functions		APS Functions object
+	 * @param  \phpbb\language\language			$language		Language object
+	 * @param  \phpbb\template\template			$template		Template object
 	 * @return void
 	 * @access public
 	 */
-	public function __construct(\phpbb\language\language $language)
+	public function __construct(
+		\phpbb\config\config $config,
+		\phpbbstudio\aps\core\functions $functions,
+		\phpbb\language\language $language,
+		\phpbb\template\template $template
+	)
 	{
-		$this->language	= $language;
+		$this->config		= $config;
+		$this->functions	= $functions;
+		$this->language		= $language;
+		$this->template		= $template;
 	}
 
 	/**
@@ -43,6 +63,7 @@ class setup_listener implements EventSubscriberInterface
 	{
 		return [
 			'core.user_setup_after'		=> 'ass_load_lang',
+			'core.page_header_after'	=> 'ass_setup_links',
 			'core.permissions'			=> 'ass_setup_permissions',
 		];
 	}
@@ -57,6 +78,28 @@ class setup_listener implements EventSubscriberInterface
 	public function ass_load_lang()
 	{
 		$this->language->add_lang('ass_lang', 'phpbbstudio/ass');
+	}
+
+	/**
+	 * Set up ASS link locations.
+	 *
+	 * @return void
+	 */
+	public function ass_setup_links()
+	{
+		$locations = array_filter($this->functions->get_link_locations('ass_link_locations'));
+
+		if ($locations)
+		{
+			$this->template->assign_vars(array_combine(array_map(function($key) {
+				return 'S_ASS_' . strtoupper($key);
+			}, array_keys($locations)), $locations));
+		}
+
+		$this->template->assign_vars([
+			'ASS_SHOP_ICON'		=> (string) $this->config['ass_shop_icon'],
+			'S_ASS_ENABLED'		=> (bool) $this->config['ass_enabled'],
+		]);
 	}
 
 	/**

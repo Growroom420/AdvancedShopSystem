@@ -42,9 +42,9 @@ class ext extends \phpbb\extension\base
 
 		$md_manager = $ext_manager->create_extension_metadata_manager('phpbbstudio/aps');
 		$aps_version = (string) $md_manager->get_metadata('version');
-		$aps_required = '1.0.2-beta';
+		$aps_required = '1.0.5-RC1';
 
-		/** Make sure the APS version is 1.0.2-beta or higher */
+		/** Make sure the APS version is 1.0.5-RC1 or higher */
 		if (phpbb_version_compare($aps_version, $aps_required, '<'))
 		{
 			$user = $this->container->get('user');

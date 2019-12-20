@@ -11,7 +11,10 @@ services:
     phpbbstudio.ass.listener.setup:
         class: phpbbstudio\ass\event\setup_listener
         arguments:
+            - '@config'
+            - '@phpbbstudio.aps.functions'
             - '@language'
+            - '@template'
         tags:
             - { name: event.listener }
 

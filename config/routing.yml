@@ -50,3 +50,5 @@ phpbbstudio_ass_inventory:
         item_slug: ''
         action: ''
         index: 1
+    requirements:
+        index: '\d+'

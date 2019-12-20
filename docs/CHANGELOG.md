@@ -1,6 +1,15 @@
 # phpBB Studio - Advanced Shop System
 
-#### v1.1.2-beta
+#### v1.1.3-RC1 on 20-12-2019
+- Entered the stage features frozen.
+- Fixed a bug in the shop blocks
+- Fixed the wrong count in shop user blocks
+- Added an option to determine where the Shop link shows up
+- Fixed a bug where the ACP Inventory would not use the correct user
+- Fixed a bug where the gift notification would throw a warning
+- Added notifications for ACP Inventory gifts
+
+#### v1.1.2-beta on 01-12-2019
 - Fixed ACP "Overview" spenders block
 - Fixed a bug where sale or featured items would not show up
 - Added automatic cache purge option after file uploads

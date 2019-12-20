@@ -58,16 +58,18 @@ class notification
 	 * @param  item		$item				The item entity
 	 * @param  int		$user_id			The user identifier
 	 * @param  int		$inventory_id		The inventory identifier
+	 * @param  int		$inventory_index	The inventory index identifier
 	 * @return void
 	 * @access public
 	 */
-	public function gift(item $item, $user_id, $inventory_id)
+	public function gift(item $item, $user_id, $inventory_id, $inventory_index)
 	{
 		$this->config->increment('ass_notification_gift_id', 1);
 
 		$this->manager->add_notifications('phpbbstudio.ass.notification.type.gift', [
 			'notification_id'	=> (int) $this->config['ass_notification_gift_id'],
 			'inventory_id'		=> (int) $inventory_id,
+			'inventory_index'	=> (int) $inventory_index,
 			'category_slug'		=> $item->get_category_slug(),
 			'item_slug'			=> $item->get_slug(),
 			'user_id'			=> (int) $this->user->data['user_id'],

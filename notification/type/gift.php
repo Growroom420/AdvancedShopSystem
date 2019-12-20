@@ -180,7 +180,10 @@ class gift extends \phpbb\notification\type\base
 	 */
 	public function get_url()
 	{
-		return $this->router->inventory($this->get_data('category_slug'), $this->get_data('item_slug'), 'gift');
+		$index = $this->get_data('inventory_index');
+		$index = $index ? $index : 1;
+
+		return $this->router->inventory($this->get_data('category_slug'), $this->get_data('item_slug'), $index, 'gift');
 	}
 
 	/**
@@ -216,6 +219,7 @@ class gift extends \phpbb\notification\type\base
 	 */
 	public function create_insert_array($data, $pre_create_data = [])
 	{
+		$this->set_data('inventory_index', $data['inventory_index']);
 		$this->set_data('category_slug', $data['category_slug']);
 		$this->set_data('item_slug', $data['item_slug']);
 		$this->set_data('user_id', $data['user_id']);

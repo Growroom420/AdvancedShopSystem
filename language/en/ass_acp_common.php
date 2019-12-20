@@ -146,7 +146,7 @@ $lang = array_merge($lang, [
 	'ACP_ASS_ITEM_SALE_PRICE_DESC'		=> 'The price that will be used when this item is on sale.',
 	'ACP_ASS_ITEM_SLUG'					=> 'Item slug',
 	'ACP_ASS_ITEM_STACK'				=> 'Item stack count',
-	'ACP_ASS_ITEM_STACK_DESC'			=> 'The amount of identical items can be in an inventory at the same time.',
+	'ACP_ASS_ITEM_STACK_DESC'			=> 'The amount of identical items that can be in an inventory at the same time.',
 	'ACP_ASS_ITEM_STOCK'				=> 'Item stock',
 	'ACP_ASS_ITEM_STOCK_DESC'			=> 'The current item’s stock.',
 	'ACP_ASS_ITEM_STOCK_THRESHOLD'		=> 'Item stock threshold',
@@ -163,6 +163,9 @@ $lang = array_merge($lang, [
 	'ACP_ASS_ITEM_TYPE_SELECT'			=> 'Select an item type',
 	'ACP_ASS_ITEM_TYPE_NO_AUTH'			=> 'You are not authorised to manage this item type.',
 	'ACP_ASS_ITEMS_PER_PAGE'			=> 'Items per page',
+
+	'ACP_ASS_LOCATIONS'					=> 'Link locations',
+	'ACP_ASS_LOCATIONS_DESC'			=> 'Determine where the link to the Shop page should be displayed.',
 
 	'ACP_ASS_LOG_DELETED_ALL'			=> 'You have successfully deleted all log entries.',
 	'ACP_ASS_LOG_DELETED_ENTRY'			=> 'You have successfully deleted this log entry.',

@@ -217,6 +217,7 @@ class inventory_controller
 			throw new shop_exception(400, 'ASS_ERROR_OUT_OF_STOCK');
 		}
 
+		$stack = 0;
 		$user_id = 0;
 		$username = '';
 
@@ -299,7 +300,7 @@ class inventory_controller
 
 			if (!$purchase)
 			{
-				$this->notification->gift($item, $user_id, $inventory_id);
+				$this->notification->gift($item, $user_id, $inventory_id, $stack + 1);
 
 				if ($this->config['allow_privmsg'] && $this->auth->acl_get('u_sendpm'))
 				{
@@ -363,7 +364,7 @@ class inventory_controller
 	 */
 	public function inventory($category_slug, $item_slug, $index, $action)
 	{
-		$index0 = $index - 1;
+		$index0 = (int) $index - 1;
 
 		$this->controller->check_shop();
 

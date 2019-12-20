@@ -8,6 +8,10 @@
 {% INCLUDEJS '@phpbbstudio_aps/js/fontawesome-iconpicker.min.js' %}
 {% INCLUDEJS '@phpbbstudio_ass/js/ass_common.js' %}
 
+{% if S_ASS_LOCATIONS %}
+	{% include '@phpbbstudio_aps/aps_locations.html' %}
+{% else %}
+
 <h1>{{ PAGE_TITLE }}</h1>
 <p>{{ lang('ACP_ASS_SETTINGS_EXPLAIN') }}</p>
 
@@ -62,6 +66,19 @@
 				</script>
 				{% include 'acp_posting_buttons.html' %}
 				<textarea class="inputbox" id="inactive_desc" name="inactive_desc" rows="5">{{ INACTIVE_DESC }}</textarea></dd>
+		</dl>
+		<dl>
+			<dt>
+				<strong>{{ lang('ACP_ASS_LOCATIONS') }}</strong>
+				<br><span>{{ lang('ACP_ASS_LOCATIONS_DESC') }}</span>
+			</dt>
+			<dd>
+				<label>
+					<a class="aps-button-green" href="{{ U_LOCATIONS }}">
+						{{ lang('RUN') }}
+					</a>
+				</label>
+			</dd>
 		</dl>
 		<dl>
 			<dt><label for="shop_icon">{{ lang('ACP_ASS_SHOP_ICON') ~ lang('COLON') }}</label></dt>
@@ -327,5 +344,7 @@
 		</p>
 	</fieldset>
 </form>
+
+{% endif %}
 
 {% include 'overall_footer.html' %}

@@ -30,6 +30,9 @@ class acp_inventory_controller
 	/** @var \phpbb\log\log */
 	protected $log;
 
+	/** @var \phpbbstudio\ass\notification\notification */
+	protected $notification;
+
 	/** @var \phpbbstudio\ass\operator\category */
 	protected $operator_cat;
 
@@ -71,6 +74,7 @@ class acp_inventory_controller
 		\phpbb\group\helper $group_helper,
 		\phpbb\language\language $language,
 		\phpbb\log\log $log,
+		\phpbbstudio\ass\notification\notification $notification,
 		\phpbbstudio\ass\operator\category $operator_cat,
 		\phpbbstudio\ass\operator\item $operator_item,
 		\phpbb\request\request $request,
@@ -88,6 +92,7 @@ class acp_inventory_controller
 		$this->group_helper		= $group_helper;
 		$this->language			= $language;
 		$this->log				= $log;
+		$this->notification		= $notification;
 		$this->operator_cat		= $operator_cat;
 		$this->operator_item	= $operator_item;
 		$this->request			= $request;
@@ -401,9 +406,9 @@ class acp_inventory_controller
 					}
 
 					$this->template->assign_vars([
-						'USERNAME'	=> $username,
+						'ASS_USERNAME'	=> $username,
 
-						'U_DELETE'	=> $this->u_action . "&type={$type}&u={$user_id}&action=delete&iid=",
+						'U_DELETE'		=> $this->u_action . "&type={$type}&u={$user_id}&action=delete&iid=",
 					]);
 				}
 			break;
@@ -440,8 +445,8 @@ class acp_inventory_controller
 		switch ($action)
 		{
 			case 'add':
-				$data = [];
 				$owned = [];
+				$stack = [];
 
 				$sql = 'SELECT item_id, user_id
 						FROM ' . $this->inventory_table . '
@@ -450,7 +455,11 @@ class acp_inventory_controller
 				$result = $this->db->sql_query($sql);
 				while ($row = $this->db->sql_fetchrow($result))
 				{
-					$owned[(int) $row['item_id']][] = (int) $row['user_id'];
+					$item_id = (int) $row['item_id'];
+					$user_id = (int) $row['user_id'];
+
+					$owned[$item_id][] = $user_id;
+					$stack[$user_id][$item_id][] = $item_id;
 				}
 				$this->db->sql_freeresult($result);
 
@@ -461,22 +470,26 @@ class acp_inventory_controller
 					/** @var item $item */
 					$item = $items[$item_id];
 
-					$users = !empty($owned[$item_id]) ? array_diff($user_ids, $owned[$item_id]) : $user_ids;
+					$users = !empty($owned[$item_id]) && !$item->get_stack() ? array_diff($user_ids, $owned[$item_id]) : $user_ids;
 
 					foreach ($users as $user_id)
 					{
-						$data[] = [
+						$sql = 'INSERT INTO ' . $this->inventory_table . ' ' . $this->db->sql_build_array('INSERT', [
 							'category_id'		=> $item->get_category(),
 							'item_id'			=> $item->get_id(),
 							'user_id'			=> $user_id,
 							'gifter_id'			=> (int) $this->user->data['user_id'],
 							'purchase_time'		=> time(),
 							'purchase_price'	=> 0.00,
-						];
+						]);
+						$this->db->sql_query($sql);
+
+						$index = !empty($stack[$user_id][$item_id]) ? count($stack[$user_id][$item_id]) : 0;
+						$index = $index + 1;
+
+						$this->notification->gift($item, $user_id, $this->db->sql_nextid(), $index);
 					}
 				}
-
-				$this->db->sql_multi_insert($this->inventory_table, $data);
 			break;
 
 			case 'delete':
