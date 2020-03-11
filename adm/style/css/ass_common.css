@@ -284,6 +284,7 @@ output {
 
 .aps-form [type="range"].shop-slider {
 	border: none;
+	margin-top: 4px;
 	padding: 0;
 }
 

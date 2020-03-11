@@ -230,8 +230,13 @@ jQuery(function($) {
 	 *
 	 * @return {void}
 	 */
-	studio.sliders.on('input', function() {
-		$(this).next('output').text(this.value);
+	studio.sliders.on('mouseup input', function(e) {
+		if (e.type === 'mouseup') {
+			$(this).attr('value', this.value);
+			$(this).blur();
+		} else {
+			$(this).next('output').text(this.value);
+		}
 	});
 
 	/**

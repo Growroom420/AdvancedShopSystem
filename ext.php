@@ -28,35 +28,57 @@ class ext extends \phpbb\extension\base
 
 		if (!$ext_manager->is_enabled('phpbbstudio/aps'))
 		{
-			$user = $this->container->get('user');
-			$lang = $user->lang;
+			if (phpbb_version_compare(PHPBB_VERSION, '3.3.0@dev', '<'))
+			{
+				$user = $this->container->get('user');
+				$lang = $user->lang;
 
-			$user->add_lang_ext('phpbbstudio/ass', 'ass_ext');
+				$user->add_lang_ext('phpbbstudio/ass', 'ass_ext');
 
-			$lang['EXTENSION_NOT_ENABLEABLE'] .= '<br>' . $user->lang('ASS_REQUIRES_APS');
+				$lang['EXTENSION_NOT_ENABLEABLE'] .= '<br>' . $user->lang('ASS_REQUIRES_APS');
 
-			$user->lang = $lang;
+				$user->lang = $lang;
 
-			return false;
+				return false;
+			}
+
+			if (phpbb_version_compare(PHPBB_VERSION, '3.3.0@dev', '>'))
+			{
+				$language= $this->container->get('language');
+				$language->add_lang('ass_ext', 'phpbbstudio/ass');
+
+				return $language->lang('ASS_REQUIRES_APS');
+			}
 		}
 
 		$md_manager = $ext_manager->create_extension_metadata_manager('phpbbstudio/aps');
 		$aps_version = (string) $md_manager->get_metadata('version');
-		$aps_required = '1.0.5-RC1';
+		$aps_required = '1.0.6-RC';
 
-		/** Make sure the APS version is 1.0.5-RC1 or higher */
+		/** Make sure the APS version is 1.0.6-RC or higher */
 		if (phpbb_version_compare($aps_version, $aps_required, '<'))
 		{
-			$user = $this->container->get('user');
-			$lang = $user->lang;
+			if (phpbb_version_compare(PHPBB_VERSION, '3.3.0@dev', '<'))
+			{
+				$user = $this->container->get('user');
+				$lang = $user->lang;
 
-			$user->add_lang_ext('phpbbstudio/ass', 'ass_ext');
+				$user->add_lang_ext('phpbbstudio/ass', 'ass_ext');
 
-			$lang['EXTENSION_NOT_ENABLEABLE'] .= '<br>' . $user->lang('ASS_REQUIRES_APS_VERSION', $aps_required);
+				$lang['EXTENSION_NOT_ENABLEABLE'] .= '<br>' . $user->lang('ASS_REQUIRES_APS_VERSION', $aps_required);
 
-			$user->lang = $lang;
+				$user->lang = $lang;
 
-			return false;
+				return false;
+			}
+
+			if (phpbb_version_compare(PHPBB_VERSION, '3.3.0@dev', '>'))
+			{
+				$language= $this->container->get('language');
+				$language->add_lang('ass_ext', 'phpbbstudio/ass');
+
+				return $language->lang('ASS_REQUIRES_APS_VERSION', $aps_required);
+			}
 		}
 
 		return true;

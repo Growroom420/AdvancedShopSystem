@@ -197,7 +197,7 @@ class acp_overview_controller
 
 		$this->template->assign_vars([
 			'COUNTS'			=> $this->get_counts(),
-			'NOTES'				=> $notes ? $this->renderer->render($notes) : '',
+			'NOTES'				=> $notes ? $this->renderer->render(htmlspecialchars_decode($notes, ENT_COMPAT)) : '',
 
 			'GIFTING_ENABLED'	=> (bool) $this->config['ass_gift_enabled'],
 			'NO_IMAGE_ICON'		=> (string) $this->config['ass_no_image_icon'],

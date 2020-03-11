@@ -258,7 +258,7 @@ class category implements category_interface
 	 */
 	public function get_desc_for_display()
 	{
-		return isset($this->data['category_desc']) ? (string) $this->renderer->render($this->data['category_desc']) : '';
+		return isset($this->data['category_desc']) ? (string) $this->renderer->render(htmlspecialchars_decode($this->data['category_desc'], ENT_COMPAT)) : '';
 	}
 
 	/**

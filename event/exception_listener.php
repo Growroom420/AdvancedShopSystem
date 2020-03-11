@@ -118,7 +118,7 @@ class exception_listener implements EventSubscriberInterface
 				if ($exception instanceof shop_inactive_exception)
 				{
 					$desc = $this->config_text->get('ass_inactive_desc');
-					$desc = $this->renderer->render($desc);
+					$desc = $this->renderer->render(htmlspecialchars_decode($desc, ENT_COMPAT));
 				}
 
 				if ($exception instanceof  shop_item_exception)

@@ -1,5 +1,11 @@
 # phpBB Studio - Advanced Shop System
 
+#### v1.1.4-RC on 11-03-2020
+- Fixed ACP slider settings
+- Fixed ACP Logs pagination
+- Fixed special characters displaying incorrectly
+- Added phpBB 3.3 compatibility
+
 #### v1.1.3-RC1 on 20-12-2019
 - Entered the stage features frozen.
 - Fixed a bug in the shop blocks

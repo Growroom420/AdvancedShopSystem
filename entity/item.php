@@ -318,7 +318,7 @@ class item implements item_interface
 	 */
 	public function get_desc_for_display()
 	{
-		return isset($this->data['item_desc']) ? (string) $this->renderer->render($this->data['item_desc']) : '';
+		return isset($this->data['item_desc']) ? (string) $this->renderer->render(htmlspecialchars_decode($this->data['item_desc'], ENT_COMPAT)) : '';
 	}
 
 	/**
